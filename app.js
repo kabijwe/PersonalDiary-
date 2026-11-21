@@ -73,7 +73,7 @@
       showPage(nav.dataset.page||nav.dataset.goto);
     });
   });
-  $("[data-record-target]").forEach(b=>b.addEventListener("click",()=>$("#"+b.dataset.recordTarget).scrollIntoView({behavior:"smooth",block:"start"})));
+  $$("[data-record-target]").forEach(b=>b.addEventListener("click",()=>$("#"+b.dataset.recordTarget).scrollIntoView({behavior:"smooth",block:"start"})));
   const sidebar=$("#sidebar"),menuToggle=$("#menuToggle");
   menuToggle.setAttribute("aria-expanded","false");
   menuToggle.addEventListener("click",e=>{
