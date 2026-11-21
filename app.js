@@ -308,19 +308,21 @@
     let g=null;
     try{g=PX.ghadiPala(Date.now(),loc.lat,loc.lon)}catch{}
     if(!g){el.textContent="—";setText("pGhadiNote","सूर्योदय गणना उपलब्ध छैन");return}
-    el.textContent=`${nepaliNumber(g.ghadi)} घडी · ${nepaliNumber(g.pala)} पला`;
+    const ghadiText=`${nepaliNumber(g.ghadi)} घडी · ${nepaliNumber(g.pala)} पला`;
+    el.textContent=ghadiText;setText("sunGhadiDetail",ghadiText);
     setText("pGhadiNote",`${g.which==="yesterday"?"हिजोको":"आजको"} सूर्योदय ${fmtClock(g.sunriseMs)} देखि · १ घडी = २४ मिनेट, १ पला = २४ सेकेन्ड`);
   }
 
   /* ---------- Sunrise → sunset arc (one smooth curve) ---------- */
   function drawSun(){
     const marker=$("#sunMarker");if(!marker)return;
-    if(!solar||solar.polar){setText("sunriseTime","--:--");setText("sunsetTime","--:--");setText("sunStatus",solar&&solar.polar?(solar.polar==="day"?"सूर्य अस्त हुँदैन":"सूर्य उदाउँदैन"):"गणना हुँदैछ…");marker.style.display="none";return}
-    setText("sunriseTime",fmtClock(solar.sunriseMs));setText("sunsetTime",fmtClock(solar.sunsetMs));
+    if(!solar||solar.polar){setText("sunriseTime","--:--");setText("sunsetTime","--:--");setText("sunriseDetail","उपलब्ध छैन");setText("sunsetDetail","उपलब्ध छैन");setText("sunStatus",solar&&solar.polar?(solar.polar==="day"?"सूर्य अस्त हुँदैन":"सूर्य उदाउँदैन"):"गणना हुँदैछ…");marker.style.display="none";return}
+    const sunrise=fmtClock(solar.sunriseMs),sunset=fmtClock(solar.sunsetMs);
+    setText("sunriseTime",sunrise);setText("sunsetTime",sunset);setText("sunriseDetail",sunrise);setText("sunsetDetail",sunset);
     marker.style.display="";
     const now=Date.now(),a=solar.sunriseMs,b=solar.sunsetMs,t=Math.max(0,Math.min(1,(now-a)/(b-a)));
-    // Same path as the SVG: M12 58 C70 58,90 14,160 14 C230 14,250 58,308 58
-    const P=[[12,58],[70,58],[90,14],[160,14],[230,14],[250,58],[308,58]],bez=(q,u)=>{const v=1-u;return [0,1].map(i=>v*v*v*q[0][i]+3*v*v*u*q[1][i]+3*v*u*u*q[2][i]+u*u*u*q[3][i])};
+    // Bezier points match the full-width SVG curve exactly.
+    const P=[[18,76],[132,76],[190,16],[320,16],[450,16],[508,76],[622,76]],bez=(q,u)=>{const v=1-u;return [0,1].map(i=>v*v*v*q[0][i]+3*v*v*u*q[1][i]+3*v*u*u*q[2][i]+u*u*u*q[3][i])};
     const [x,y]=t<=.5?bez(P.slice(0,4),t*2):bez(P.slice(3,7),(t-.5)*2);
     marker.setAttribute("cx",x.toFixed(1));marker.setAttribute("cy",y.toFixed(1));
     setText("sunStatus",now<a?"सूर्योदयअघि":now>b?"सूर्यास्तपछि":"अहिलेको समय");
