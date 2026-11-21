@@ -530,3 +530,49 @@ body .panchang-more{display:none}
 body.dark #gpsServiceStatus[data-state="success"]{background:#ffffff;color:#000000}
 .gps-help{color:var(--ink);border-left:3px solid #FF2D20}
 @media(max-width:650px){body .panchang-panel .panchang-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+
+/* Mera Paila: clean professional GPS history */
+.location-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:0 0 14px}
+.location-stat{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:13px 15px;min-width:0}
+.location-stat small,.latest-place-grid small{display:block;color:var(--muted);font-size:11px;margin-bottom:5px}
+.location-stat b{display:block;font-size:17px;font-weight:600;overflow-wrap:anywhere}
+.location-latest{background:var(--paper);border:1px solid var(--line);border-left:3px solid var(--red);border-radius:13px;padding:16px 18px;margin-bottom:22px}
+.latest-place-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.latest-place-head small{color:var(--muted);font-size:10px;letter-spacing:.04em}
+.latest-place-head h2{font-size:20px;margin:3px 0 4px}
+.latest-place-head p{color:var(--muted);font-size:12px;margin:0;line-height:1.6}
+.gps-live-mark,.history-source{font-size:10px;font-weight:700;letter-spacing:.08em;border:1px solid var(--red);color:var(--red);padding:4px 8px;border-radius:20px;white-space:nowrap}
+.latest-place-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:15px;padding-top:13px;border-top:1px solid var(--line)}
+.latest-place-grid b{display:block;font-size:12px;font-weight:600;overflow-wrap:anywhere}
+.records-map-heading{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin:26px 0 12px}
+.records-map-heading h2,.records-history-heading h2{font-family:"Noto Serif Devanagari",serif;font-weight:500;font-size:22px;margin:4px 0}
+.records-map-heading p{margin:0}
+.map-key{display:flex;align-items:center;gap:6px;color:var(--muted);font-size:11px;white-space:nowrap}
+.map-key i{width:8px;height:8px;border-radius:50%;background:var(--red);display:inline-block}
+.location-map{height:380px;min-height:280px;background:var(--paper);border:1px solid var(--line);border-radius:13px;overflow:hidden;margin-bottom:22px}
+.location-history-list{display:grid;gap:10px;max-height:none;overflow:visible}
+.location-history-item{display:grid;grid-template-columns:34px minmax(0,1fr);gap:12px;padding:15px;background:var(--paper);border:1px solid var(--line);border-radius:12px}
+.history-index{width:30px;height:30px;border:1px solid var(--line);border-radius:50%;display:grid;place-items:center;font-size:11px;font-weight:700;color:var(--red)}
+.history-record-main{min-width:0}
+.history-record-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.history-record-top b{display:block;font-family:"Noto Serif Devanagari",serif;font-size:16px;font-weight:600}
+.history-record-top small{display:block;color:var(--muted);font-size:11px;line-height:1.6;margin-top:3px}
+.history-record-meta{display:flex;flex-wrap:wrap;gap:5px 13px;margin-top:10px;color:var(--muted);font-size:11px}
+.history-weather{font-size:11px;margin:8px 0 0;color:var(--ink)}
+.history-context-details{margin-top:10px;padding-top:8px;border-top:1px solid var(--line)}
+.history-context-details summary{cursor:pointer;color:var(--red);font-size:11px;font-weight:600}
+.history-context-details .context-detail-grid{grid-template-columns:repeat(3,minmax(0,1fr));margin-top:10px}
+.records-history-heading{margin-top:25px}
+@media(max-width:650px){
+ .location-stats{gap:6px}.location-stat{padding:10px 9px}.location-stat small{font-size:9px}.location-stat b{font-size:14px}
+ .latest-place-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+ .location-latest{padding:13px}
+ .records-map-heading{align-items:flex-start;flex-direction:column}
+ .location-map{height:310px;min-height:270px}
+ .location-history-item{grid-template-columns:27px minmax(0,1fr);gap:8px;padding:11px}
+ .history-index{width:25px;height:25px;font-size:10px}
+ .history-context-details .context-detail-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+body.dark .location-stat,body.dark .location-latest,body.dark .location-history-item{background:#000;color:#fff;border-color:#303030}
+body.dark .location-latest{border-left-color:#e11}
