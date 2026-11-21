@@ -139,3 +139,72 @@ body.dark .letter-context-meta{
 
 /* Editable Letterhead cards and home GPS history */
 .post-tap-card,.post-tap-row{cursor:pointer;transition:border-color .18s,transform .18s}.post-tap-card:hover,.post-tap-row:hover{border-color:var(--navy);transform:translateY(-1px)}.post-tap-card:focus-visible,.post-tap-row:focus-visible{outline:2px solid var(--navy);outline-offset:3px}.tap-hint{display:block;margin-top:8px;font-size:10px;color:var(--navy);opacity:.8}.home-location-history{margin-top:30px}.home-location-history .section-heading{margin-top:0}.letterhead-editor-modal{width:min(760px,calc(100% - 18px))}.letterhead-editor-modal form{padding:clamp(16px,4vw,28px)}.editor-context-panel{margin:8px 0 12px;padding:12px;background:#f4f6f8}.editor-context-panel .context-detail-grid{grid-template-columns:repeat(2,minmax(0,1fr))}@media(max-width:520px){.editor-context-panel .context-detail-grid{grid-template-columns:1fr}.home-location-history{margin-bottom:12px}}
+
+
+/* Android: compact, readable single-card time overview */
+@media (max-width: 650px) {
+  .time-card {
+    padding: 11px 12px 10px;
+    border-radius: 14px;
+    gap: 0;
+  }
+  .time-card-head { margin-bottom: 0; }
+  .time-date { margin: 5px 0 4px; gap: 7px; }
+  .nepali-clock { font-size: 27px; line-height: 1.1; }
+  .time-weekday { font-size: 11px; }
+  .time-date-side { gap: 1px; }
+  .time-date-side b, .time-date-side span { font-size: 11px; line-height: 1.35; }
+  .time-date-side span#timeWeekNumber { font-size: 10px; }
+  .season-line { margin: 3px 0 0; gap: 5px; font-size: 11px; }
+  .season-line #seasonDesc { font-size: 10px; line-height: 1.3; }
+  .sun-visual { padding: 2px 0 0; }
+  .sun-visual svg { max-height: 47px; }
+  .sun-labels b { font-size: 11px; }
+  .sun-labels small, .sun-labels .sun-status { font-size: 9.5px; }
+  .time-weather { margin-top: 5px; padding-top: 6px; }
+  .place-line { font-size: 11px; gap: 5px; }
+  .mode-badge { font-size: 9px; padding: 1px 6px; }
+  .weather-line { margin-top: 2px; gap: 5px; }
+  .weather-line b { font-size: 18px; }
+  .weather-line span { font-size: 11px; }
+  .weather-line #weatherExtra { font-size: 10px; }
+  .weather-line .weather-updated { font-size: 9px; }
+  .panchang-panel { margin-top: 7px; padding-top: 7px; }
+  .panchang-heading { align-items: center; margin-bottom: 5px; }
+  .panchang-kicker { font-size: 9px; }
+  .panchang-heading h3 { font-size: 14px; }
+  .panchang-status { font-size: 9px; max-width: 58%; }
+  .panchang-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 5px; }
+  .panchang-item {
+    min-width: 0;
+    min-height: 47px;
+    padding: 5px 5px;
+    border-radius: 7px;
+    gap: 1px;
+  }
+  .panchang-item small { font-size: 9px; line-height: 1.25; }
+  .panchang-item b {
+    font-size: 11.5px;
+    line-height: 1.3;
+    overflow-wrap: anywhere;
+  }
+  .panchang-item span {
+    font-size: 9px;
+    line-height: 1.25;
+    overflow-wrap: anywhere;
+  }
+  .panchang-primary b { font-size: 12.5px; }
+  .panchang-wide { grid-column: 1 / -1; min-height: 39px; }
+  .panchang-foot {
+    font-size: 9px;
+    line-height: 1.35;
+    margin-top: 5px;
+    max-height: 2.7em;
+    overflow: hidden;
+  }
+  .loc-controls { gap: 5px; margin-top: 7px; }
+  .location-button { padding: 7px 9px; font-size: 11px; border-radius: 8px; }
+  .manual-place { gap: 3px; font-size: 10px; }
+  .manual-place select { padding: 6px 8px; font-size: 11px; }
+  .time-privacy { font-size: 9px; margin: 5px 0 0; }
+}
