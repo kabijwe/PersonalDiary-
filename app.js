@@ -55,14 +55,15 @@
   function dateText(d){return new Date(d+"T12:00:00").toLocaleDateString("ne-NP",{year:"numeric",month:"long",day:"numeric"})}
   function toast(msg){const el=$("#toast");el.textContent=msg;el.classList.add("show");setTimeout(()=>el.classList.remove("show"),2400)}
   function showPage(name){
-    if(name==="diary"||name==="poetry")name="records";
+    if(name==="diary")name="poetry";
     const target=$("#page-"+name);
     if(!target){toast("यो मेनु उपलब्ध छैन।");return}
     $$(".page").forEach(p=>p.classList.toggle("active",p===target));
     $$("[data-page]").forEach(b=>b.classList.toggle("active",b.dataset.page===name));
     const sidebar=$("#sidebar");sidebar.classList.remove("open");sidebar.style.display="";
     if(name==="calendar")renderCalendar();
-    if(name==="records"){renderDiary();renderLocationHistory();setTimeout(()=>historyMap?.invalidateSize(),180)}
+    if(name==="records"){renderLocationHistory();setTimeout(()=>historyMap?.invalidateSize(),180)}
+    if(name==="poetry")renderDiary();
     if(name==="memories")renderMemories();
     if(name==="letterpad")renderTemplates();
     $("#main").scrollTop=0;window.scrollTo({top:0,behavior:"instant"});
@@ -538,7 +539,7 @@
   }
   function renderLocationHistory(){
     const list=$("#locationHistoryList");if(!list)return;
-    const rows=(state.locationHistory||[]).slice().reverse();
+    const rows=(state.locationHistory||[]).filter(h=>h.source==="gps"&&Number.isFinite(h.latitude)&&Number.isFinite(h.longitude)).slice().reverse();
     renderLocationMap(rows);
     list.innerHTML=rows.length?rows.map(h=>{
       const stamp=h.context?.nepalTime||new Date(h.timestamp).toLocaleString("ne-NP",{timeZone:"Asia/Kathmandu",hour12:false,second:"2-digit"});
