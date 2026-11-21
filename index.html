@@ -125,7 +125,6 @@
                 <div class="panchang-item panchang-wide"><small>घडी · पला (सूर्योदयदेखि)</small><b id="pGhadiPala">—</b><span id="pGhadiNote"></span></div>
               </div>
               <p class="panchang-foot" id="panchangFoot">गणना हुँदैछ…</p>
-              <button class="retry-btn" id="panchangRetry" type="button" hidden>↻ फेरि प्रयास गर्नुहोस्</button>
             </section>
 
             <div class="loc-controls">
@@ -140,8 +139,9 @@
             <p class="time-privacy">GPS बटन थिचेपछि मात्र स्थान माग्छ; पृष्ठभूमिमा ट्र्याक गर्दैन।</p>
           </article>
         </div>
-        <div class="section-heading"><div><p class="eyebrow">तपाईंका पानाहरू</p><h2>भर्खरका सम्झना</h2></div><button class="text-btn" data-goto="diary">सबै हेर्नुहोस् →</button></div>
+        <div class="section-heading"><div><p class="eyebrow">तपाईंका पानाहरू</p><h2>सबै डायरी र सिर्जना</h2></div><button class="text-btn" data-goto="diary">डायरीमा हेर्नुहोस् →</button></div>
         <div id="recentEntries" class="entry-grid"><div class="empty-state">तपाईंको पहिलो डायरी यहाँ देखिनेछ।</div></div>
+        <section class="home-location-history"><div class="section-heading"><div><p class="eyebrow">GPS · स्थानका रेकर्ड</p><h2>मेरो स्थान इतिहास</h2></div><span class="muted small">यस उपकरणमै सुरक्षित</span></div><div id="locationHistoryList" class="location-history-list"></div></section>
         <div class="section-heading"><div><p class="eyebrow">सुरु गर्नुहोस्</p><h2>तपाईंको सिर्जनात्मक संसार</h2></div></div>
         <div class="shortcut-grid">
           <button class="shortcut" data-goto="calendar"><span>▦</span><b>नेपाली पात्रो</b><small>मिति र व्यक्तिगत दिनहरू</small></button>
@@ -208,7 +208,6 @@
           <div class="settings-card"><h3>गोपनीयता</h3><p class="muted small">यो संस्करणमा सामग्री तपाईंको ब्राउजरको स्थानीय भण्डारणमा रहन्छ। यसमा अनलाइन खाता वा सर्भर-सिंक छैन।</p><div class="privacy-pill">🔒 निजी डायरी पूर्वनिर्धारित</div></div>
           <div class="settings-card"><h3>डाटा व्यवस्थापन</h3><p class="muted small">आफ्नो डायरीको प्रतिलिपि डाउनलोड वा पुनः आयात गर्नुहोस्।</p><div class="button-row"><button class="btn secondary" id="exportData">डाटा Export</button><label class="btn secondary import-btn">Import<input type="file" id="importData" accept="application/json"></label></div><button class="text-btn danger" id="clearData">सबै स्थानीय डाटा मेटाउनुहोस्</button></div>
         </div>
-        <div class="settings-card location-history-panel"><h3>स्थान र यात्रा इतिहास</h3><p class="muted small">हरेक सफल GPS स्थान र हातले छानेको स्थान समय, निर्देशाङ्क, उचाइ र उपलब्ध मौसमसहित यही उपकरणमा सुरक्षित हुन्छ। पछि यी निर्देशाङ्क नक्सामा देखाउन सकिन्छ।</p><div id="locationHistoryList" class="location-history-list"></div></div>
         <div class="about-note"><b>Kabijwe — My Living Diary</b><p>एउटा डायरी, हजारौँ सम्झनाहरू।</p><small>Mobile-first progressive web app · प्रारम्भिक संस्करण</small></div>
       </section>
     </main>
@@ -227,7 +226,8 @@
   <dialog id="editorDialog" class="modal letterhead-editor-modal">>
     <form method="dialog" id="entryForm">
       <div class="modal-head"><div><p class="eyebrow" id="editorEyebrow">नयाँ पाना</p><h2 id="editorHeading">डायरी लेख्नुहोस्</h2></div><button class="icon-btn" value="cancel" aria-label="Close">×</button></div>
-      <p id="editorContextNote" class="entry-context" style="margin:0 0 10px;font-size:11px;">सेभ गर्दा हालको मिति / तिथि / मौसम स्वतः रेकर्ड हुनेछ।</p>
+      <p id="editorContextNote" class="entry-context" style="margin:0 0 10px;font-size:11px;">समयको अनुभूति · यस पानासँग सुरक्षित गरिएको मिति, पञ्चाङ्ग, स्थान र मौसम</p>
+      <section id="entryContextDetails" class="post-letter-context editor-context-panel"></section>
       <input type="hidden" id="entryId">
       <label>शीर्षक<input id="entryTitle" placeholder="आजको दिन..." maxlength="120"></label>
       <div class="two-fields"><label>मिति<input id="entryDate" type="date"></label><label>मूड<select id="entryMood"><option>शान्त</option><option>खुसी</option><option>उत्साहित</option><option>सोचमग्न</option><option>उदास</option><option>कृतज्ञ</option></select></label></div>
