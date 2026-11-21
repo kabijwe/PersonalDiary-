@@ -400,3 +400,87 @@ body{zoom:var(--font-scale,1)}
   .sun-detail-grid b{font-size:12px}
   .sun-detail-grid small{font-size:8px}
 }
+
+
+/* Kabijwe visual system — midnight black, vermilion, blue, ivory and auspicious gold */
+:root{color-scheme:dark;--ink:#f4f6f9;--muted:#aab4c1;--paper:#10141b;--canvas:#080b10;--line:#29313d;--navy:#2478c8;--red:#e73535;--accent:#2478c8;--soft:#192638;--shadow:0 14px 38px #0007}
+body{background:var(--canvas);color:var(--ink)}
+.topbar,.sidebar,.paper-card,.calendar-panel,.settings-card,.entry-row,.entry-card,.poem-card,.memory-card,.shortcut,.modal,.studio-controls{background:var(--paper);color:var(--ink);border-color:var(--line)}
+.nav-item{color:#c0c8d2}.nav-item.active,.nav-item:hover{background:#172b43;color:#8dc5ff}
+.primary{background:var(--red);color:#fff}.secondary{background:#18283a;color:#dcecff;border-color:#31445a}
+input,textarea,select,.toolbar input,.toolbar select{background:#0d1219;color:#f4f6f9;border-color:#303a48}
+::placeholder{color:#788596}
+#page-home .time-card{background:radial-gradient(ellipse at 50% -25%,#17324d 0%,#080b10 58%);border:1px solid #28394d;color:#f7f8fa;padding:0 18px 16px;box-shadow:0 18px 45px #0008}
+#page-home .sun-card{background:transparent;border:0;border-radius:0;box-shadow:none;margin:0;padding:15px 0 12px;border-bottom:1px solid #ffffff20;overflow:visible}
+#page-home .sun-card-heading{margin-bottom:0}
+#page-home .sun-card-heading h2{font-size:17px}
+#page-home .sun-card-live{color:#c6d1dd}
+#page-home .sun-visual-wide{margin-top:5px}
+#page-home .sun-detail-grid{margin-top:7px;padding-top:8px}
+#page-home .sun-detail-grid b{color:#f7f8fa}
+#page-home .time-card-head{padding-top:13px;margin-bottom:3px}
+#page-home .time-card-head .eyebrow{color:#f0cc70}
+#page-home .nepali-clock{color:#fff;font-size:clamp(26px,6vw,34px)}
+#page-home .time-weekday,#page-home .time-date-side span{color:#d4deea}
+#page-home .time-date-side b{color:#f1cc68}
+#page-home .season-line{color:#f1cc68}
+#page-home .season-line #seasonDesc{color:#c1ccd8}
+#page-home .time-weather{border-top:1px solid #ffffff20}
+#page-home .place-line,#page-home .location-coordinates{color:#d7e0e9}
+#page-home .place-pin,#page-home .location-coordinates strong{color:#f1cc68}
+#page-home .weather-line b{color:#f1cc68}
+#page-home .weather-line #weatherCondition{color:#f4f6f8}
+#page-home .weather-line #weatherExtra,#page-home .weather-updated{color:#b6c3d0}
+#page-home .panchang-panel{border-top:1px solid #ffffff20}
+#page-home .panchang-kicker{color:#f1cc68}
+#page-home .panchang-heading h3{color:#fff}
+#page-home .panchang-status{color:#9dc9f5}
+#page-home .panchang-item{background:#101b29;border:1px solid #263b52}
+#page-home .panchang-item small{color:#9fb0c2}
+#page-home .panchang-item b{color:#fff}
+#page-home .panchang-item span{color:#c0cbd7}
+#page-home .panchang-more{color:#f1cc68}
+#page-home .panchang-foot,#page-home .time-privacy{color:#aab7c5}
+#page-home .loc-controls .location-button{background:#15283c;color:#fff;border-color:#2c4c6b}
+#page-home .manual-place{color:#b9c6d4}
+#page-home .manual-place select{background:#0e1722;color:#fff;border-color:#33465c}
+#page-home .time-service-status span{background:#101b28;border-color:#26394d;color:#c3d0dc}
+#page-home .home-thought-card{margin-top:15px}
+#page-home .home-thought-card h2{color:#fff}
+#page-home .home-thought-card textarea{color:#f4f6f9}
+#page-home .home-thought-card .eyebrow{color:#f1cc68}
+.composer-tools{gap:7px}
+.composer-action{background:#111b27;color:#eaf1f8;border-color:#2b3c50;padding:9px 11px}
+.composer-action span{color:#f1cc68}
+.composer-action:active{border-color:#e73535}
+.voice-recorder{background:#090e15;border:1px solid #2c3a4b;color:#f4f6f9}
+.voice-recorder-head b{color:#f1cc68}
+.voice-equalizer{height:42px;display:flex;align-items:center;justify-content:center;gap:3px;padding:3px 4px;background:linear-gradient(90deg,#101a27,#0b1017);border:1px solid #26384d;border-radius:9px;overflow:hidden}
+.voice-equalizer i{display:block;flex:1;max-width:7px;height:4px;min-height:4px;border-radius:5px;background:linear-gradient(180deg,#f1cc68 0%,#e73535 58%,#2478c8 100%);transition:height .075s ease;box-shadow:0 0 7px #e7353530}
+.voice-progress{background:#202c3a}.voice-progress span{background:linear-gradient(90deg,#2478c8,#e73535,#f1cc68)}
+.voice-timer{color:#f1cc68!important;font-variant-numeric:tabular-nums}
+.book-page{background:#fffdf6!important;color:#25221d!important;border-color:#d8cfbd}
+.book-head{color:#6d5c48}.book-rule{background:linear-gradient(90deg,#d62e32,#d8b85e,transparent)}
+.book-date-row{color:#2c5f91}.book-bs-date{color:#8a6c36}
+.book-title{color:#181b20}.book-context-line{border-color:#d7d0c3;color:#675c4c}
+.book-auto-details{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:13px 0 17px;padding:9px 0;border-top:1px solid #e7e0d4;border-bottom:1px solid #e7e0d4}
+.book-auto-details span{display:flex;flex-direction:column;gap:3px;min-width:0}
+.book-auto-details span+span{border-left:1px solid #e7e0d4;padding-left:9px}
+.book-auto-details small{font:9px "DM Sans",sans-serif;color:#8a7a66;letter-spacing:.06em}
+.book-auto-details b{font-size:10px;font-weight:600;color:#344b60;overflow-wrap:anywhere;line-height:1.5}
+.book-sign{color:#a32b31}
+.entry-media-pickers{grid-template-columns:repeat(2,minmax(0,1fr))}
+.entry-media-pickers label{background:#111b27;border:1px solid #2b3c50;border-radius:10px;padding:10px;color:#e8edf3}
+.entry-media-pickers input{background:transparent;border:0;padding:3px 0;color:#aebdce}
+@media(max-width:650px){
+ #page-home .time-card{padding:0 12px 13px}
+ #page-home .sun-card{padding:12px 0 10px}
+ #page-home .sun-card-heading h2{font-size:15px}
+ #page-home .time-date{margin:6px 0}
+ #page-home .panchang-item{padding:7px}
+ .composer-tools{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
+ .composer-action{justify-content:center;font-size:11px;padding:9px 6px}
+ .book-auto-details{gap:5px}
+ .book-auto-details span+span{padding-left:6px}
+ .book-auto-details b{font-size:9px}
+}
