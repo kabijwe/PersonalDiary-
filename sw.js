@@ -3,7 +3,7 @@
 //   online visit; the cache is only an offline fallback.
 // - Cross-origin requests (Trisambat, Open-Meteo, Nominatim) are never cached here, so weather and
 //   dates can never be served stale from this cache. Pages cache their own data with timestamps.
-const CACHE = "kabijwe-shell-v13";
+const CACHE = "kabijwe-shell-v14";
 const CORE = ["./", "./index.html", "./styles.css", "./panchang.js", "./app.js", "./manifest.webmanifest", "./icons/icon.svg"];
 
 self.addEventListener("install", e => {
