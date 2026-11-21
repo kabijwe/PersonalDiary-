@@ -654,3 +654,14 @@ body :is(.time-card,.season-card,.sun-card,.season-strip,.privacy-info,.preview-
   .reminder-form .btn{width:100%}
   .reminder-item{align-items:flex-start}
 }
+/* GPS reliability UI and final typography/contrast pass */
+#timeLocationBtn{background:#C40014!important;color:#FFFFFF!important;border:2px solid #C40014!important;min-height:54px;padding:12px 18px;border-radius:12px;font-size:1rem;font-weight:700;line-height:1.8;display:flex;align-items:center;justify-content:center;gap:10px}
+#timeLocationBtn *{color:#FFFFFF!important}#timeLocationBtn:disabled{opacity:.72;cursor:wait}
+#gpsServiceStatus[data-state="success"]{background:#000000!important;color:#FFFFFF!important;border:1px solid #000000!important;padding:7px 10px;border-radius:8px}
+body.dark #gpsServiceStatus[data-state="success"]{background:#FFFFFF!important;color:#000000!important;border-color:#FFFFFF!important}
+#gpsServiceStatus[data-state="error"]{background:#FFD60A!important;color:#000000!important;border:1px solid #000000!important;padding:7px 10px;border-radius:8px}
+#gpsServiceStatus[data-state="loading"]{background:var(--paper)!important;color:var(--ink)!important;border:1px solid var(--ink)!important;padding:7px 10px;border-radius:8px}
+.gps-help{font-size:14px!important;line-height:1.8!important;color:var(--ink)!important;border-left:4px solid #FF2D20;padding:8px 12px;margin:10px 0}
+body :is(.time-service-status span,.location-coordinates,.location-coordinates span,.location-coordinates strong,.manual-place span){font-size:max(14px,0.875rem)!important;line-height:1.8!important}
+body :is(.time-card,.panchang-panel,.sun-card,.location-coordinates,.time-service-status){min-width:0;overflow-wrap:anywhere}
+@media(max-width:600px){#timeLocationBtn{width:100%;font-size:16px}.time-service-status{display:grid;grid-template-columns:1fr;gap:7px}.gps-help{font-size:14px!important}}
