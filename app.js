@@ -50,7 +50,7 @@
   }
 
   function load(){try{return JSON.parse(localStorage.getItem(KEY)) || {entries:[],events:[],memories:[],templates:[],settings:{}}}catch{return {entries:[],events:[],memories:[],templates:[],settings:{}}}}
-  function persist(){localStorage.setItem(KEY,JSON.stringify(state));}
+  function persist(){try{localStorage.setItem(KEY,JSON.stringify(state));return true;}catch(error){console.error("Mero diary local save failed:",error);try{toast("स्थानीय भण्डारण भरिएको वा रोकिएको छ। ठूलो media backup गरी ठाउँ खाली गर्नुहोस्।");}catch{}return false;}}
   function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,7)}
   function esc(s=""){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
   function dateText(d){return new Date(d+"T12:00:00").toLocaleDateString("ne-NP",{year:"numeric",month:"long",day:"numeric"})}
@@ -417,19 +417,17 @@
     applyLocation({mode:"manual",id:hit.id,name:hit.name,lat:hit.lat,lon:hit.lon},{persist:true});
     toast(`स्थान: ${hit.name} (हातले छानिएको)`);
   });
-  $("#timeLocationBtn").addEventListener("click",()=>{
-    const btn=$("#timeLocationBtn"),label=btn.querySelector(".loc-text"),attemptId=recordLocationAttempt();
-    if(!navigator.geolocation){finishLocationAttempt(attemptId,{status:"unsupported",note:"यो ब्राउजरमा GPS सेवा उपलब्ध छैन"});toast("यो ब्राउजरमा स्थान सेवा छैन। तलबाट स्थान छान्नुहोस्।");return}
-    btn.disabled=true;label.textContent="स्थान पर्खँदै…";
-    setServiceState("gpsServiceStatus","GPS स्थान प्राप्त हुँदैछ…","loading");navigator.geolocation.getCurrentPosition(p=>{
-      btn.disabled=false;label.textContent="GPS स्थान पुनः लिनुहोस्";setServiceState("gpsServiceStatus","GPS सफल · निर्देशाङ्क प्राप्त भयो","success");
-      applyLocation({mode:"gps",id:"",name:"GPS स्थान",lat:p.coords.latitude,lon:p.coords.longitude,altitude:Number.isFinite(p.coords.altitude)?p.coords.altitude:null,accuracy:Number.isFinite(p.coords.accuracy)?p.coords.accuracy:null},{historyId:attemptId});
-    },err=>{
-      btn.disabled=false;label.textContent="मेरो GPS स्थान प्रयोग गर्नुहोस्";
-      finishLocationAttempt(attemptId,{status:err.code===1?"denied":"failed",note:err.code===1?"स्थान अनुमति दिइएन":"स्थान प्राप्त गर्न सकिएन"});
-      setServiceState("gpsServiceStatus",err.code===1?"GPS अनुमति अस्वीकृत":"GPS प्राप्ति असफल · "+(err.message||"स्थान उपलब्ध भएन"),"error");
-      toast(err.code===1?"GPS अनुमति दिइएन। हालको स्थान नै प्रयोग भइरहेको छ — चाहे तलबाट हातले स्थान छान्नुहोस्।":"GPS स्थान प्राप्त भएन। तलबाट हातले स्थान छान्न सक्नुहुन्छ।");
-    },{enableHighAccuracy:true,timeout:15000,maximumAge:300000});
+  $("#timeLocationBtn").addEventListener("click",async()=>{
+    const btn=$("#timeLocationBtn"),label=btn.querySelector(".loc-text");
+    if(!navigator.geolocation){setServiceState("gpsServiceStatus","यो browser मा Geolocation API उपलब्ध छैन","error");toast("यो browser ले GPS उपलब्ध गराउँदैन।");return;}
+    if(!window.isSecureContext){setServiceState("gpsServiceStatus","सुरक्षित HTTPS/localhost आवश्यक छ","error");toast("GPS का लागि HTTPS वा http://localhost/127.0.0.1 प्रयोग गर्नुहोस्। LAN IP बाट खुलेको HTTP पृष्ठमा GPS चल्दैन।");return;}
+    const attemptId=recordLocationAttempt();btn.disabled=true;if(label)label.textContent="GPS खोज्दै…";
+    setServiceState("gpsServiceStatus","GPS संकेत खोज्दै · कृपया खुला ठाउँमा केही समय पर्खनुहोस्","loading");
+    let permissionState="unknown";try{if(navigator.permissions?.query){const permission=await navigator.permissions.query({name:"geolocation"});permissionState=permission.state;}}catch{}
+    if(permissionState==="denied"){btn.disabled=false;if(label)label.textContent="GPS अनुमति जाँच्नुहोस्";finishLocationAttempt(attemptId,{status:"denied",note:"Browser/Android setting मा location permission बन्द छ"});setServiceState("gpsServiceStatus","GPS अनुमति बन्द · Site settings मा Allow गर्नुहोस्","error");toast("Android App permissions र Browser Site settings मा Location अनुमति Allow गर्नुहोस्।");return;}
+    const fail=(err)=>{const code=err?.code,denied=code===1,timeout=code===3;btn.disabled=false;if(label)label.textContent="GPS पुनः प्रयास गर्नुहोस्";const message=denied?"स्थान अनुमति अस्वीकृत":timeout?"GPS ले समयमै संकेत पाएन":"उपकरणको स्थान उपलब्ध भएन";finishLocationAttempt(attemptId,{status:denied?"denied":"failed",note:message,code:code||null});setServiceState("gpsServiceStatus",denied?"अनुमति अस्वीकृत · Browser र Android Location permission जाँच्नुहोस्":timeout?"समय सकियो · Location/GPS खोल्नुहोस् र खुला ठाउँमा पुनः प्रयास गर्नुहोस्":"GPS उपलब्ध छैन · Location setting जाँच्नुहोस्","error");toast(denied?"Site settings मा Location permission Allow गर्नुहोस्।":timeout?"GPS संकेत कमजोर छ। Location खोल्नुहोस् र खुला ठाउँमा पुनः प्रयास गर्नुहोस्।":"Android Location सेवा जाँचेर फेरि प्रयास गर्नुहोस्।");};
+    const success=(p)=>{const c=p?.coords,lat=c?.latitude,lon=c?.longitude;if(!Number.isFinite(lat)||!Number.isFinite(lon)||Math.abs(lat)>90||Math.abs(lon)>180){fail({code:2});return;}btn.disabled=false;if(label)label.textContent="GPS स्थान पुनः लिनुहोस्";setServiceState("gpsServiceStatus","GPS सफल · शुद्धता ±"+Math.round(c.accuracy||0)+" मिटर","success");applyLocation({mode:"gps",id:"",name:"GPS स्थान",lat,lon,altitude:Number.isFinite(c.altitude)?c.altitude:null,accuracy:Number.isFinite(c.accuracy)?c.accuracy:null},{historyId:attemptId});toast("GPS निर्देशाङ्क प्राप्त भयो र स्थानीय इतिहासमा सुरक्षित गरियो।");};
+    navigator.geolocation.getCurrentPosition(success,err=>{if(err?.code===1){fail(err);return;}setServiceState("gpsServiceStatus","उच्च शुद्धता GPS ढिलो भयो · वैकल्पिक location खोज्दै","loading");navigator.geolocation.getCurrentPosition(success,fail,{enableHighAccuracy:false,timeout:18000,maximumAge:120000});},{enableHighAccuracy:true,timeout:25000,maximumAge:0});
   });
   window.addEventListener("online",()=>{loadBsDate(true);loadWeather()});
 
