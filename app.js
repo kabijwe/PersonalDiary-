@@ -5,10 +5,44 @@
   const state = load();
   let selectedCalendar = new Date(today.getFullYear(), today.getMonth(), 1);
   let selectedLocation = null, memoryImage = null, letterImage = null;
-  let currentContext = {adDate:"",bsDate:"",weekday:"",tithi:"",paksha:"",nakshatra:"",yoga:"",karana:"",lunarMonth:"",weatherTemp:"",weatherCondition:"",place:"",sunrise:"",sunset:"",season:"",capturedAt:0};
-  function getContextSnapshot(){return {adDate:$("#timeAdDate")?.textContent||currentContext.adDate||"",bsDate:$("#timeBsDate")?.textContent||currentContext.bsDate||"",weekday:$("#timeWeekday")?.textContent||currentContext.weekday||"",tithi:$("#pTithi")?.textContent||currentContext.tithi||"",paksha:$("#pPaksha")?.textContent||currentContext.paksha||"",nakshatra:[$("#pNakshatra")?.textContent,$("#pNakshatraPada")?.textContent].filter(x=>x&&x!=="—").join(" · ")||currentContext.nakshatra||"",yoga:$("#pYoga")?.textContent||currentContext.yoga||"",karana:$("#pKarana")?.textContent||currentContext.karana||"",lunarMonth:$("#pLunarMonth")?.textContent||currentContext.lunarMonth||"",weatherTemp:$("#weatherTemp")?.textContent||currentContext.weatherTemp||"",weatherCondition:$("#weatherCondition")?.textContent||currentContext.weatherCondition||"",place:$("#placeName")?.textContent||currentContext.place||"",sunrise:$("#sunriseTime")?.textContent||currentContext.sunrise||"",sunset:$("#sunsetTime")?.textContent||currentContext.sunset||"",season:$("#seasonName")?.textContent||currentContext.season||"",capturedAt:Date.now()};}
+  let currentContext = {};
+  state.locationHistory ||= [];
+  function getContextSnapshot(){
+    const now=Date.now(), read=id=>$("#"+id)?.textContent?.trim()||"";
+    const wx=lsGet("kabijwe.weather")||{};
+    return {
+      capturedAt:now,capturedAtISO:new Date(now).toISOString(),nepalTime:read("clock"),adDate:read("timeAdDate"),
+      bsDate:read("timeBsDate"),weekday:read("timeWeekday"),weekNumber:read("timeWeekNumber"),
+      tithi:read("pTithi"),tithiEnd:read("pTithiEnd"),paksha:read("pPaksha"),
+      nakshatra:read("pNakshatra"),nakshatraPada:read("pNakshatraPada"),nakshatraEnd:read("pNakshatraEnd"),
+      yoga:read("pYoga"),yogaEnd:read("pYogaEnd"),karana:read("pKarana"),karanaEnd:read("pKaranaEnd"),
+      moonRashi:read("pMoonRashi"),sunRashi:read("pSunRashi"),lunarMonth:read("pLunarMonth"),ayana:read("pAyana"),
+      ghadiPala:read("pGhadiPala"),sunrise:read("sunriseTime"),sunset:read("sunsetTime"),
+      season:read("seasonName"),seasonDescription:read("seasonDesc"),
+      place:loc.name||read("placeName"),locationMode:modeLabel(),latitude:Number.isFinite(loc.lat)?loc.lat:null,
+      longitude:Number.isFinite(loc.lon)?loc.lon:null,altitudeM:Number.isFinite(loc.altitude)?loc.altitude:null,
+      accuracyM:Number.isFinite(loc.accuracy)?loc.accuracy:null,
+      weatherTemp:read("weatherTemp"),apparentTemperature:Number.isFinite(wx.apparent)?wx.apparent:null,
+      weatherCondition:read("weatherCondition"),humidity:Number.isFinite(wx.hum)?wx.hum:null,
+      windKmh:Number.isFinite(wx.wind)?wx.wind:null,weatherUpdated:read("weatherUpdated"),
+      weatherFetchedAt:wx.fetched||null,weatherCode:Number.isFinite(wx.code)?wx.code:null
+    };
+  }
   function updateCurrentContextFromUI(){currentContext=getContextSnapshot();}
-  function formatContextLine(ctx){if(!ctx)return"";const parts=[];if(ctx.bsDate&&!/लोड|उपलब्ध छैन/.test(ctx.bsDate))parts.push(ctx.bsDate);if(ctx.tithi&&ctx.tithi!=="—"&&!/गणना/.test(ctx.tithi))parts.push(ctx.tithi);if(ctx.place&&!/अनुमति|लोड/.test(ctx.place))parts.push(ctx.place.split("·")[0].trim());if(ctx.weatherTemp&&ctx.weatherTemp!=="--°")parts.push(ctx.weatherTemp+(ctx.weatherCondition&&!/स्थान/.test(ctx.weatherCondition)?" · "+ctx.weatherCondition:""));return parts.filter(Boolean).join(" · ");}
+  function formatContextLine(ctx){if(!ctx)return"";const parts=[];if(ctx.bsDate&&!/लोड|उपलब्ध छैन/.test(ctx.bsDate))parts.push(ctx.bsDate);if(ctx.tithi&&ctx.tithi!=="—"&&!/गणना/.test(ctx.tithi))parts.push(ctx.tithi);if(ctx.place&&!/अनुमति|लोड/.test(ctx.place))parts.push(ctx.place);if(ctx.weatherTemp&&ctx.weatherTemp!=="--°")parts.push(ctx.weatherTemp+(ctx.weatherCondition&&!/स्थान/.test(ctx.weatherCondition)?" · "+ctx.weatherCondition:""));if(ctx.altitudeM!=null)parts.push("उचाइ "+Math.round(ctx.altitudeM)+" m");return parts.filter(Boolean).join(" · ");}
+  function contextDetailsHTML(ctx){
+    if(!ctx)return '<p class="muted">समय/स्थान विवरण उपलब्ध छैन।</p>';
+    const rows=[["नेपाल समय",ctx.nepalTime],["ग्रेगोरियन मिति",ctx.adDate],["विक्रम संवत्",ctx.bsDate],["बार / हप्ता",[ctx.weekday,ctx.weekNumber].filter(Boolean).join(" · ")],
+      ["तिथि / पक्ष",[ctx.tithi,ctx.paksha,ctx.tithiEnd].filter(Boolean).join(" · ")],["नक्षत्र / पाद",[ctx.nakshatra,ctx.nakshatraPada,ctx.nakshatraEnd].filter(Boolean).join(" · ")],
+      ["योग",ctx.yoga],["करण",ctx.karana],["चन्द्र राशि",ctx.moonRashi],["सूर्य राशि",ctx.sunRashi],["चन्द्रमास",ctx.lunarMonth],["अयन",ctx.ayana],
+      ["घडी / पला",ctx.ghadiPala],["सूर्योदय / सूर्यास्त",[ctx.sunrise,ctx.sunset].filter(Boolean).join(" / ")],["ऋतु",[ctx.season,ctx.seasonDescription].filter(Boolean).join(" · ")],
+      ["स्थान",ctx.place],["स्थानको स्रोत",ctx.locationMode],["अक्षांश / देशान्तर",ctx.latitude!=null&&ctx.longitude!=null?ctx.latitude.toFixed(6)+", "+ctx.longitude.toFixed(6):""],
+      ["समुद्री सतहबाट उचाइ",ctx.altitudeM!=null?Math.round(ctx.altitudeM)+" m":"उपलब्ध भएन"],["GPS शुद्धता",ctx.accuracyM!=null?Math.round(ctx.accuracyM)+" m":""],
+      ["तापक्रम",ctx.weatherTemp],["महसुस हुने तापक्रम",ctx.apparentTemperature!=null?ctx.apparentTemperature+" °C":""],["मौसम",ctx.weatherCondition],
+      ["आर्द्रता",ctx.humidity!=null?ctx.humidity+" %":""],["हावाको गति",ctx.windKmh!=null?ctx.windKmh+" km/h":""],["मौसम अद्यावधिक",ctx.weatherUpdated],
+      ["रेकर्ड गरिएको",ctx.capturedAt?new Date(ctx.capturedAt).toLocaleString("ne-NP",{timeZone:"Asia/Kathmandu"}):""]];
+    return '<div class="context-detail-grid">'+rows.filter(r=>r[1]!==""&&r[1]!=null).map(r=>'<div class="context-detail"><small>'+esc(r[0])+'</small><b>'+esc(r[1])+'</b></div>').join("")+'</div>';
+  }
 
   function load(){try{return JSON.parse(localStorage.getItem(KEY)) || {entries:[],events:[],memories:[],templates:[],settings:{}}}catch{return {entries:[],events:[],memories:[],templates:[],settings:{}}}}
   function persist(){localStorage.setItem(KEY,JSON.stringify(state));}
@@ -259,8 +293,9 @@
       if(seq!==wxSeq)return;
       const c=d&&d.current;
       if(!c||!Number.isFinite(c.temperature_2m))throw Error("weather fields missing");
-      const w={temp:c.temperature_2m,hum:c.relative_humidity_2m,wind:c.wind_speed_10m,code:c.weather_code,time:c.time,fetched:Date.now(),lat,lon};
+      const w={temp:c.temperature_2m,hum:c.relative_humidity_2m,apparent:c.apparent_temperature,wind:c.wind_speed_10m,code:c.weather_code,time:c.time,fetched:Date.now(),lat,lon};
       lsSet(LS_WX,w);showWeather(w,false);
+      const history=state.locationHistory.find(x=>x.id===loc.historyId);if(history){history.weather={temp:w.temp,apparent:w.apparent,humidity:w.hum,windKmh:w.wind,condition:WX_TEXT[w.code]||"मौसम विवरण",updatedAt:w.fetched};persist();renderLocationHistory();}
     }catch(e){
       if(seq!==wxSeq)return;
       console.warn("Weather:",e);
@@ -274,7 +309,7 @@
     try{
       const g=await fetchJson(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lon}&zoom=10&accept-language=ne,en`,{timeout:8000,retries:0});
       const a=g.address||{},name=[a.suburb||a.village||a.town||a.city||a.municipality||a.county,a.state].filter(Boolean).join(", ");
-      if(seq===locSeq&&name){loc.name=name;renderLocation();refreshPanchang()}
+      if(seq===locSeq&&name){loc.name=name;const h=state.locationHistory.find(x=>x.id===loc.historyId);if(h){h.place=name;persist();renderLocationHistory()}renderLocation();refreshPanchang()}
     }catch{}
   }
 
@@ -285,9 +320,17 @@
     setText("locationMode",modeLabel());
     const badge=$("#locationMode");if(badge)badge.dataset.mode=loc.mode;
   }
+  function recordLocationUpdate(){
+    if(!Array.isArray(state.locationHistory))state.locationHistory=[];
+    const stamp=Date.now(),record={id:uid(),timestamp:stamp,timestampISO:new Date(stamp).toISOString(),source:loc.mode,
+      place:loc.name,latitude:loc.lat,longitude:loc.lon,altitudeM:Number.isFinite(loc.altitude)?loc.altitude:null,
+      accuracyM:Number.isFinite(loc.accuracy)?loc.accuracy:null,weather:null};
+    state.locationHistory.push(record);loc.historyId=record.id;persist();renderLocationHistory();
+  }
   function applyLocation(next,{persist=false}={}){
     loc=next;locSeq++;
     if(persist&&loc.mode==="manual")lsSet(LS_LOC,{id:loc.id});
+    if(loc.mode==="gps"||loc.mode==="manual")recordLocationUpdate();
     fillManualSelect();renderLocation();refreshPanchang();loadWeather();
     if(loc.mode==="gps")reverseName(loc.lat,loc.lon,locSeq);
   }
@@ -302,7 +345,7 @@
     btn.disabled=true;label.textContent="स्थान पर्खँदै…";
     navigator.geolocation.getCurrentPosition(p=>{
       btn.disabled=false;label.textContent="GPS स्थान पुनः लिनुहोस्";
-      applyLocation({mode:"gps",id:"",name:"GPS स्थान",lat:p.coords.latitude,lon:p.coords.longitude});
+      applyLocation({mode:"gps",id:"",name:"GPS स्थान",lat:p.coords.latitude,lon:p.coords.longitude,altitude:Number.isFinite(p.coords.altitude)?p.coords.altitude:null,accuracy:Number.isFinite(p.coords.accuracy)?p.coords.accuracy:null});
     },err=>{
       btn.disabled=false;label.textContent="मेरो GPS स्थान प्रयोग गर्नुहोस्";
       toast(err.code===1?"GPS अनुमति दिइएन। हालको स्थान नै प्रयोग भइरहेको छ — चाहे तलबाट हातले स्थान छान्नुहोस्।":"GPS स्थान प्राप्त भएन। तलबाट हातले स्थान छान्न सक्नुहुन्छ।");
@@ -329,10 +372,22 @@
   $("#newDiary").onclick=()=>openEditor();$("#newPoem").onclick=()=>{openEditor();$("#entryType").value="poem"};
   $("#entryForm").addEventListener("submit",e=>{e.preventDefault();const id=$("#entryId").value;const old=state.entries.find(x=>x.id===id);const ctx=getContextSnapshot();const item={id:id||uid(),title:$("#entryTitle").value.trim(),date:$("#entryDate").value||nptISO(),mood:$("#entryMood").value,content:$("#entryContent").value.trim(),type:$("#entryType").value,visibility:$("#entryVisibility").value,tags:$("#entryTags").value,created:old?.created||Date.now(),updated:Date.now(),context:old?.context||ctx};if(!item.content){toast("कृपया केही शब्द लेख्नुहोस्।");return}if(old){Object.assign(old,item);if(!old.context)old.context=ctx;}else state.entries.push(item);persist();$("#editorDialog").close();renderAll();toast("तपाईंको पाना सुरक्षित भयो · मिति/तिथि/मौसम रेकर्ड।")});
   $("#deleteEntry").onclick=()=>{const id=$("#entryId").value;if(id&&confirm("यो पाना मेटाउने?")){state.entries=state.entries.filter(e=>e.id!==id);persist();$("#editorDialog").close();renderAll();toast("पाना मेटाइयो।")}};
-  function renderDiary(){const q=$("#diarySearch").value.toLowerCase(),f=$("#diaryFilter").value;let arr=state.entries.filter(e=>(f==="all"||e.visibility===f)&&[e.title,e.content,e.tags,e.context?.tithi,e.context?.bsDate,e.context?.place].join(" ").toLowerCase().includes(q)).sort((a,b)=>b.updated-a.updated);$("#diaryList").innerHTML=arr.length?arr.map(e=>{const ctxLine=formatContextLine(e.context);return `<div class="entry-row"><div><div class="entry-meta">${dateText(e.date)} · ${esc(e.mood)} · ${e.visibility==="private"?"🔒 निजी":e.visibility==="public"?"प्रकाशनका लागि":"ड्राफ्ट"}</div>${ctxLine?`<div class="entry-context">${esc(ctxLine)}</div>`:""}<h3>${esc(e.title||"शीर्षकविहीन पाना")}</h3><p>${esc(e.content.slice(0,150))}</p></div><div class="row-actions"><button class="small-btn" data-edit="${e.id}">खोल्नुहोस्</button></div></div>`}).join(""):`<div class="empty-state">यहाँ अझै कुनै पाना छैन। नयाँ पाना सुरु गर्नुहोस्।</div>`;$$("[data-edit]").forEach(b=>b.onclick=()=>openEditor(state.entries.find(e=>e.id===b.dataset.edit)))}
+  function openPostView(entry){
+    if(!entry)return;const ctx=entry.context||{};
+    $("#postViewContent").innerHTML=`<article class="post-letterhead" id="postLetterhead"><header class="post-letter-top"><span>kabijwe · व्यक्तिगत डायरी</span><span>${esc(entry.visibility==="private"?"निजी":entry.visibility==="draft"?"ड्राफ्ट":"प्रकाशनका लागि")}</span></header>
+      <div class="post-letter-date">${esc(ctx.bsDate||dateText(entry.date))} <span>${esc(ctx.adDate||entry.date||"")}</span></div>
+      <div class="post-letter-context">${contextDetailsHTML(ctx)}</div><h1>${esc(entry.title||"शीर्षकविहीन पाना")}</h1>
+      <div class="post-letter-body">${esc(entry.content||"").replace(/\n/g,"<br>")}</div>
+      <footer class="post-letter-sign">${esc(state.settings.signature||"~बिक्रमादित्य")}</footer>
+      <div class="post-view-actions"><button class="btn secondary" id="postEditBtn">सम्पादन</button><button class="btn primary" id="postPrintBtn">Print / PDF</button></div></article>`;
+    $("#postViewDialog").showModal();
+    $("#postEditBtn").onclick=()=>{$("#postViewDialog").close();openEditor(entry)};
+    $("#postPrintBtn").onclick=()=>{document.body.classList.add("print-post");window.print();setTimeout(()=>document.body.classList.remove("print-post"),500)};
+  }
+  function renderDiary(){const q=$("#diarySearch").value.toLowerCase(),f=$("#diaryFilter").value;let arr=state.entries.filter(e=>(f==="all"||e.visibility===f)&&[e.title,e.content,e.tags,e.context?.tithi,e.context?.bsDate,e.context?.place].join(" ").toLowerCase().includes(q)).sort((a,b)=>b.updated-a.updated);$("#diaryList").innerHTML=arr.length?arr.map(e=>{const ctxLine=formatContextLine(e.context);return `<div class="entry-row"><div><div class="entry-meta">${dateText(e.date)} · ${esc(e.mood)} · ${e.visibility==="private"?"🔒 निजी":e.visibility==="public"?"प्रकाशनका लागि":"ड्राफ्ट"}</div>${ctxLine?`<div class="entry-context">${esc(ctxLine)}</div>`:""}<h3>${esc(e.title||"शीर्षकविहीन पाना")}</h3><p>${esc(e.content.slice(0,150))}</p></div><div class="row-actions"><button class="small-btn" data-view="${e.id}">Letterhead मा खोल्नुहोस्</button></div></div>`}).join(""):`<div class="empty-state">यहाँ अझै कुनै पाना छैन। नयाँ पाना सुरु गर्नुहोस्।</div>`;$("[data-view]").forEach(b=>b.onclick=()=>openPostView(state.entries.find(e=>e.id===b.dataset.view)))}
   $("#diarySearch").oninput=renderDiary;$("#diaryFilter").onchange=renderDiary;
   $("#saveQuick").onclick=()=>{const content=$("#quickEntry").value.trim();if(!content){toast("पहिले आफ्ना शब्दहरू लेख्नुहोस्।");return}const ctx=getContextSnapshot();state.entries.push({id:uid(),title:"आजको डायरी",date:nptISO(),mood:"शान्त",content,type:"diary",visibility:"private",tags:"",created:Date.now(),updated:Date.now(),context:ctx});persist();$("#quickEntry").value="";renderAll();toast("आजको डायरी सुरक्षित भयो · मिति/तिथि रेकर्ड।")};
-  function renderPoetry(){const arr=state.entries.filter(e=>e.type==="poem");$("#poetryList").innerHTML=arr.length?arr.map(e=>{const ctx=formatContextLine(e.context);return `<article class="poem-card"><div class="entry-meta">${dateText(e.date)} · ${e.visibility==="private"?"निजी":e.visibility==="public"?"प्रकाशनका लागि":"ड्राफ्ट"}</div>${ctx?`<div class="entry-context">${esc(ctx)}</div>`:""}<h3>${esc(e.title||"शीर्षकविहीन सिर्जना")}</h3><p class="poem-preview">${esc(e.content.slice(0,280))}</p><button class="small-btn" data-edit="${e.id}">सम्पादन</button></article>`}).join(""):`<div class="empty-state">तपाईंका कविता र लेखहरू यहाँ सङ्ग्रहित हुनेछन्।</div>`;$$("[data-edit]").forEach(b=>b.onclick=()=>openEditor(state.entries.find(e=>e.id===b.dataset.edit)))}
+  function renderPoetry(){const arr=state.entries.filter(e=>e.type==="poem");$("#poetryList").innerHTML=arr.length?arr.map(e=>{const ctx=formatContextLine(e.context);return `<article class="poem-card"><div class="entry-meta">${dateText(e.date)} · ${e.visibility==="private"?"निजी":e.visibility==="public"?"प्रकाशनका लागि":"ड्राफ्ट"}</div>${ctx?`<div class="entry-context">${esc(ctx)}</div>`:""}<h3>${esc(e.title||"शीर्षकविहीन सिर्जना")}</h3><p class="poem-preview">${esc(e.content.slice(0,280))}</p><button class="small-btn" data-view-poem="${e.id}">Letterhead मा खोल्नुहोस्</button></article>`}).join(""):`<div class="empty-state">तपाईंका कविता र लेखहरू यहाँ सङ्ग्रहित हुनेछन्।</div>`;$("[data-view-poem]").forEach(b=>b.onclick=()=>openPostView(state.entries.find(e=>e.id===b.dataset.viewPoem)))}
   function renderCalendar(){const y=selectedCalendar.getFullYear(),m=selectedCalendar.getMonth(),first=new Date(y,m,1).getDay(),days=new Date(y,m+1,0).getDate();$("#calendarMonth").textContent=selectedCalendar.toLocaleDateString("ne-NP",{month:"long",year:"numeric"});$("#calendarAd").textContent=selectedCalendar.toLocaleDateString("en-US",{month:"long",year:"numeric"});let html="";for(let i=0;i<first;i++)html+="<button disabled></button>";for(let d=1;d<=days;d++){const iso=`${y}-${String(m+1).padStart(2,"0")}-${String(d).padStart(2,"0")}`,isToday=iso===nptISO(),has=state.events.some(e=>e.date===iso);html+=`<button class="${isToday?"today":""} ${has?"has-event":""}" data-date="${iso}">${d}</button>`}$("#calendarDays").innerHTML=html;$$("[data-date]").forEach(b=>b.onclick=()=>{const date=b.dataset.date;const events=state.events.filter(e=>e.date===date);toast(events.length?events.map(e=>e.title).join(" · "):dateText(date))});$("#eventList").innerHTML=state.events.length?state.events.slice().sort((a,b)=>a.date.localeCompare(b.date)).map(e=>`<div class="entry-row"><div><div class="entry-meta">${dateText(e.date)}</div><h3>${esc(e.title)}</h3><p>${esc(e.note||"")}</p></div><button class="small-btn" data-remove-event="${e.id}">हटाउनुहोस्</button></div>`).join(""):`<div class="empty-state">आफ्ना विशेष दिनहरू यहाँ थप्नुहोस्।</div>`;$$("[data-remove-event]").forEach(b=>b.onclick=()=>{state.events=state.events.filter(e=>e.id!==b.dataset.removeEvent);persist();renderCalendar()})}
   $("#prevMonth").onclick=()=>{selectedCalendar.setMonth(selectedCalendar.getMonth()-1);renderCalendar()};$("#nextMonth").onclick=()=>{selectedCalendar.setMonth(selectedCalendar.getMonth()+1);renderCalendar()};
   $("#addEvent").onclick=()=>{$("#eventForm").reset();$("#eventDialog").showModal()};$("#eventForm").onsubmit=e=>{e.preventDefault();state.events.push({id:uid(),title:$("#eventTitle").value,date:$("#eventDate").value,note:$("#eventNote").value});persist();$("#eventDialog").close();renderCalendar();toast("विशेष दिन सुरक्षित भयो।")};
@@ -346,6 +401,11 @@
   $("#lpImage").onchange=e=>{const f=e.target.files[0];if(!f)return;if(f.size>3*1024*1024){toast("तस्वीर ३ MB भन्दा सानो हुनुपर्छ।");return}const r=new FileReader();r.onload=()=>{letterImage=r.result;$("#lpArt").innerHTML=`<img src="${letterImage}" alt="Letterpad artwork">`};r.readAsDataURL(f)};
   $("#printLetter").onclick=()=>{updateLetter();document.body.classList.add("print-letter");window.print();setTimeout(()=>document.body.classList.remove("print-letter"),500)};
   $("#saveTemplate").onclick=()=>{const ctx=getContextSnapshot();state.templates.push({id:uid(),name:$("#lpTitle").value||"मेरो ढाँचा",title:$("#lpTitle").value,body:$("#lpBody").value,signature:$("#lpSignature").value,color:$("#lpColor").value,paper:$("#lpPaper").value,size:$("#lpSize").value,image:letterImage,context:ctx,created:Date.now()});persist();renderTemplates();toast("ढाँचा सुरक्षित भयो · मिति/तिथि समावेश।")};
+  function renderLocationHistory(){
+    const list=$("#locationHistoryList");if(!list)return;
+    const rows=(state.locationHistory||[]).slice().reverse();
+    list.innerHTML=rows.length?rows.map(h=>`<article class="location-history-item"><div><b>${esc(h.place||"अज्ञात स्थान")}</b><small>${esc(new Date(h.timestamp).toLocaleString("ne-NP",{timeZone:"Asia/Kathmandu"}))} · ${esc(h.source==="gps"?"GPS":h.source==="manual"?"हातले छानिएको":"पूर्वनिर्धारित")}</small><small>${Number(h.latitude).toFixed(6)}, ${Number(h.longitude).toFixed(6)} ${h.altitudeM!=null?"· उचाइ "+Math.round(h.altitudeM)+" m":""}</small>${h.weather?`<small>${esc(h.weather.temp+"°C · "+h.weather.condition+" · आर्द्रता "+(h.weather.humidity??"—")+"% · हावा "+(h.weather.windKmh??"—")+" km/h")}</small>`:""}</div></article>`).join(""):`<p class="muted small">GPS वा स्थान परिवर्तन गरेपछि यहाँ समयसहित रेकर्ड देखिनेछ।</p>`;
+  }
   function renderTemplates(){$("#templateList").innerHTML=state.templates.length?state.templates.map(t=>`<button class="template-chip" data-template="${t.id}">${esc(t.name)}</button>`).join(""):`<span class="muted tiny">अहिलेसम्म कुनै ढाँचा सुरक्षित छैन।</span>`;$$("[data-template]").forEach(b=>b.onclick=()=>{const t=state.templates.find(x=>x.id===b.dataset.template);$("#lpTitle").value=t.title;$("#lpBody").value=t.body;$("#lpSignature").value=t.signature;$("#lpColor").value=t.color;$("#lpPaper").value=t.paper;$("#lpSize").value=t.size;letterImage=t.image;$("#lpArt").innerHTML=letterImage?`<img src="${letterImage}" alt="">`:"";updateLetter()})}
   $("#settingBrand").value=state.settings.brand||"kabijwe";$("#settingSignature").value=state.settings.signature||"~बिक्रमादित्य";$("#settingAccent").value=state.settings.accent||"#153b66";$("#settingTheme").value=state.settings.theme||"light";
   $("#saveSettings").onclick=()=>{state.settings.brand=$("#settingBrand").value;state.settings.signature=$("#settingSignature").value;persist();toast("पहिचानका सेटिङ्स सुरक्षित भए।")};
@@ -355,7 +415,7 @@
   $("#exportData").onclick=()=>{const blob=new Blob([JSON.stringify(state,null,2)],{type:"application/json"}),url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download="kabijwe-backup.json";a.click();URL.revokeObjectURL(url);toast("डाटा Export भयो।")};
   $("#importData").onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);if(!d||!Array.isArray(d.entries))throw Error();if(!confirm("हालको स्थानीय डाटा बदल्ने?"))return;Object.assign(state,d);persist();renderAll();toast("डाटा Import भयो।")}catch{toast("यो Backup फाइल मान्य छैन।")}};r.readAsText(f)};
   $("#clearData").onclick=()=>{if(confirm("सबै स्थानीय डायरी, सम्झना र ढाँचा स्थायी रूपमा मेटाउने?")){localStorage.removeItem(KEY);location.reload()}};
-  function renderAll(){previewEntries();renderDiary();renderPoetry();renderCalendar();renderMemories();renderTemplates()}
+  function renderAll(){previewEntries();renderDiary();renderPoetry();renderCalendar();renderMemories();renderTemplates();renderLocationHistory()}
   updateLetter();renderAll();
   if("serviceWorker" in navigator && location.protocol!=="file:")navigator.serviceWorker.register("./sw.js").catch(()=>{});
 })();
