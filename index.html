@@ -35,10 +35,6 @@
 
     <main id="main" tabindex="-1">
       <section class="page active" id="page-home">
-        <div class="welcome-row">
-          <div><p class="eyebrow" id="todayNepali">आजको दिन</p><h1>शब्दहरूमा बाँचेका<br class="mobile-only"> दिनहरू।</h1><p class="muted">आफ्नो समय, अनुभूति र सम्झनालाई सुरक्षित राख्नुहोस्।</p></div>
-          <div class="date-stamp"><span id="todayDay">आज</span><b id="todayAd"></b><small id="todayBs">नेपाली मिति</small></div>
-        </div>
         <div class="hero-grid">
           <article class="season-card time-card" id="timeCard" aria-labelledby="timeCardTitle">
             <div class="time-card-head">
@@ -66,25 +62,18 @@
 
             <!-- One continuous sunrise → sunset arc; marker follows real local time -->
             <div class="sun-visual">
-              <svg id="sunPath" viewBox="0 0 320 72" role="img" aria-label="सूर्योदयदेखि सूर्यास्तसम्मको समयरेखा">
-                <defs>
-                  <linearGradient id="sunArcGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                    <stop offset="0%" stop-color="#e8c07a"/>
-                    <stop offset="50%" stop-color="#f6dfb1"/>
-                    <stop offset="100%" stop-color="#e8c07a"/>
-                  </linearGradient>
-                </defs>
-                <path d="M12 58 C 70 58, 90 14, 160 14 C 230 14, 250 58, 308 58" class="sun-curve"/>
-                <path d="M12 58 H308" class="sun-horizon"/>
-                <circle cx="12" cy="58" r="3.2" class="sun-endpoint"/>
-                <circle cx="308" cy="58" r="3.2" class="sun-endpoint"/>
-                <circle id="sunMarker" cx="12" cy="58" r="4.5" class="sun-marker"/>
-              </svg>
-              <div class="sun-labels">
+              <div class="sun-labels sun-times-top">
                 <span><b id="sunriseTime">--:--</b><small>सूर्योदय</small></span>
-                <span class="sun-status" id="sunStatus">गणना हुँदैछ…</span>
                 <span><b id="sunsetTime">--:--</b><small>सूर्यास्त</small></span>
               </div>
+              <svg id="sunPath" viewBox="0 0 320 72" role="img" aria-label="सूर्योदयदेखि सूर्यास्तसम्मको समयरेखा">
+                <defs><linearGradient id="sunArcGrad" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#5a0b0b"/><stop offset="45%" stop-color="#c91818"/><stop offset="85%" stop-color="#ff2d20"/></linearGradient></defs>
+                <path d="M12 58 H308" class="sun-horizon"/>
+                <path d="M12 58 C68 58 90 14 160 14 C230 14 252 58 308 58" class="sun-curve"/>
+                <circle cx="12" cy="58" r="3.2" class="sun-endpoint"/><circle cx="308" cy="58" r="3.2" class="sun-endpoint"/>
+                <circle id="sunMarker" cx="12" cy="58" r="4.5" class="sun-marker"/>
+              </svg>
+              <div class="sun-status sun-status-bottom" id="sunStatus">गणना हुँदैछ…</div>
             </div>
 
             <div class="time-weather">
@@ -98,6 +87,11 @@
                 <span id="weatherCondition">मौसम लोड हुँदैछ…</span>
                 <span id="weatherExtra"></span>
                 <span id="weatherUpdated" class="weather-updated"></span>
+              </div>
+              <div class="location-coordinates" aria-live="polite">
+                <span id="locationCoordinates">निर्देशाङ्क: उपलब्ध छैन</span>
+                <strong id="locationAltitude">▲ उचाइ: उपलब्ध छैन</strong>
+                <span id="locationAccuracy"></span>
               </div>
             </div>
 
@@ -167,7 +161,7 @@
       </section>
 
       <section class="page" id="page-records">
-        <div class="page-heading"><div><p class="eyebrow">तपाईंको निजी सङ्ग्रह</p><h1>डायरी रेकर्ड</h1><p class="muted">स्थानका पदचिह्न र तपाईंका सबै डायरी तथा सिर्जना एउटै ठाउँमा।</p></div><button class="btn primary" id="newDiary">＋ नयाँ पोस्ट</button></div>
+        <div class="page-heading"><div><p class="eyebrow">तपाईंको निजी सङ्ग्रह</p><h1>डायरी रेकर्ड</h1><p class="muted">स्थानका पदचिह्न र तपाईंका सबै डायरी तथा सिर्जना एउटै ठाउँमा।</p></div></div>
         <div class="record-topic-nav"><button type="button" data-record-target="recordLocations">⌖ मेरा पहिलेहरू</button><button type="button" data-record-target="recordDiary">▤ डायरी</button></div>
         <section class="records-section" id="recordLocations">
           <div id="locationMap" class="location-map map-first" role="region" aria-label="GPS स्थान इतिहासको नक्सा"></div><div class="section-heading"><div><p class="eyebrow">GPS · स्थानका रेकर्ड</p><h2>मेरा पहिलेहरू</h2><p class="muted small">हरेक सुरक्षित स्थान नक्सामा एउटा Landmark का रूपमा देखिन्छ।</p></div><span class="privacy-pill">यस उपकरणमै सुरक्षित</span></div>
@@ -229,6 +223,7 @@
         <div class="settings-grid">
           <div class="settings-card"><h3>पहिचान</h3><label>वेबसाइटको नाम<input id="settingBrand" value="kabijwe"></label><label>हस्ताक्षर<input id="settingSignature" value="~बिक्रमादित्य"></label><button class="btn secondary" id="saveSettings">परिवर्तन सुरक्षित</button></div>
           <div class="settings-card"><h3>रूप रङ</h3><label>मुख्य रङ<input type="color" id="settingAccent" value="#153b66"></label><label>देखावट<select id="settingTheme"><option value="light">उज्यालो</option><option value="dark">गाढा</option><option value="system">उपकरणअनुसार</option></select></label><button class="btn secondary" id="applyTheme">रूप लागू गर्नुहोस्</button></div>
+          <div class="settings-card"><h3>अक्षरको आकार</h3><p class="muted small">सम्पूर्ण डायरीको अक्षर आफ्नो आँखालाई सहज हुने गरी मिलाउनुहोस्।</p><label>फन्ट साइज<select id="settingFontScale"><option value="small">सानो</option><option value="normal">सामान्य</option><option value="large">ठूलो</option><option value="xlarge">अझ ठूलो</option></select></label><button class="btn secondary" id="applyFontScale">अक्षरको आकार लागू गर्नुहोस्</button></div>
           <div class="settings-card"><h3>गोपनीयता</h3><p class="muted small">यो संस्करणमा सामग्री तपाईंको ब्राउजरको स्थानीय भण्डारणमा रहन्छ। यसमा अनलाइन खाता वा सर्भर-सिंक छैन।</p><div class="privacy-pill">🔒 निजी डायरी पूर्वनिर्धारित</div></div>
           <div class="settings-card"><h3>डाटा व्यवस्थापन</h3><p class="muted small">आफ्नो डायरीको प्रतिलिपि डाउनलोड वा पुनः आयात गर्नुहोस्।</p><div class="button-row"><button class="btn secondary" id="exportData">डाटा Export</button><label class="btn secondary import-btn">Import<input type="file" id="importData" accept="application/json"></label></div><button class="text-btn danger" id="clearData">सबै स्थानीय डाटा मेटाउनुहोस्</button></div>
         </div>
