@@ -332,3 +332,8 @@ body.dark .history-context-details summary{color:#f0c878}
 @keyframes pageTurnNext{to{transform:rotateY(-7deg) translateX(-12px);opacity:.45}}
 @keyframes pageTurnPrev{to{transform:rotateY(7deg) translateX(12px);opacity:.45}}
 @media(max-width:650px){.post-view-shell{padding:10px}.book-page{min-height:65vh;padding:22px 17px 36px 34px}.book-content{font-size:14px;line-height:1.95}.book-more-context .context-detail-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.book-navigation .btn{font-size:10px;padding:8px}.book-actions .btn{font-size:11px;padding:8px}.location-map.map-first{height:220px}}
+
+.record-topic-nav{display:flex;gap:9px;position:sticky;top:0;z-index:8;padding:8px 0;background:var(--canvas)}
+.record-topic-nav button{border:1px solid var(--line);border-radius:22px;padding:9px 14px;background:var(--paper);color:var(--ink);font-size:12px}
+.records-section{scroll-margin-top:65px}
+.book-context-line{white-space:nowrap;overflow-x:auto;scrollbar-width:thin;font-size:8px;line-height:1.5;padding:7px 0;max-width:100%}
