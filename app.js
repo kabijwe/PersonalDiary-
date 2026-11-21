@@ -58,8 +58,8 @@
     if(name==="diary"||name==="poetry")name="records";
     const target=$("#page-"+name);
     if(!target){toast("यो मेनु उपलब्ध छैन।");return}
-    $(".page").forEach(p=>p.classList.toggle("active",p===target));
-    $("[data-page]").forEach(b=>b.classList.toggle("active",b.dataset.page===name));
+    $$(".page").forEach(p=>p.classList.toggle("active",p===target));
+    $$("[data-page]").forEach(b=>b.classList.toggle("active",b.dataset.page===name));
     const sidebar=$("#sidebar");sidebar.classList.remove("open");sidebar.style.display="";
     if(name==="calendar")renderCalendar();
     if(name==="records"){renderDiary();renderLocationHistory();setTimeout(()=>historyMap?.invalidateSize(),180)}
@@ -67,7 +67,7 @@
     if(name==="letterpad")renderTemplates();
     $("#main").scrollTop=0;window.scrollTo({top:0,behavior:"instant"});
   }
-  $("[data-page],[data-goto]").forEach(nav=>{
+  $$("[data-page],[data-goto]").forEach(nav=>{
     nav.addEventListener("click",e=>{
       e.preventDefault();e.stopPropagation();
       showPage(nav.dataset.page||nav.dataset.goto);
