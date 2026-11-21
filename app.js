@@ -332,7 +332,7 @@
   function showWeather(w,stale){
     setText("weatherTemp",`${Math.round(w.temp)}°`);
     setText("weatherCondition",WX_TEXT[w.code]||"मौसम विवरण");
-    setText("weatherExtra",[Number.isFinite(w.hum)?`आर्द्रता ${nepaliNumber(Math.round(w.hum))}%`:"",Number.isFinite(w.wind)?`हावा ${nepaliNumber(Math.round(w.wind))} km/h`:""].filter(Boolean).join(" · "));
+    setText("weatherExtra",[Number.isFinite(w.apparent)?`महसुस हुने ${nepaliNumber(Math.round(w.apparent))}°`:"",Number.isFinite(w.hum)?`आर्द्रता ${nepaliNumber(Math.round(w.hum))}%`:"",Number.isFinite(w.wind)?`हावा ${nepaliNumber(Math.round(w.wind))} km/h`:"",Number.isFinite(w.cloud)?`बादल ${nepaliNumber(Math.round(w.cloud))}%`:"",Number.isFinite(w.precip)?`वर्षा ${nepaliNumber(w.precip)} mm`:""].filter(Boolean).join(" · "));
     const when=w.time?`${nepaliNumber(w.time.slice(11,16))}`:fmtClock(w.fetched);
     setText("weatherUpdated",stale?`⚠ पुरानो मौसम · ${when} को (इन्टरनेट/सेवा समस्या)`:`अद्यावधिक ${when}`);
   }
@@ -341,11 +341,11 @@
     if(!Number.isFinite(lat)||!Number.isFinite(lon)||Math.abs(lat)>90||Math.abs(lon)>180){setText("weatherCondition","स्थानको निर्देशाङ्क मान्य छैन");return}
     setText("weatherCondition","मौसम लोड हुँदैछ…");
     setServiceState("weatherServiceStatus","मौसम लोड हुँदैछ…","loading");try{
-      const d=await fetchJson(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m&timezone=Asia%2FKathmandu`,{timeout:10000,retries:1});
+      const d=await fetchJson(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m,cloud_cover,precipitation&timezone=Asia%2FKathmandu`,{timeout:10000,retries:1});
       if(seq!==wxSeq)return;
       const c=d&&d.current;
       if(!c||!Number.isFinite(c.temperature_2m))throw Error("weather fields missing");
-      const w={temp:c.temperature_2m,hum:c.relative_humidity_2m,apparent:c.apparent_temperature,wind:c.wind_speed_10m,code:c.weather_code,time:c.time,fetched:Date.now(),lat,lon};
+      const w={temp:c.temperature_2m,hum:c.relative_humidity_2m,apparent:c.apparent_temperature,wind:c.wind_speed_10m,cloud:c.cloud_cover,precip:c.precipitation,code:c.weather_code,time:c.time,fetched:Date.now(),lat,lon};
       lsSet(LS_WX,w);showWeather(w,false);setServiceState("weatherServiceStatus","मौसम सेवा सफल","success");
       const history=state.locationHistory.find(x=>x.id===loc.historyId);if(history){
         history.weather={temp:w.temp,apparent:w.apparent,humidity:w.hum,windKmh:w.wind,condition:WX_TEXT[w.code]||"मौसम विवरण",updatedAt:w.fetched};
@@ -369,8 +369,11 @@
   /* ---------- Applying a location ---------- */
   let locSeq=0;
   function renderLocation(){
-    setText("placeName",loc.mode==="gps"&&loc.name==="GPS स्थान"?`GPS स्थान (${loc.lat.toFixed(3)}, ${loc.lon.toFixed(3)})`:loc.name);
+    setText("placeName",loc.name||"स्थान उपलब्ध छैन");
     setText("locationMode",modeLabel());
+    setText("locationCoordinates",Number.isFinite(loc.lat)&&Number.isFinite(loc.lon)?`⌖ ${loc.lat.toFixed(6)}, ${loc.lon.toFixed(6)}`:"निर्देशाङ्क: उपलब्ध छैन");
+    const alt=$("#locationAltitude");if(alt){alt.textContent=Number.isFinite(loc.altitude)?`▲ उचाइ ${Math.round(loc.altitude)} मिटर`:"▲ उचाइ: GPS बाट उपलब्ध छैन";alt.classList.toggle("altitude-known",Number.isFinite(loc.altitude));}
+    setText("locationAccuracy",Number.isFinite(loc.accuracy)?`GPS शुद्धता ±${Math.round(loc.accuracy)} मिटर`:"");
     const badge=$("#locationMode");if(badge)badge.dataset.mode=loc.mode;
   }
   function recordLocationAttempt(){
@@ -535,9 +538,10 @@
     }).join(""):`<p class="muted small">GPS वा स्थान परिवर्तन गरेपछि यहाँ समयसहित रेकर्ड देखिनेछ।</p>`;
   }
   function renderTemplates(){$("#templateList").innerHTML=state.templates.length?state.templates.map(t=>`<button class="template-chip" data-template="${t.id}">${esc(t.name)}</button>`).join(""):`<span class="muted tiny">अहिलेसम्म कुनै ढाँचा सुरक्षित छैन।</span>`;$$("[data-template]").forEach(b=>b.onclick=()=>{const t=state.templates.find(x=>x.id===b.dataset.template);$("#lpTitle").value=t.title;$("#lpBody").value=t.body;$("#lpSignature").value=t.signature;$("#lpColor").value=t.color;$("#lpPaper").value=t.paper;$("#lpSize").value=t.size;letterImage=t.image;$("#lpArt").innerHTML=letterImage?`<img src="${letterImage}" alt="">`:"";updateLetter()})}
-  $("#settingBrand").value=state.settings.brand||"kabijwe";$("#settingSignature").value=state.settings.signature||"~बिक्रमादित्य";$("#settingAccent").value=state.settings.accent||"#153b66";$("#settingTheme").value=state.settings.theme||"light";
+  $("#settingBrand").value=state.settings.brand||"kabijwe";$("#settingSignature").value=state.settings.signature||"~बिक्रमादित्य";$("#settingAccent").value=state.settings.accent||"#153b66";$("#settingTheme").value=state.settings.theme||"light";$("#settingFontScale").value=state.settings.fontScale||"normal";document.documentElement.dataset.fontScale=state.settings.fontScale||"normal";
   $("#saveSettings").onclick=()=>{state.settings.brand=$("#settingBrand").value;state.settings.signature=$("#settingSignature").value;persist();toast("पहिचानका सेटिङ्स सुरक्षित भए।")};
   function applyTheme(){const t=$("#settingTheme").value;document.body.classList.toggle("dark",t==="dark"||(t==="system"&&matchMedia("(prefers-color-scheme: dark)").matches));document.documentElement.style.setProperty("--accent",$("#settingAccent").value);persist();state.settings.theme=t;state.settings.accent=$("#settingAccent").value;persist()}
+  $("#applyFontScale").onclick=()=>{const size=$("#settingFontScale").value;state.settings.fontScale=size;document.documentElement.dataset.fontScale=size;persist();toast("अक्षरको आकार सुरक्षित भयो।")};
   $("#applyTheme").onclick=applyTheme;$("#themeToggle").onclick=()=>{document.body.classList.toggle("dark");$("#settingTheme").value=document.body.classList.contains("dark")?"dark":"light";state.settings.theme=$("#settingTheme").value;persist()};
   if(state.settings.theme==="dark")document.body.classList.add("dark");
   $("#exportData").onclick=()=>{const blob=new Blob([JSON.stringify(state,null,2)],{type:"application/json"}),url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download="kabijwe-backup.json";a.click();URL.revokeObjectURL(url);toast("डाटा Export भयो।")};
