@@ -695,3 +695,28 @@ body .book-page.page-turn-prev{animation:pageTurnPrev .28s cubic-bezier(.35,.7,.
 #page-home .sun-times b{color:#fff!important}
 #page-home .sun-times small,#page-home .sun-status-bottom{color:#B8C9D8!important}
 @media(prefers-reduced-motion:reduce){#page-home #celestial-body{transition:none}}
+
+
+/* Fetched GPS + weather details only: blue-black information panel */
+#page-home .time-card .time-weather{
+  margin-top:12px;padding:13px 14px;background:#101B27!important;
+  border:1px solid #263748;border-radius:12px;color:#fff!important;
+}
+#page-home .time-card .time-weather .place-line,
+#page-home .time-card .time-weather #placeName{color:#fff!important}
+#page-home .time-card .time-weather .place-pin{color:#78B5E3!important}
+#page-home .time-card .time-weather #locationMode{
+  color:#D0D8E2!important;border-color:#60758A!important;background:#172638!important;
+}
+#page-home .time-card .time-weather .weather-line b{color:#fff!important}
+#page-home .time-card .time-weather #weatherCondition{color:#fff!important}
+#page-home .time-card .time-weather #weatherExtra,
+#page-home .time-card .time-weather #weatherUpdated{color:#AAB8C8!important}
+#page-home .time-card .time-weather .location-coordinates{
+  background:#142231!important;border:1px solid #31465B!important;
+  border-left:3px solid #60758A!important;
+}
+#page-home .time-card .time-weather #locationCoordinates,
+#page-home .time-card .time-weather #locationAltitude,
+#page-home .time-card .time-weather #locationAccuracy{color:#D0D8E2!important}
+#page-home .time-card .time-weather #locationAltitude{font-weight:650}
