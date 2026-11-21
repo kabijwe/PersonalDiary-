@@ -248,7 +248,7 @@
     else if(bs&&bs.source==="cache")bsNote=" वि.सं. मिति सुरक्षित प्रतिबाट देखाइएको छ।";
     else if(!bs&&bsFailed)bsNote=" वि.सं. मिति उपलब्ध भएन।";
     $("#panchangFoot").innerHTML=`पञ्चाङ्ग: Kabijwe को आफ्नै खगोलीय गणना (Meeus सूत्र, लाहिरी अयनांश), अफलाइन चल्छ · स्थान: ${esc(loc.name)} — ${esc(modeLabel())}। वि.सं. मिति: <a href="https://trisambat.com/developers?lang=ne" target="_blank" rel="noopener">Trisambat</a> (beta)।${bsNote} यो आधिकारिक पात्रो होइन।`;
-    retry.hidden=!(bsFailed);
+    // Retry control was removed; report BS availability in the status and date fields.
     updateCurrentContextFromUI();
   }
   function renderGhadiPala(){
