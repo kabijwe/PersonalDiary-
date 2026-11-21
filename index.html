@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="ne">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#153b66">
+  <meta name="description" content="Kabijwe — a personal diary, poetry journal and memory garden.">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+  <title>Kabijwe — मेरो डायरी</title>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#" data-page="home" aria-label="Kabijwe home"><span class="brand-mark">क</span><span><b>kabijwe</b><small>~ बिक्रमादित्य</small></span></a>
+    <div class="top-actions">
+      <button class="icon-btn" id="themeToggle" aria-label="Toggle theme">◐</button>
+      <button class="icon-btn" id="menuToggle" aria-label="Open menu">☰</button>
+    </div>
+  </header>
+
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <div class="side-label">तपाईंको संसार</div>
+      <button class="nav-item active" data-page="home"><span>⌂</span> गृहपृष्ठ</button>
+      <button class="nav-item" data-page="diary"><span>▤</span> मेरो डायरी</button>
+      <button class="nav-item" data-page="calendar"><span>▦</span> नेपाली पात्रो</button>
+      <button class="nav-item" data-page="poetry"><span>✎</span> कविता र लेख</button>
+      <button class="nav-item" data-page="letterpad"><span>▧</span> Letterpad Studio</button>
+      <button class="nav-item" data-page="memories"><span>◷</span> सम्झनाहरू</button>
+      <button class="nav-item" data-page="settings"><span>⚙</span> सेटिङ्स</button>
+      <div class="sidebar-note"><b>एउटा डायरी,</b><br>हजारौँ सम्झनाहरू।</div>
+    </aside>
+
+    <main id="main" tabindex="-1">
+      <section class="page active" id="page-home">
+        <div class="welcome-row">
+          <div><p class="eyebrow" id="todayNepali">आजको दिन</p><h1>शब्दहरूमा बाँचेका<br class="mobile-only"> दिनहरू।</h1><p class="muted">आफ्नो समय, अनुभूति र सम्झनालाई सुरक्षित राख्नुहोस्।</p></div>
+          <div class="date-stamp"><span id="todayDay">आज</span><b id="todayAd"></b><small id="todayBs">नेपाली मिति</small></div>
+        </div>
+        <div class="hero-grid">
+          <article class="paper-card writing-card">
+            <div class="card-top"><span class="eyebrow">आजको डायरी</span><span class="privacy-pill">🔒 निजी</span></div>
+            <h2>आज मनमा के चलिरहेको छ?</h2>
+            <textarea id="quickEntry" rows="4" placeholder="आजका विचार, अनुभूति र साना-साना खुसीहरू यहाँ लेख्नुहोस्..."></textarea>
+            <div class="card-bottom"><span class="muted tiny">तपाईंका शब्दहरू यही उपकरणमा सुरक्षित हुन्छन्।</span><button class="btn primary" id="saveQuick">डायरी सुरक्षित गर्नुहोस् ↗</button></div>
+          </article>
+          <article class="season-card time-card" id="timeCard" aria-labelledby="timeCardTitle">
+            <div class="time-card-head">
+              <span class="eyebrow light" id="timeCardTitle">समयको अनुभूति</span>
+              <span class="live-dot" aria-label="Live"></span>
+            </div>
+
+            <div class="time-date">
+              <div>
+                <div id="clock" class="nepali-clock" aria-live="off">--:--</div>
+                <div id="timeWeekday" class="time-weekday">आजको दिन</div>
+              </div>
+              <div class="time-date-side">
+                <b id="timeAdDate">--</b>
+                <span id="timeBsDate">नेपाली मिति लोड हुँदै…</span>
+                <span id="timeWeekNumber">हप्ता —</span>
+              </div>
+            </div>
+
+            <div class="season-line">
+              <span id="seasonName">ऋतु</span>
+              <span id="seasonDesc">नेपाली मिति पर्खँदै…</span>
+            </div>
+
+            <!-- One continuous sunrise → sunset arc; marker follows real local time -->
+            <div class="sun-visual">
+              <svg id="sunPath" viewBox="0 0 320 72" role="img" aria-label="सूर्योदयदेखि सूर्यास्तसम्मको समयरेखा">
+                <defs>
+                  <linearGradient id="sunArcGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stop-color="#e8c07a"/>
+                    <stop offset="50%" stop-color="#f6dfb1"/>
+                    <stop offset="100%" stop-color="#e8c07a"/>
+                  </linearGradient>
+                </defs>
+                <path d="M12 58 C 70 58, 90 14, 160 14 C 230 14, 250 58, 308 58" class="sun-curve"/>
+                <path d="M12 58 H308" class="sun-horizon"/>
+                <circle cx="12" cy="58" r="3.2" class="sun-endpoint"/>
+                <circle cx="308" cy="58" r="3.2" class="sun-endpoint"/>
+                <circle id="sunMarker" cx="12" cy="58" r="4.5" class="sun-marker"/>
+              </svg>
+              <div class="sun-labels">
+                <span><b id="sunriseTime">--:--</b><small>सूर्योदय</small></span>
+                <span class="sun-status" id="sunStatus">गणना हुँदैछ…</span>
+                <span><b id="sunsetTime">--:--</b><small>सूर्यास्त</small></span>
+              </div>
+            </div>
+
+            <div class="time-weather">
+              <div class="place-line">
+                <span class="place-pin" aria-hidden="true">⌖</span>
+                <span id="placeName">काठमाडौँ</span>
+                <span id="locationMode" class="mode-badge">पूर्वनिर्धारित</span>
+              </div>
+              <div class="weather-line">
+                <b id="weatherTemp">--°</b>
+                <span id="weatherCondition">मौसम लोड हुँदैछ…</span>
+                <span id="weatherExtra"></span>
+                <span id="weatherUpdated" class="weather-updated"></span>
+              </div>
+            </div>
+
+            <section class="panchang-panel" aria-label="आजको पञ्चाङ्ग">
+              <div class="panchang-heading">
+                <div>
+                  <span class="panchang-kicker">आजको आकाशीय गणना</span>
+                  <h3>पञ्चाङ्ग</h3>
+                </div>
+                <span id="panchangStatus" class="panchang-status" role="status">गणना हुँदैछ…</span>
+              </div>
+              <div class="panchang-grid">
+                <div class="panchang-item panchang-primary"><small>तिथि · पक्ष</small><b id="pTithi">—</b><span id="pPaksha"></span><span id="pTithiEnd"></span></div>
+                <div class="panchang-item panchang-primary"><small>नक्षत्र · पाद</small><b id="pNakshatra">—</b><span id="pNakshatraPada"></span><span id="pNakshatraEnd"></span></div>
+                <div class="panchang-item"><small>योग</small><b id="pYoga">—</b><span id="pYogaEnd"></span></div>
+                <div class="panchang-item"><small>करण</small><b id="pKarana">—</b><span id="pKaranaEnd"></span></div>
+                <div class="panchang-item"><small>चन्द्र राशि</small><b id="pMoonRashi">—</b></div>
+                <div class="panchang-item"><small>सूर्य राशि</small><b id="pSunRashi">—</b></div>
+                <div class="panchang-item"><small>चन्द्रमास</small><b id="pLunarMonth">—</b><span id="pLunarNote"></span></div>
+                <div class="panchang-item"><small>अयन</small><b id="pAyana">—</b></div>
+                <div class="panchang-item panchang-wide"><small>घडी · पला (सूर्योदयदेखि)</small><b id="pGhadiPala">—</b><span id="pGhadiNote"></span></div>
+              </div>
+              <p class="panchang-foot" id="panchangFoot">गणना हुँदैछ…</p>
+              <button class="retry-btn" id="panchangRetry" type="button" hidden>↻ फेरि प्रयास गर्नुहोस्</button>
+            </section>
+
+            <div class="loc-controls">
+              <button class="location-button" id="timeLocationBtn" type="button">
+                <span class="loc-icon" aria-hidden="true">◎</span>
+                <span class="loc-text">मेरो GPS स्थान प्रयोग गर्नुहोस्</span>
+              </button>
+              <label class="manual-place"><span>वा हातले स्थान छान्नुहोस्</span>
+                <select id="manualPlace" aria-label="हातले स्थान छान्नुहोस्"></select>
+              </label>
+            </div>
+            <p class="time-privacy">GPS बटन थिचेपछि मात्र स्थान माग्छ; पृष्ठभूमिमा ट्र्याक गर्दैन।</p>
+          </article>
+        </div>
+        <div class="section-heading"><div><p class="eyebrow">तपाईंका पानाहरू</p><h2>भर्खरका सम्झना</h2></div><button class="text-btn" data-goto="diary">सबै हेर्नुहोस् →</button></div>
+        <div id="recentEntries" class="entry-grid"><div class="empty-state">तपाईंको पहिलो डायरी यहाँ देखिनेछ।</div></div>
+        <div class="section-heading"><div><p class="eyebrow">सुरु गर्नुहोस्</p><h2>तपाईंको सिर्जनात्मक संसार</h2></div></div>
+        <div class="shortcut-grid">
+          <button class="shortcut" data-goto="calendar"><span>▦</span><b>नेपाली पात्रो</b><small>मिति र व्यक्तिगत दिनहरू</small></button>
+          <button class="shortcut" data-goto="poetry"><span>✎</span><b>कविता लेख्नुहोस्</b><small>सार्वजनिक वा निजी सिर्जना</small></button>
+          <button class="shortcut" data-goto="letterpad"><span>▧</span><b>Letterpad Studio</b><small>आफ्नै शैलीमा सजाउनुहोस्</small></button>
+          <button class="shortcut" data-goto="memories"><span>◷</span><b>सम्झनाहरू</b><small>तस्बिर र यात्राका पाना</small></button>
+        </div>
+      </section>
+
+      <section class="page" id="page-diary">
+        <div class="page-heading"><div><p class="eyebrow">निजी संसार</p><h1>मेरो डायरी</h1><p class="muted">मनका कुरा, दिनका कथा र जीवनका साना अध्याय।</p></div><button class="btn primary" id="newDiary">＋ नयाँ पाना</button></div>
+        <div class="toolbar"><input id="diarySearch" type="search" placeholder="डायरी खोज्नुहोस्..."><select id="diaryFilter"><option value="all">सबै पाना</option><option value="private">निजी</option><option value="public">सार्वजनिक</option><option value="draft">ड्राफ्ट</option></select></div>
+        <div id="diaryList" class="entry-list"></div>
+      </section>
+
+      <section class="page" id="page-calendar">
+        <div class="page-heading"><div><p class="eyebrow">समय र सम्झना</p><h1>नेपाली पात्रो</h1><p class="muted">अंग्रेजी मिति र आफ्ना व्यक्तिगत दिनहरू सँगसँगै।</p></div></div>
+        <div class="calendar-panel">
+          <div class="calendar-head"><button class="icon-btn" id="prevMonth">‹</button><div><h2 id="calendarMonth">महिना</h2><small id="calendarAd" class="muted"></small></div><button class="icon-btn" id="nextMonth">›</button></div>
+          <div class="calendar-weekdays"><span>आइत</span><span>सोम</span><span>मङ्गल</span><span>बुध</span><span>बिही</span><span>शुक्र</span><span>शनि</span></div>
+          <div class="calendar-days" id="calendarDays"></div>
+          <p class="tiny muted" id="calendarNote">यो पात्रोको महिनागत ग्रिड AD मितिमा आधारित छ। आजको BS मिति र पञ्चाङ्ग गृहपृष्ठको “समयको अनुभूति” कार्डमा देखिन्छ।</p>
+        </div>
+        <div class="season-strip"><div><span class="eyebrow">नेपालका छ ऋतु</span><h2>प्रकृतिको चक्र</h2></div><div class="season-chips" id="seasonChips"><span data-season="वसन्त">वसन्त <small>चैत–बैशाख</small></span><span data-season="ग्रीष्म">ग्रीष्म <small>जेठ–असार</small></span><span data-season="वर्षा">वर्षा <small>साउन–भदौ</small></span><span data-season="शरद">शरद <small>असोज–कात्तिक</small></span><span data-season="हेमन्त">हेमन्त <small>मंसिर–पुष</small></span><span data-season="शिशिर">शिशिर <small>माघ–फागुन</small></span></div></div>
+        <div class="section-heading"><div><p class="eyebrow">तपाईंको पात्रो</p><h2>व्यक्तिगत दिनहरू</h2></div><button class="btn secondary" id="addEvent">＋ दिन थप्नुहोस्</button></div>
+        <div id="eventList" class="entry-list"></div>
+      </section>
+
+      <section class="page" id="page-poetry">
+        <div class="page-heading"><div><p class="eyebrow">साहित्यिक संसार</p><h1>कविता र लेख</h1><p class="muted">तपाईंका शब्दहरू—निजी पानाबाट सार्वजनिक साहित्यसम्म।</p></div><button class="btn primary" id="newPoem">＋ नयाँ सिर्जना</button></div>
+        <div class="privacy-info">सार्वजनिक बनाउँदा तपाईंले छानेको सिर्जना मात्र प्रकाशित हुन्छ। निजी डायरी आफैँ सार्वजनिक हुँदैन।</div>
+        <div id="poetryList" class="poetry-grid"></div>
+      </section>
+
+      <section class="page" id="page-letterpad">
+        <div class="page-heading"><div><p class="eyebrow">सिर्जनात्मक कार्यशाला</p><h1>Letterpad Studio</h1><p class="muted">आफ्नो कविता आफ्नै कागज, रङ र हस्ताक्षरमा।</p></div></div>
+        <div class="studio-layout">
+          <div class="studio-controls">
+            <label>शीर्षक<input id="lpTitle" placeholder="कविताको शीर्षक"></label>
+            <label>कविता<textarea id="lpBody" rows="8" placeholder="यहाँ आफ्ना पङ्क्तिहरू लेख्नुहोस्..."></textarea></label>
+            <label>हस्ताक्षर<input id="lpSignature" value="~बिक्रमादित्य"></label>
+            <div class="two-fields"><label>अक्षरको रङ<input type="color" id="lpColor" value="#171717"></label><label>पृष्ठको रङ<input type="color" id="lpPaper" value="#ffffff"></label></div>
+            <label>पृष्ठ आकार<select id="lpSize"><option value="a4">A4</option><option value="a5">A5</option><option value="square">Square</option></select></label>
+            <label class="upload-label">पृष्ठमा तस्वीर थप्नुहोस्<input id="lpImage" type="file" accept="image/*"></label>
+            <div class="button-row"><button class="btn primary" id="printLetter">PDF / Print</button><button class="btn secondary" id="saveTemplate">ढाँचा सुरक्षित</button></div>
+            <p class="tiny muted">Print विकल्पबाट मोबाइल वा कम्प्युटरमा PDF रूपमा सुरक्षित गर्न सकिन्छ।</p>
+          </div>
+          <div class="preview-wrap"><div id="letterPreview" class="letter-preview a4"><div class="lp-art" id="lpArt"></div><div class="lp-content"><div class="lp-brand">kabijwe <span>~बिक्रमादित्य</span></div><h2 id="previewTitle">कविताको शीर्षक</h2><div id="previewBody" class="lp-poem">तपाईंका शब्दहरू यहाँ देखिनेछन्...</div><div id="previewSign" class="lp-sign">~बिक्रमादित्य</div></div></div></div>
+        </div>
+        <div class="section-heading"><div><p class="eyebrow">तपाईंका डिजाइन</p><h2>सुरक्षित ढाँचाहरू</h2></div></div><div id="templateList" class="template-list"></div>
+      </section>
+
+      <section class="page" id="page-memories">
+        <div class="page-heading"><div><p class="eyebrow">समयको सङ्ग्रह</p><h1>सम्झनाहरू</h1><p class="muted">तस्वीर, ठाउँ र मनमा बसेका क्षणहरू।</p></div><button class="btn primary" id="addMemory">＋ सम्झना थप्नुहोस्</button></div>
+        <div class="privacy-info">स्थान र तस्वीरहरू निजी रूपमा सुरक्षित हुन्छन्। स्थान थप्न तपाईंले आफैँ अनुमति दिनुपर्छ।</div>
+        <div id="memoryList" class="memory-grid"></div>
+      </section>
+
+      <section class="page" id="page-settings">
+        <div class="page-heading"><div><p class="eyebrow">तपाईंको नियन्त्रण</p><h1>सेटिङ्स</h1><p class="muted">आफ्नो डायरीलाई आफ्नै शैलीमा मिलाउनुहोस्।</p></div></div>
+        <div class="settings-grid">
+          <div class="settings-card"><h3>पहिचान</h3><label>वेबसाइटको नाम<input id="settingBrand" value="kabijwe"></label><label>हस्ताक्षर<input id="settingSignature" value="~बिक्रमादित्य"></label><button class="btn secondary" id="saveSettings">परिवर्तन सुरक्षित</button></div>
+          <div class="settings-card"><h3>रूप रङ</h3><label>मुख्य रङ<input type="color" id="settingAccent" value="#153b66"></label><label>देखावट<select id="settingTheme"><option value="light">उज्यालो</option><option value="dark">गाढा</option><option value="system">उपकरणअनुसार</option></select></label><button class="btn secondary" id="applyTheme">रूप लागू गर्नुहोस्</button></div>
+          <div class="settings-card"><h3>गोपनीयता</h3><p class="muted small">यो संस्करणमा सामग्री तपाईंको ब्राउजरको स्थानीय भण्डारणमा रहन्छ। यसमा अनलाइन खाता वा सर्भर-सिंक छैन।</p><div class="privacy-pill">🔒 निजी डायरी पूर्वनिर्धारित</div></div>
+          <div class="settings-card"><h3>डाटा व्यवस्थापन</h3><p class="muted small">आफ्नो डायरीको प्रतिलिपि डाउनलोड वा पुनः आयात गर्नुहोस्।</p><div class="button-row"><button class="btn secondary" id="exportData">डाटा Export</button><label class="btn secondary import-btn">Import<input type="file" id="importData" accept="application/json"></label></div><button class="text-btn danger" id="clearData">सबै स्थानीय डाटा मेटाउनुहोस्</button></div>
+        </div>
+        <div class="about-note"><b>Kabijwe — My Living Diary</b><p>एउटा डायरी, हजारौँ सम्झनाहरू।</p><small>Mobile-first progressive web app · प्रारम्भिक संस्करण</small></div>
+      </section>
+    </main>
+  </div>
+
+  <nav class="mobile-nav" aria-label="Mobile navigation">
+    <button class="active" data-page="home"><span>⌂</span><small>गृह</small></button>
+    <button data-page="diary"><span>▤</span><small>डायरी</small></button>
+    <button data-page="calendar"><span>▦</span><small>पात्रो</small></button>
+    <button data-page="poetry"><span>✎</span><small>कविता</small></button>
+    <button data-page="settings"><span>⚙</span><small>म</small></button>
+  </nav>
+
+  <dialog id="editorDialog" class="modal">
+    <form method="dialog" id="entryForm">
+      <div class="modal-head"><div><p class="eyebrow" id="editorEyebrow">नयाँ पाना</p><h2 id="editorHeading">डायरी लेख्नुहोस्</h2></div><button class="icon-btn" value="cancel" aria-label="Close">×</button></div>
+      <p id="editorContextNote" class="entry-context" style="margin:0 0 10px;font-size:11px;">सेभ गर्दा हालको मिति / तिथि / मौसम स्वतः रेकर्ड हुनेछ।</p>
+      <input type="hidden" id="entryId">
+      <label>शीर्षक<input id="entryTitle" placeholder="आजको दिन..." maxlength="120"></label>
+      <div class="two-fields"><label>मिति<input id="entryDate" type="date"></label><label>मूड<select id="entryMood"><option>शान्त</option><option>खुसी</option><option>उत्साहित</option><option>सोचमग्न</option><option>उदास</option><option>कृतज्ञ</option></select></label></div>
+      <label>आफ्ना शब्दहरू<textarea id="entryContent" rows="8" placeholder="आजको कथा यहाँ लेख्नुहोस्..." required></textarea></label>
+      <div class="two-fields"><label>प्रकार<select id="entryType"><option value="diary">डायरी</option><option value="poem">कविता / लेख</option></select></label><label>गोपनीयता<select id="entryVisibility"><option value="private">निजी</option><option value="draft">ड्राफ्ट</option><option value="public">सार्वजनिक जस्तो चिन्ह लगाउने</option></select></label></div>
+      <label>ट्याग<input id="entryTags" placeholder="यात्रा, सम्झना, जीवन..."></label>
+      <div class="modal-actions"><button type="button" class="btn secondary" id="deleteEntry">मेटाउनुहोस्</button><button type="submit" class="btn primary">सुरक्षित गर्नुहोस्</button></div>
+      <p class="tiny muted">“सार्वजनिक” भनेको यस स्थानीय संस्करणमा सार्वजनिक रूपमा अनलाइन प्रकाशित भएको होइन; यो केवल प्रकाशनका लागि तयार भनेर चिन्ह हो।</p>
+    </form>
+  </dialog>
+
+  <dialog id="eventDialog" class="modal">
+    <form method="dialog" id="eventForm"><div class="modal-head"><div><p class="eyebrow">व्यक्तिगत पात्रो</p><h2>विशेष दिन थप्नुहोस्</h2></div><button class="icon-btn" value="cancel">×</button></div><label>कार्यक्रम<input id="eventTitle" required placeholder="जन्मदिन, यात्रा..."></label><label>मिति<input id="eventDate" type="date" required></label><label>नोट<textarea id="eventNote" rows="3"></textarea></label><div class="modal-actions"><span></span><button class="btn primary" type="submit">सुरक्षित गर्नुहोस्</button></div></form>
+  </dialog>
+
+  <dialog id="memoryDialog" class="modal">
+    <form method="dialog" id="memoryForm"><div class="modal-head"><div><p class="eyebrow">सम्झनाको पाना</p><h2>सम्झना थप्नुहोस्</h2></div><button class="icon-btn" value="cancel">×</button></div><label>शीर्षक<input id="memoryTitle" required placeholder="त्यो सुन्दर दिन..."></label><label>कथा<textarea id="memoryText" rows="4" placeholder="यो क्षण किन विशेष छ?"></textarea></label><label>तस्वीर<input id="memoryPhoto" type="file" accept="image/*"></label><div class="button-row"><button type="button" class="btn secondary" id="captureLocation">मेरो स्थान थप्नुहोस्</button><span id="locationStatus" class="tiny muted"></span></div><div class="modal-actions"><span></span><button class="btn primary" type="submit">सम्झना सुरक्षित</button></div></form>
+  </dialog>
+  <div id="toast" class="toast" role="status"></div>
+  <script src="panchang.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
