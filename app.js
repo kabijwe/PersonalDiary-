@@ -315,21 +315,38 @@
     setText("pGhadiNote",`${g.which==="yesterday"?"हिजोको":"आजको"} सूर्योदय ${fmtClock(g.sunriseMs)} देखि · १ घडी = २४ मिनेट, १ पला = २४ सेकेन्ड`);
   }
 
-  /* ---------- Sunrise → sunset arc (one smooth curve) ---------- */
+  /* ---------- Live day/night solar cycle ---------- */
   function drawSun(){
-    const marker=$("#sunMarker");if(!marker)return;
-    if(!solar||solar.polar){setText("sunriseTime","--:--");setText("sunsetTime","--:--");setText("sunriseDetail","उपलब्ध छैन");setText("sunsetDetail","उपलब्ध छैन");setText("sunStatus",solar&&solar.polar?(solar.polar==="day"?"सूर्य अस्त हुँदैन":"सूर्य उदाउँदैन"):"गणना हुँदैछ…");marker.style.display="none";return}
+    if(!solar||solar.polar){
+      setText("sunriseTime","--:--");setText("sunsetTime","--:--");setText("sunriseDetail","उपलब्ध छैन");setText("sunsetDetail","उपलब्ध छैन");
+      setText("sunStatus",solar&&solar.polar?(solar.polar==="day"?"सूर्य अस्त हुँदैन":"सूर्य उदाउँदैन"):"गणना हुँदैछ…");
+      $("#sun-single-curve")?.setAttribute("d","");$("#celestial-body")?.setAttribute("display","none");return;
+    }
     const sunrise=fmtClock(solar.sunriseMs),sunset=fmtClock(solar.sunsetMs);
     setText("sunriseTime",sunrise);setText("sunsetTime",sunset);setText("sunriseDetail",sunrise);setText("sunsetDetail",sunset);
-    marker.style.display="";
-    const now=Date.now(),a=solar.sunriseMs,b=solar.sunsetMs,t=Math.max(0,Math.min(1,(now-a)/(b-a)));
-    // Bezier points match the full-width SVG curve exactly.
-    const P=[[18,76],[132,76],[190,16],[320,16],[450,16],[508,76],[622,76]],bez=(q,u)=>{const v=1-u;return [0,1].map(i=>v*v*v*q[0][i]+3*v*v*u*q[1][i]+3*v*u*u*q[2][i]+u*u*u*q[3][i])};
-    const [x,y]=t<=.5?bez(P.slice(0,4),t*2):bez(P.slice(3,7),(t-.5)*2);
-    marker.setAttribute("cx",x.toFixed(1));marker.setAttribute("cy",y.toFixed(1));
-    setText("sunStatus",now<a?"सूर्योदयअघि":now>b?"सूर्यास्तपछि":"अहिलेको समय");
+    $("#celestial-body")?.removeAttribute("display");
+    updateSolarPosition();
   }
-
+  function updateSolarPosition(){
+    if(!solar||solar.polar)return;
+    const now=Date.now(),current=new Date(now),currentSec=current.getHours()*3600+current.getMinutes()*60+current.getSeconds()+current.getMilliseconds()/1000;
+    const sunriseDate=new Date(solar.sunriseMs),sunsetDate=new Date(solar.sunsetMs);
+    const sunriseSec=sunriseDate.getHours()*3600+sunriseDate.getMinutes()*60+sunriseDate.getSeconds();
+    const sunsetSec=sunsetDate.getHours()*3600+sunsetDate.getMinutes()*60+sunsetDate.getSeconds();
+    const duration=Math.max(1,sunsetSec-sunriseSec),daytime=currentSec>=sunriseSec&&currentSec<=sunsetSec;
+    let progress=.22+((currentSec-sunriseSec)/duration)*.56;
+    progress=Math.max(.02,Math.min(.98,progress));
+    const point=p=>({x:p*225,y:27-Math.sin((p-.22)*(Math.PI/.56))*19});
+    let d="";
+    for(let i=0;i<=100;i++){const p=(i/100)*progress,pt=point(p);d+=(i===0?"M ":" L ")+pt.x.toFixed(2)+","+pt.y.toFixed(2);}
+    const currentPt=point(progress);
+    $("#sun-single-curve")?.setAttribute("d",d);
+    $("#celestial-body")?.setAttribute("transform",`translate(${currentPt.x.toFixed(2)}, ${currentPt.y.toFixed(2)})`);
+    const dayIcon=$("#day-sun-icon"),nightIcon=$("#night-moon-icon");
+    if(dayIcon)dayIcon.style.display=daytime?"":"none";
+    if(nightIcon)nightIcon.style.display=daytime?"none":"";
+    setText("sunStatus",daytime?"अहिले दिनको समय":currentSec<sunriseSec?"सूर्योदयअघि":"सूर्यास्तपछि");
+  }
   /* ---------- Weather (Open-Meteo) ---------- */
   const WX_TEXT={0:"सफा आकाश",1:"मुख्यतः सफा",2:"आंशिक बादल",3:"बादल लागेको",45:"कुहिरो",48:"बाक्लो कुहिरो",51:"हल्का झरी",53:"झरी",55:"घना झरी",56:"चिसो झरी",57:"चिसो झरी",61:"हल्का वर्षा",63:"वर्षा",65:"भारी वर्षा",66:"चिसो वर्षा",67:"चिसो वर्षा",71:"हल्का हिमपात",73:"हिमपात",75:"भारी हिमपात",77:"हिउँका कण",80:"छिटफुट वर्षा",81:"वर्षा",82:"भारी वर्षा",85:"हिउँ वर्षा",86:"भारी हिउँ वर्षा",95:"मेघगर्जन",96:"असिनासहित मेघगर्जन",99:"असिनासहित मेघगर्जन"};
   let wxSeq=0;
@@ -671,6 +688,7 @@
   window.setInterval(checkDueReminders,15000);
   document.addEventListener("visibilitychange",()=>{if(!document.hidden)checkDueReminders();});
 
+  window.setInterval(updateSolarPosition,1000);
   updateLetter();renderAll();
   if("serviceWorker" in navigator && location.protocol!=="file:")navigator.serviceWorker.register("./sw.js").catch(()=>{});
 })();
