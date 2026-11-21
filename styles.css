@@ -339,3 +339,12 @@ body.dark .history-context-details summary{color:#f0c878}
 .book-context-line{white-space:nowrap;overflow-x:auto;scrollbar-width:thin;font-size:8px;line-height:1.5;padding:7px 0;max-width:100%}
 
 .quick-privacy{display:flex;align-items:center;gap:6px;font-size:10px;color:var(--muted)}.quick-privacy select{max-width:145px;padding:6px 8px;border:1px solid var(--line);border-radius:18px;background:var(--paper);color:var(--ink);font-size:11px}
+
+/* Clearer typography and November home-card refinements */
+html[data-font-scale="small"]{--font-scale:.94}html[data-font-scale="normal"]{--font-scale:1}html[data-font-scale="large"]{--font-scale:1.1}html[data-font-scale="xlarge"]{--font-scale:1.2}
+body{font-size:calc(15px * var(--font-scale,1))}
+.sun-visual{padding:0 0 3px!important}.sun-times-top{display:flex;justify-content:space-between;align-items:center;margin:4px 4px 0;color:#fff}.sun-times-top span{display:flex;flex-direction:column;gap:0}.sun-times-top b{font-size:clamp(17px,4.5vw,23px);font-weight:650;letter-spacing:.03em;color:#fff}.sun-times-top small{font-size:10px;color:#d9e2ec}.sun-visual svg{height:58px;overflow:visible}.sun-curve{fill:none;stroke:url(#sunArcGrad);stroke-width:3.2;stroke-linecap:round}.sun-horizon{stroke:#fff;stroke-width:2;stroke-dasharray:2.5 5;stroke-linecap:round;opacity:.9}.sun-endpoint{fill:#fff}.sun-marker{fill:#ff3024;stroke:#ff3024;filter:drop-shadow(0 0 4px #ff3024)}.sun-status-bottom{text-align:center;font-size:10px;color:#d9e2ec;margin-top:-2px}
+.location-coordinates{display:flex;flex-wrap:wrap;gap:5px 12px;align-items:center;margin-top:8px;padding:8px 10px;border:1px solid #ffffff24;border-radius:9px;background:#00000018;font-size:11px;color:#dce7f2}.location-coordinates strong{display:inline-flex;align-items:center;padding:4px 9px;border-radius:20px;background:#f0c878;color:#1c2b3b;font-size:12px;font-weight:800}.location-coordinates strong:not(.altitude-known){background:#ffffff1b;color:#dce7f2;font-weight:600}.location-coordinates span{overflow-wrap:anywhere}
+#weatherExtra{display:block;flex-basis:100%;line-height:1.7;margin-top:3px;color:#dce7f2}#weatherUpdated{display:block;flex-basis:100%;margin-top:2px}
+#page-records .page-heading #newDiary{display:none!important}
+@media(max-width:650px){.location-coordinates{font-size:10px;gap:5px 8px}.location-coordinates strong{font-size:11px}.sun-visual svg{height:50px}}
