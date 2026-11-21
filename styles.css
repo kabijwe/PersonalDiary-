@@ -485,50 +485,48 @@ input,textarea,select,.toolbar input,.toolbar select{background:#0d1219;color:#f
  .book-auto-details b{font-size:9px}
 }
 
-/* User-customizable light/dark palette */
-:root{--user-light-bg:#f5f5f3;--user-light-card:#ffffff;--user-dark-bg:#080b10;--user-dark-card:#171b20}
-body:not(.dark){--canvas:var(--user-light-bg);--paper:var(--user-light-card)}
-body.dark{--canvas:var(--user-dark-bg);--paper:var(--user-dark-card)}
-
-/* Restore classic compact Kabijwe typography and complete details. */
-:root{color-scheme:light;--ink:#000;--muted:#555;--paper:#fff;--canvas:#fff;--line:#ddd;--navy:#000;--red:#C40014;--accent:#C40014;--soft:#f5f5f5;--shadow:none;--user-light-bg:#fff;--user-light-card:#fff;--user-dark-bg:#000;--user-dark-card:#000}
-html{font-size:16px}
-body{font-family:"DM Sans","Noto Serif Devanagari",serif;font-size:15px;line-height:1.65}
-button,input,textarea,select{font:inherit}
-body:not(.dark){color-scheme:light;background:#fff;color:#000;--ink:#000;--muted:#555;--paper:#fff;--canvas:#fff;--line:#ddd;--navy:#000;--accent:#C40014;--soft:#f5f5f5}
-body.dark{color-scheme:dark;background:#000;color:#fff;--ink:#fff;--muted:#c8c8c8;--paper:#000;--canvas:#000;--line:#383838;--navy:#fff;--accent:#ff3024;--soft:#151515}
-body:not(.dark) :is(.topbar,.sidebar,.paper-card,.season-card,.calendar-panel,.settings-card,.entry-row,.entry-card,.poem-card,.memory-card,.shortcut,.modal,.studio-controls,.sun-card,.time-card,.panchang-item,.reminder-manager){background:#fff;color:#000;border-color:#ddd}
-body.dark :is(.topbar,.sidebar,.paper-card,.season-card,.calendar-panel,.settings-card,.entry-row,.entry-card,.poem-card,.memory-card,.shortcut,.modal,.studio-controls,.sun-card,.time-card,.panchang-item,.reminder-manager){background:#000;color:#fff;border-color:#383838}
-.nav-item{font-size:14px;line-height:1.45;padding:10px 11px;gap:11px}
-.nav-item span{font-size:17px}
-.side-label,.eyebrow{font-size:10px;line-height:1.5;letter-spacing:.08em}
-.brand b{font-size:17px}.brand small{font-size:10px}
-main{font-size:15px}
-body :is(p,li,label,input,textarea,select,button){line-height:1.6}
-body :is(.muted,.tiny,.entry-meta,.privacy-pill,.date-stamp small,.panchang-kicker,.panchang-foot,.reminder-note){font-size:12px;line-height:1.5}
-body:not(.dark) :is(input,textarea,select){background:#fff;color:#000;border-color:#999}
-body.dark :is(input,textarea,select){background:#000;color:#fff;border-color:#777}
-body :is(.primary,.brand-mark,.nav-item.active){background:#C40014;color:#fff;border-color:#C40014}
-body :is(.primary,.brand-mark,.nav-item.active) *{color:#fff}
+/* Monochrome palette only — preserve the original Kabijwe typography and sizing. */
+:root{--ink:#000000;--muted:#555555;--paper:#ffffff;--canvas:#ffffff;--line:#dddddd;--navy:#000000;--red:#C40014;--accent:#C40014;--soft:#f5f5f5;--shadow:none}
+body:not(.dark){background:#ffffff;color:#000000;--ink:#000000;--muted:#555555;--paper:#ffffff;--canvas:#ffffff;--line:#dddddd;--navy:#000000;--accent:#C40014;--soft:#f5f5f5}
+body.dark{background:#000000;color:#ffffff;--ink:#ffffff;--muted:#c8c8c8;--paper:#000000;--canvas:#000000;--line:#383838;--navy:#ffffff;--accent:#ff3024;--soft:#151515}
+body:not(.dark) :is(.topbar,.sidebar,.paper-card,.season-card,.calendar-panel,.settings-card,.entry-row,.entry-card,.poem-card,.memory-card,.shortcut,.modal,.studio-controls,.reminder-manager){background:#ffffff;color:#000000;border-color:#dddddd}
+body.dark :is(.topbar,.sidebar,.paper-card,.season-card,.calendar-panel,.settings-card,.entry-row,.entry-card,.poem-card,.memory-card,.shortcut,.modal,.studio-controls,.reminder-manager){background:#000000;color:#ffffff;border-color:#383838}
+body:not(.dark) :is(input,textarea,select){background:#ffffff;color:#000000;border-color:#999999}
+body.dark :is(input,textarea,select){background:#000000;color:#ffffff;border-color:#777777}
+body :is(.primary,.brand-mark,.nav-item.active){background:#C40014;color:#ffffff;border-color:#C40014}
+body :is(.primary,.brand-mark,.nav-item.active) *{color:#ffffff}
 body .secondary,body .small-btn{background:var(--paper);color:var(--ink);border:1px solid var(--ink)}
-body :is(.warning,.warning-sign,.notification,.toast,[data-state="warning"],.reminder-alert){background:#FFD60A;color:#000;border-color:#000}
-body :is(.warning,.warning-sign,.notification,.toast,[data-state="warning"],.reminder-alert) *{color:#000}
+body :is(.warning,.warning-sign,.notification,[data-state="warning"],.reminder-alert){background:#FFD60A;color:#000000;border-color:#000000}
+body :is(.warning,.warning-sign,.notification,[data-state="warning"],.reminder-alert) *{color:#000000}
 body :is(.error,.danger,.error-text,[data-state="error"]){color:#C40014}
+#page-home .time-card,#page-home .sun-card{background:#000000;color:#ffffff;border-color:#333333;box-shadow:none}
+#page-home .time-card * ,#page-home .sun-card *{color:#ffffff}
+#page-home .time-card :is(.muted,.time-weekday,.time-date-side span,.season-desc,.location-coordinates,.weather-updated,.panchang-foot,.time-privacy,.manual-place){color:#cccccc}
+#page-home .time-card .panchang-item{background:#000000;color:#ffffff;border:1px solid #444444}
+#page-home .time-card .panchang-item *{color:#ffffff}
+#page-home .time-card .panchang-kicker,#page-home .time-card .season-line,#page-home .time-card .weather-line b{color:#ffffff}
+#page-home .time-card .loc-controls .location-button{background:#C40014;color:#ffffff;border:1px solid #C40014}
+#page-home .time-card .manual-place select{background:#000000;color:#ffffff;border:1px solid #777777}
+#page-home .time-card .time-service-status span{background:#000000;color:#ffffff;border:1px solid #444444}
 body .sun-curve,body .sun-visual-wide .sun-curve{stroke:#FF2D20;fill:none;filter:none}
 body .sun-marker,body .sun-visual-wide .sun-marker{fill:#FF2D20;stroke:#FF2D20;filter:none}
-body .sun-horizon,body .sun-visual-wide .sun-horizon{stroke:var(--ink);opacity:.8}
+body .sun-horizon,body .sun-visual-wide .sun-horizon{stroke:var(--ink);opacity:.85}
 body .sun-endpoint,body .sun-visual-wide .sun-endpoint{fill:var(--ink)}
 body .voice-equalizer i,body .voice-progress span,body .book-page .book-rule{background:#FF2D20}
-body .book-page{background:#fff;color:#000;border-color:#ddd}
-body .book-page *{color:#000}
+body .voice-equalizer{background:#000000;border-color:#444444}
+body .voice-equalizer i{background:#FF2D20;box-shadow:none}
+body .voice-progress{background:#333333}
+body .voice-progress span{background:#FF2D20}
+body .book-page{background:#ffffff;color:#000000;border-color:#dddddd}
+body .book-page *{color:#000000}
 body .book-page .book-sign{color:#C40014}
 body .panchang-extra{display:flex}
 body .panchang-panel .panchang-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
 body .panchang-more{display:none}
-#timeLocationBtn{background:#C40014;color:#fff;border:1px solid #C40014;min-height:44px;padding:10px 15px;border-radius:10px;font-size:14px;font-weight:600;line-height:1.5}
-#timeLocationBtn *{color:#fff}
-#gpsServiceStatus[data-state="error"]{background:#FFD60A;color:#000;border:1px solid #000;padding:6px 9px;border-radius:7px}
-#gpsServiceStatus[data-state="success"]{background:#000;color:#fff;padding:6px 9px;border-radius:7px}
-body.dark #gpsServiceStatus[data-state="success"]{background:#fff;color:#000}
-.gps-help{font-size:12px;line-height:1.6;color:var(--ink);border-left:3px solid #FF2D20;padding:7px 10px;margin:9px 0}
-@media(max-width:650px){.nav-item{font-size:14px;padding:9px 10px}main{font-size:15px}.reminder-manager{padding:15px}body .panchang-panel .panchang-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+#timeLocationBtn{background:#C40014;color:#ffffff;border:1px solid #C40014}
+#timeLocationBtn *{color:#ffffff}
+#gpsServiceStatus[data-state="error"]{background:#FFD60A;color:#000000;border:1px solid #000000}
+#gpsServiceStatus[data-state="success"]{background:#000000;color:#ffffff;border:1px solid #ffffff}
+body.dark #gpsServiceStatus[data-state="success"]{background:#ffffff;color:#000000}
+.gps-help{color:var(--ink);border-left:3px solid #FF2D20}
+@media(max-width:650px){body .panchang-panel .panchang-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
