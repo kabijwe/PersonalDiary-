@@ -249,3 +249,30 @@ body.dark .history-context-details summary{color:#f0c878}
 .post-view-media img,.post-view-media video{max-width:100%;max-height:420px;border-radius:10px}
 .post-view-media audio{width:100%}
 @media(max-width:520px){.location-map{height:280px}.entry-media-pickers{grid-template-columns:1fr}.home-thought-card{margin-top:14px}}
+
+
+/* Panchang: show the three essential elements first; expand the rest on demand. */
+.panchang-extra{display:none}
+.panchang-panel.expanded .panchang-extra{display:flex}
+.panchang-more{display:block;width:100%;margin-top:8px;padding:9px 12px;border:1px solid #f0c87855;border-radius:9px;background:#ffffff0b;color:#f4d89a;font:600 13px inherit;text-align:center;cursor:pointer}
+.panchang-more:focus-visible{outline:2px solid #f0c878;outline-offset:2px}
+.panchang-panel:not(.expanded) .panchang-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+.panchang-panel:not(.expanded) .panchang-item{min-height:66px;padding:9px 8px;justify-content:center}
+.panchang-panel:not(.expanded) .panchang-item small{font-size:11px;line-height:1.4}
+.panchang-panel:not(.expanded) .panchang-item b{font-size:16px;line-height:1.5}
+.panchang-panel:not(.expanded) .panchang-item span{font-size:12px;line-height:1.5}
+.panchang-panel:not(.expanded) .panchang-foot{margin-top:7px}
+@media(max-width:650px){
+  .panchang-panel:not(.expanded) .panchang-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+  .panchang-panel:not(.expanded) .panchang-item{min-height:74px;padding:8px 7px}
+  .panchang-panel:not(.expanded) .panchang-item small{font-size:10.5px}
+  .panchang-panel:not(.expanded) .panchang-item b{font-size:15px;line-height:1.5}
+  .panchang-panel:not(.expanded) .panchang-item span{font-size:11px;line-height:1.45}
+  .panchang-more{font-size:13px;padding:10px}
+}
+/* Mobile menu uses a class, not persistent inline display styles. */
+@media(max-width:650px){
+  .sidebar.open{display:flex;position:fixed;z-index:45;top:60px;right:8px;left:auto;width:min(270px,calc(100vw - 16px));max-height:calc(100vh - 130px);overflow:auto;box-shadow:0 12px 35px #0003;border:1px solid var(--line);border-radius:12px;background:var(--paper)}
+  .mobile-nav{z-index:60;pointer-events:auto}
+  .mobile-nav button{min-height:44px;touch-action:manipulation}
+}
