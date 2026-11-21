@@ -7,12 +7,14 @@
   let selectedLocation = null, memoryImage = null, letterImage = null;
   let currentContext = {};
   state.locationHistory ||= [];
-  function getContextSnapshot(){
-    const now=Date.now(), read=id=>$("#"+id)?.textContent?.trim()||"";
+  function getContextSnapshot(at=Date.now()){
+    const now=at, p=nptP(now), read=id=>$("#"+id)?.textContent?.trim()||"";
     const wx=lsGet("kabijwe.weather")||{};
+    const exactClock=format24Clock(now);
+    const exactDate=`${pad2(p.d)} ${AD_MONTHS[p.m-1]} ${p.y}`;
     return {
-      capturedAt:now,capturedAtISO:new Date(now).toISOString(),nepalTime:read("clock"),adDate:read("timeAdDate"),
-      bsDate:read("timeBsDate"),weekday:read("timeWeekday"),weekNumber:read("timeWeekNumber"),
+      capturedAt:now,capturedAtISO:new Date(now).toISOString(),nepalTime:exactClock,adDate:exactDate,
+      bsDate:bsText()||read("timeBsDate"),weekday:WEEKDAYS[dayOfWeek(now)],weekNumber:`हप्ता ${nepaliNumber(isoWeekNumber(now))}`,
       tithi:read("pTithi"),tithiEnd:read("pTithiEnd"),paksha:read("pPaksha"),
       nakshatra:read("pNakshatra"),nakshatraPada:read("pNakshatraPada"),nakshatraEnd:read("pNakshatraEnd"),
       yoga:read("pYoga"),yogaEnd:read("pYogaEnd"),karana:read("pKarana"),karanaEnd:read("pKaranaEnd"),
@@ -40,7 +42,8 @@
       ["समुद्री सतहबाट उचाइ",ctx.altitudeM!=null?Math.round(ctx.altitudeM)+" m":"उपलब्ध भएन"],["GPS शुद्धता",ctx.accuracyM!=null?Math.round(ctx.accuracyM)+" m":""],
       ["तापक्रम",ctx.weatherTemp],["महसुस हुने तापक्रम",ctx.apparentTemperature!=null?ctx.apparentTemperature+" °C":""],["मौसम",ctx.weatherCondition],
       ["आर्द्रता",ctx.humidity!=null?ctx.humidity+" %":""],["हावाको गति",ctx.windKmh!=null?ctx.windKmh+" km/h":""],["मौसम अद्यावधिक",ctx.weatherUpdated],
-      ["रेकर्ड गरिएको",ctx.capturedAt?new Date(ctx.capturedAt).toLocaleString("ne-NP",{timeZone:"Asia/Kathmandu"}):""]];
+      ["रेकर्ड गरिएको (नेपाल समय)",ctx.nepalTime|| (ctx.capturedAt?new Date(ctx.capturedAt).toLocaleString("ne-NP",{timeZone:"Asia/Kathmandu",hour12:false,second:"2-digit"}):"")],
+      ["रेकर्डको ISO समय",ctx.capturedAtISO]];
     return '<div class="context-detail-grid">'+rows.filter(r=>r[1]!==""&&r[1]!=null).map(r=>'<div class="context-detail"><small>'+esc(r[0])+'</small><b>'+esc(r[1])+'</b></div>').join("")+'</div>';
   }
 
@@ -91,6 +94,7 @@
   function dayOfWeek(ms){const p=nptP(ms);return new Date(Date.UTC(p.y,p.m-1,p.d)).getUTCDay()}
   function periodWord(h){return h>=4&&h<12?"बिहान":h>=12&&h<16?"दिउँसो":h>=16&&h<19?"साँझ":"राति"}
   function clock12(ms){const p=nptP(ms),h12=p.hh%12||12;return {text:`${nepaliNumber(h12)}:${nepaliNumber(pad2(p.mm))}`,word:periodWord(p.hh)}}
+  function format24Clock(ms){const p=nptP(ms);return `${nepaliNumber(pad2(p.hh))}:${nepaliNumber(pad2(p.mm))}:${nepaliNumber(pad2(p.ss))}`;}
   function fmtClock(ms){if(ms==null)return "--:--";const c=clock12(ms);return `${c.text} ${c.word}`}
   const dayNo=ms=>{const p=nptP(ms);return Date.UTC(p.y,p.m-1,p.d)/864e5};
   // End times: add "भोलि/हिजो" when the date differs from today (Nepal time).
@@ -193,8 +197,11 @@
   /* ---------- Date / clock rendering ---------- */
   function renderDate(){
     const now=Date.now(),p=nptP(now),c=clock12(now),wd=WEEKDAYS[dayOfWeek(now)];
-    setText("clock",`${c.text} ${c.word}`);
+    setText("clock",format24Clock(now));
     setText("timeWeekday",wd);
+    const tithiName=$("#pTithi")?.textContent?.trim()||"";
+    const pakshaName=$("#pPaksha")?.textContent?.trim()||"";
+    setText("timeTithi",[tithiName,pakshaName].filter(x=>x&&x!=="—").join(" · ")||"तिथि गणना हुँदैछ…");
     setText("timeAdDate",`${pad2(p.d)} ${AD_MONTHS[p.m-1]} ${p.y}`);
     setText("timeWeekNumber",`हप्ता ${nepaliNumber(isoWeekNumber(now))}`);
     const t=bsText();
@@ -300,7 +307,11 @@
       if(!c||!Number.isFinite(c.temperature_2m))throw Error("weather fields missing");
       const w={temp:c.temperature_2m,hum:c.relative_humidity_2m,apparent:c.apparent_temperature,wind:c.wind_speed_10m,code:c.weather_code,time:c.time,fetched:Date.now(),lat,lon};
       lsSet(LS_WX,w);showWeather(w,false);setServiceState("weatherServiceStatus","मौसम सेवा सफल","success");
-      const history=state.locationHistory.find(x=>x.id===loc.historyId);if(history){history.weather={temp:w.temp,apparent:w.apparent,humidity:w.hum,windKmh:w.wind,condition:WX_TEXT[w.code]||"मौसम विवरण",updatedAt:w.fetched};persist();renderLocationHistory();}
+      const history=state.locationHistory.find(x=>x.id===loc.historyId);if(history){
+        history.weather={temp:w.temp,apparent:w.apparent,humidity:w.hum,windKmh:w.wind,condition:WX_TEXT[w.code]||"मौसम विवरण",updatedAt:w.fetched};
+        history.context={...(history.context||{}),weatherTemp:`${Math.round(w.temp)}°`,apparentTemperature:w.apparent,weatherCondition:WX_TEXT[w.code]||"मौसम विवरण",humidity:w.hum,windKmh:w.wind,weatherUpdated:`अद्यावधिक ${w.time?nepaliNumber(w.time.slice(11,16)):format24Clock(w.fetched)}`,weatherFetchedAt:w.fetched,weatherCode:w.code};
+        persist();renderLocationHistory();
+      }
     }catch(e){
       if(seq!==wxSeq)return;
       console.warn("Weather:",e);
@@ -325,18 +336,20 @@
   function recordLocationAttempt(){
     if(!Array.isArray(state.locationHistory))state.locationHistory=[];
     const stamp=Date.now(),record={id:uid(),timestamp:stamp,timestampISO:new Date(stamp).toISOString(),source:"gps",
-      status:"pending",place:"GPS स्थान अनुरोध",latitude:null,longitude:null,altitudeM:null,accuracyM:null,weather:null};
+      status:"pending",place:"GPS स्थान अनुरोध",latitude:null,longitude:null,altitudeM:null,accuracyM:null,weather:null,context:getContextSnapshot(stamp)};
     state.locationHistory.push(record);persist();renderLocationHistory();return record.id;
   }
   function finishLocationAttempt(id,patch){
     const record=state.locationHistory.find(x=>x.id===id);if(!record)return;
-    Object.assign(record,patch);persist();renderLocationHistory();
+    Object.assign(record,patch);
+    if(patch.status==="updated")record.context=getContextSnapshot(Date.now());
+    persist();renderLocationHistory();
   }
   function recordLocationUpdate(){
     if(!Array.isArray(state.locationHistory))state.locationHistory=[];
     const stamp=Date.now(),record={id:uid(),timestamp:stamp,timestampISO:new Date(stamp).toISOString(),source:loc.mode,
       status:"updated",place:loc.name,latitude:loc.lat,longitude:loc.lon,altitudeM:Number.isFinite(loc.altitude)?loc.altitude:null,
-      accuracyM:Number.isFinite(loc.accuracy)?loc.accuracy:null,weather:null};
+      accuracyM:Number.isFinite(loc.accuracy)?loc.accuracy:null,weather:null,context:getContextSnapshot(stamp)};
     state.locationHistory.push(record);loc.historyId=record.id;persist();renderLocationHistory();
   }
   function applyLocation(next,{persist=false,historyId=null}={}){
@@ -409,7 +422,12 @@
   function renderLocationHistory(){
     const list=$("#locationHistoryList");if(!list)return;
     const rows=(state.locationHistory||[]).slice().reverse();
-    list.innerHTML=rows.length?rows.map(h=>`<article class="location-history-item"><div><b>${esc(h.place||"अज्ञात स्थान")}</b><small>${esc(new Date(h.timestamp).toLocaleString("ne-NP",{timeZone:"Asia/Kathmandu"}))} · ${esc(h.source==="gps"?"GPS":h.source==="manual"?"हातले छानिएको":"पूर्वनिर्धारित")}</small><small>${Number.isFinite(h.latitude)&&Number.isFinite(h.longitude)?Number(h.latitude).toFixed(6)+", "+Number(h.longitude).toFixed(6):"निर्देशाङ्क उपलब्ध भएन"} ${h.altitudeM!=null?"· उचाइ "+Math.round(h.altitudeM)+" m":""} ${h.status&&h.status!=="updated"?"· "+({pending:"अनुरोध जारी",denied:"अनुमति अस्वीकृत",failed:"असफल",unsupported:"GPS अनुपलब्ध"}[h.status]||h.status):""}</small>${h.weather?`<small>${esc(h.weather.temp+"°C · "+h.weather.condition+" · आर्द्रता "+(h.weather.humidity??"—")+"% · हावा "+(h.weather.windKmh??"—")+" km/h")}</small>`:""}</div></article>`).join(""):`<p class="muted small">GPS वा स्थान परिवर्तन गरेपछि यहाँ समयसहित रेकर्ड देखिनेछ।</p>`;
+    list.innerHTML=rows.length?rows.map(h=>{
+      const stamp=h.context?.nepalTime||new Date(h.timestamp).toLocaleString("ne-NP",{timeZone:"Asia/Kathmandu",hour12:false,second:"2-digit"});
+      const date=h.context?.bsDate||h.context?.adDate||"";
+      const details=h.context?contextDetailsHTML(h.context):'<p class="muted">यस पुरानो रेकर्डमा विस्तृत समय-स्न्यापसट उपलब्ध छैन।</p>';
+      return `<article class="location-history-item"><div><b>${esc(h.place||"अज्ञात स्थान")}</b><small>${esc(stamp)} · ${esc(date)} · ${esc(h.source==="gps"?"GPS":h.source==="manual"?"हातले छानिएको":"पूर्वनिर्धारित")}</small><small>${Number.isFinite(h.latitude)&&Number.isFinite(h.longitude)?Number(h.latitude).toFixed(6)+", "+Number(h.longitude).toFixed(6):"निर्देशाङ्क उपलब्ध भएन"} ${h.altitudeM!=null?"· उचाइ "+Math.round(h.altitudeM)+" m":""} ${h.status&&h.status!=="updated"?"· "+({pending:"अनुरोध जारी",denied:"अनुमति अस्वीकृत",failed:"असफल",unsupported:"GPS अनुपलब्ध"}[h.status]||h.status):""}</small>${h.weather?`<small>${esc(h.weather.temp+"°C · "+h.weather.condition+" · आर्द्रता "+(h.weather.humidity??"—")+"% · हावा "+(h.weather.windKmh??"—")+" km/h")}</small>`:""}<details class="history-context-details"><summary>त्यो क्षणको सम्पूर्ण समयको अनुभूति हेर्नुहोस्</summary>${details}</details></div></article>`;
+    }).join(""):`<p class="muted small">GPS वा स्थान परिवर्तन गरेपछि यहाँ समयसहित रेकर्ड देखिनेछ।</p>`;
   }
   function renderTemplates(){$("#templateList").innerHTML=state.templates.length?state.templates.map(t=>`<button class="template-chip" data-template="${t.id}">${esc(t.name)}</button>`).join(""):`<span class="muted tiny">अहिलेसम्म कुनै ढाँचा सुरक्षित छैन।</span>`;$$("[data-template]").forEach(b=>b.onclick=()=>{const t=state.templates.find(x=>x.id===b.dataset.template);$("#lpTitle").value=t.title;$("#lpBody").value=t.body;$("#lpSignature").value=t.signature;$("#lpColor").value=t.color;$("#lpPaper").value=t.paper;$("#lpSize").value=t.size;letterImage=t.image;$("#lpArt").innerHTML=letterImage?`<img src="${letterImage}" alt="">`:"";updateLetter()})}
   $("#settingBrand").value=state.settings.brand||"kabijwe";$("#settingSignature").value=state.settings.signature||"~बिक्रमादित्य";$("#settingAccent").value=state.settings.accent||"#153b66";$("#settingTheme").value=state.settings.theme||"light";
