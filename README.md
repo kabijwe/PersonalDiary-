@@ -44,7 +44,7 @@ This is a functional **local-first prototype**, not a deployed production servic
 - Season display is a rough Gregorian-month approximation, not an authoritative Nepali season calendar.
 - The time card requests GPS only after the user taps its location button. Sunrise/sunset use an approximate NOAA solar calculation for the returned coordinates; weather comes from Open-Meteo and place names from OpenStreetMap Nominatim. These external services require an internet connection.
 - Weather and reverse-geocoding requests send the chosen coordinates to Open-Meteo and OpenStreetMap respectively. Do not enable location unless you are comfortable sharing it with those services.
-- Time-card GPS is requested only after the user taps its GPS button. Each successful GPS fix and each manual place change is appended to local timestamped location history. GPS altitude/accuracy are stored only if the device/browser supplies them. A historical map-plotting screen is a planned follow-up, not included yet.
+- Time-card GPS is requested only after the user taps its GPS button. Every GPS button request is timestamped, including denied, failed or unsupported attempts; successful GPS fixes and each manual place change also store coordinates in local location history. GPS altitude/accuracy are stored only if the device/browser supplies them. A historical map-plotting screen is a planned follow-up, not included yet.
 - Letterpad print-to-PDF uses the browser/device print dialog. Font rendering depends on installed/available fonts and internet access for Google Fonts.
 - Photos are embedded in browser storage as data URLs and limited to 2 MB for memory images / 3 MB for letterpad artwork. Browser storage can be cleared by the operating system or user.
 
