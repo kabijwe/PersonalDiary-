@@ -54,10 +54,31 @@
   function esc(s=""){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
   function dateText(d){return new Date(d+"T12:00:00").toLocaleDateString("ne-NP",{year:"numeric",month:"long",day:"numeric"})}
   function toast(msg){const el=$("#toast");el.textContent=msg;el.classList.add("show");setTimeout(()=>el.classList.remove("show"),2400)}
-  function showPage(name){if(name==="diary"||name==="poetry")name="records";$(".page").forEach(p=>p.classList.toggle("active",p.id==="page-"+name));$("[data-page]").forEach(b=>b.classList.toggle("active",b.dataset.page===name));$("#sidebar").classList.remove("open");$("#main").focus();if(name==="calendar")renderCalendar();if(name==="records"){renderDiary();renderLocationHistory();setTimeout(()=>historyMap?.invalidateSize(),150)}if(name==="memories")renderMemories();if(name==="letterpad")renderTemplates()}
-  $$("[data-page]").forEach(b=>b.addEventListener("click",()=>showPage(b.dataset.page)));
-  $$("[data-goto]").forEach(b=>b.addEventListener("click",()=>showPage(b.dataset.goto)));
-  $("#menuToggle").addEventListener("click",()=>{const s=$("#sidebar");s.style.display=s.style.display==="flex"?"none":"flex";s.style.position="absolute";s.style.zIndex=40;s.style.top="60px";s.style.right="8px";s.style.width="230px";s.style.boxShadow="0 12px 35px #0002";});
+  function showPage(name){
+    if(name==="diary"||name==="poetry")name="records";
+    const target=$("#page-"+name);
+    if(!target){toast("यो मेनु उपलब्ध छैन।");return}
+    $(".page").forEach(p=>p.classList.toggle("active",p===target));
+    $("[data-page]").forEach(b=>b.classList.toggle("active",b.dataset.page===name));
+    const sidebar=$("#sidebar");sidebar.classList.remove("open");sidebar.style.display="";
+    if(name==="calendar")renderCalendar();
+    if(name==="records"){renderDiary();renderLocationHistory();setTimeout(()=>historyMap?.invalidateSize(),180)}
+    if(name==="memories")renderMemories();
+    if(name==="letterpad")renderTemplates();
+    $("#main").scrollTop=0;window.scrollTo({top:0,behavior:"instant"});
+  }
+  document.addEventListener("click",e=>{
+    const nav=e.target.closest("[data-page],[data-goto]");
+    if(!nav)return;
+    e.preventDefault();
+    showPage(nav.dataset.page||nav.dataset.goto);
+  });
+  $("#menuToggle").addEventListener("click",()=>$("#sidebar").classList.toggle("open"));
+  $("#panchangMore").addEventListener("click",()=>{
+    const panel=$("#panchangPanel"),expanded=panel.classList.toggle("expanded");
+    $("#panchangMore").setAttribute("aria-expanded",String(expanded));
+    $("#panchangMore").textContent=expanded?"कम विवरण देखाउनुहोस् ↑":"थप विवरण देखाउनुहोस् ↓";
+  });
   /* =====================================================================
      समयको अनुभूति — time card
      Data flow:
