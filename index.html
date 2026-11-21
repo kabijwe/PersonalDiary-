@@ -208,6 +208,7 @@
           <div class="settings-card"><h3>गोपनीयता</h3><p class="muted small">यो संस्करणमा सामग्री तपाईंको ब्राउजरको स्थानीय भण्डारणमा रहन्छ। यसमा अनलाइन खाता वा सर्भर-सिंक छैन।</p><div class="privacy-pill">🔒 निजी डायरी पूर्वनिर्धारित</div></div>
           <div class="settings-card"><h3>डाटा व्यवस्थापन</h3><p class="muted small">आफ्नो डायरीको प्रतिलिपि डाउनलोड वा पुनः आयात गर्नुहोस्।</p><div class="button-row"><button class="btn secondary" id="exportData">डाटा Export</button><label class="btn secondary import-btn">Import<input type="file" id="importData" accept="application/json"></label></div><button class="text-btn danger" id="clearData">सबै स्थानीय डाटा मेटाउनुहोस्</button></div>
         </div>
+        <div class="settings-card location-history-panel"><h3>स्थान र यात्रा इतिहास</h3><p class="muted small">हरेक सफल GPS स्थान र हातले छानेको स्थान समय, निर्देशाङ्क, उचाइ र उपलब्ध मौसमसहित यही उपकरणमा सुरक्षित हुन्छ। पछि यी निर्देशाङ्क नक्सामा देखाउन सकिन्छ।</p><div id="locationHistoryList" class="location-history-list"></div></div>
         <div class="about-note"><b>Kabijwe — My Living Diary</b><p>एउटा डायरी, हजारौँ सम्झनाहरू।</p><small>Mobile-first progressive web app · प्रारम्भिक संस्करण</small></div>
       </section>
     </main>
@@ -220,6 +221,8 @@
     <button data-page="poetry"><span>✎</span><small>कविता</small></button>
     <button data-page="settings"><span>⚙</span><small>म</small></button>
   </nav>
+
+  <dialog id="postViewDialog" class="modal post-view-modal"><div class="post-view-shell"><div class="modal-head"><span class="eyebrow">डायरीको पाना</span><button class="icon-btn" onclick="this.closest('dialog').close()" aria-label="Close">×</button></div><div id="postViewContent"></div></div></dialog>
 
   <dialog id="editorDialog" class="modal">
     <form method="dialog" id="entryForm">
