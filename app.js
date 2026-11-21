@@ -478,8 +478,8 @@
       '<div class="book-date-row"><span>✧ '+esc(dateText(e.date))+'</span><span>◷ '+esc(e.context?.nepalTime||"")+'</span></div><div class="book-bs-date">'+esc(e.context?.bsDate||"")+'</div>'+
       ((e.context?.place||e.context?.weatherCondition||e.context?.weatherTemp||e.context?.season)?'<div class="book-auto-details">'+
         (e.context?.place?'<span><small>स्थान</small><b>⌖ '+esc(e.context.place)+'</b></span>':"")+
-        ((e.context?.weatherCondition||e.context?.weatherTemp)?'<span><small>मौसम</small><b>☼ '+esc([e.context.weatherTemp,e.context.weatherCondition].filter(Boolean).join(" · "))+'</b></span>':"")+
-        (e.context?.season?'<span><small>ऋतु</small><b>'+esc(e.context.season)+'</b></span>':"")+
+        ((e.context?.weatherCondition||e.context?.weatherTemp)?'<span><small>मौसम</small><b>☼ '+esc([e.context.weatherTemp,e.context.weatherCondition,e.context.humidity!=null?'आर्द्रता '+e.context.humidity+'%':'',e.context.windKmh!=null?'हावा '+e.context.windKmh+' km/h':''].filter(Boolean).join(" · "))+'</b></span>':"")+
+        (e.context?.season?'<span><small>ऋतु</small><b>'+esc([e.context.season,e.context.seasonDescription].filter(Boolean).join(" · "))+'</b></span>':"")+
       '</div>':"")+
       '<h1 class="book-title">'+title+'</h1><div class="book-content">'+body+'</div><div class="book-media">'+media+'</div>'+
       (p.showMeta!==false&&meta?'<div class="book-context-line">'+esc(meta)+'</div>':"")+
