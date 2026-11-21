@@ -276,3 +276,12 @@ body.dark .history-context-details summary{color:#f0c878}
   .mobile-nav{z-index:60;pointer-events:auto}
   .mobile-nav button{min-height:44px;touch-action:manipulation}
 }
+
+@media(max-width:650px){
+  .sidebar.open{display:flex!important;visibility:visible;opacity:1;pointer-events:auto}
+  .sidebar:not(.open){pointer-events:none}
+  .sidebar.open .nav-item{width:100%;min-height:46px;touch-action:manipulation}
+  .topbar{position:relative;z-index:70}
+  #menuToggle{position:relative;z-index:72;touch-action:manipulation}
+  .mobile-nav button{position:relative;z-index:61;pointer-events:auto}
+}
