@@ -67,13 +67,30 @@
     if(name==="letterpad")renderTemplates();
     $("#main").scrollTop=0;window.scrollTo({top:0,behavior:"instant"});
   }
-  document.addEventListener("click",e=>{
-    const nav=e.target.closest("[data-page],[data-goto]");
-    if(!nav)return;
-    e.preventDefault();
-    showPage(nav.dataset.page||nav.dataset.goto);
+  $("[data-page],[data-goto]").forEach(nav=>{
+    nav.addEventListener("click",e=>{
+      e.preventDefault();e.stopPropagation();
+      showPage(nav.dataset.page||nav.dataset.goto);
+    });
   });
-  $("#menuToggle").addEventListener("click",()=>$("#sidebar").classList.toggle("open"));
+  const sidebar=$("#sidebar"),menuToggle=$("#menuToggle");
+  menuToggle.setAttribute("aria-expanded","false");
+  menuToggle.addEventListener("click",e=>{
+    e.preventDefault();e.stopPropagation();
+    const opened=sidebar.classList.toggle("open");
+    menuToggle.setAttribute("aria-expanded",String(opened));
+  });
+  document.addEventListener("pointerdown",e=>{
+    if(!sidebar.classList.contains("open"))return;
+    if(sidebar.contains(e.target)||menuToggle.contains(e.target))return;
+    sidebar.classList.remove("open");
+    menuToggle.setAttribute("aria-expanded","false");
+  },true);
+  document.addEventListener("keydown",e=>{
+    if(e.key==="Escape"&&sidebar.classList.contains("open")){
+      sidebar.classList.remove("open");menuToggle.setAttribute("aria-expanded","false");
+    }
+  });
   $("#panchangMore").addEventListener("click",()=>{
     const panel=$("#panchangPanel"),expanded=panel.classList.toggle("expanded");
     $("#panchangMore").setAttribute("aria-expanded",String(expanded));
@@ -433,7 +450,8 @@
   $("#entryForm").addEventListener("submit",async e=>{e.preventDefault();const id=$("#entryId").value;const old=state.entries.find(x=>x.id===id);const ctx=getContextSnapshot();const title=$("#entryTitle").value.trim();const content=$("#entryContent").value.trim();if(!title&&!content&&!pendingEntryMedia.length){toast("शीर्षक, शब्द वा मिडिया मध्ये केही थप्नुहोस्।");return}const item={id:id||uid(),title:title||"मिडिया पोस्ट",date:$("#entryDate").value||nptISO(),mood:$("#entryMood").value,content,type:$("#entryType").value,visibility:$("#entryVisibility").value,tags:$("#entryTags").value,media:pendingEntryMedia,created:old?.created||Date.now(),updated:Date.now(),context:old?.context||ctx};try{if(old)Object.assign(old,item);else state.entries.push(item);persist()}catch(err){toast("स्थानीय भण्डारण भरिएको छ। सानो मिडिया फाइल छानेर पुनः प्रयास गर्नुहोस्।");return}$("#editorDialog").close();renderAll();toast("पोस्ट सुरक्षित भयो · My Records → डायरी।")});
   $("#deleteEntry").onclick=()=>{const id=$("#entryId").value;if(id&&confirm("यो पाना मेटाउने?")){state.entries=state.entries.filter(e=>e.id!==id);persist();$("#editorDialog").close();renderAll();toast("पाना मेटाइयो।")}};
   function openPostView(entry){if(!entry)return;const media=mediaMarkup(entry.media||[]);const context=entry.context?contextDetailsHTML(entry.context):"";$("#postViewContent").innerHTML='<article class="post-letterhead"><div class="post-letter-top"><b>kabijwe</b><span>~बिक्रमादित्य</span></div><p class="post-letter-date">'+esc(dateText(entry.date))+' · '+esc(entry.context?.nepalTime||"")+'<span>'+esc(entry.context?.bsDate||"")+'</span></p><h1>'+esc(entry.title||"शीर्षकविहीन पोस्ट")+'</h1><div class="post-letter-body">'+esc(entry.content||"")+'</div><div class="post-view-media">'+media+'</div><section class="post-letter-context">'+context+'</section><div class="post-letter-sign">~बिक्रमादित्य</div></article><div class="post-view-actions"><button class="btn secondary" id="postViewClose">बन्द गर्नुहोस्</button><button class="btn primary" id="postViewEdit">Letterhead सम्पादन गर्नुहोस्</button></div>';$ ("#postViewDialog").showModal();$("#postViewClose").onclick=()=>$("#postViewDialog").close();$("#postViewEdit").onclick=()=>{$("#postViewDialog").close();openEditor(entry)}}
-  function renderDiary(){const q=$("#diarySearch").value.toLowerCase(),f=$("#diaryFilter").value;let arr=state.entries.filter(e=>(f==="all"||e.visibility===f)&&[e.title,e.content,e.tags,e.context?.tithi,e.context?.bsDate,e.context?.place].join(" ").toLowerCase().includes(q)).sort((x,y)=>y.updated-x.updated);$("#diaryList").innerHTML=arr.length?arr.map(e=>{const ctxLine=formatContextLine(e.context),count=e.media?.length||0;return `<article class="entry-row post-tap-row" data-entry-open="${e.id}" tabindex="0" role="button"><div><div class="entry-meta">${dateText(e.date)} · ${esc(e.mood)} · ${e.visibility==="private"?"🔒 निजी":e.visibility==="public"?"प्रकाशनका लागि":"ड्राफ्ट"} · ${count?"मिडिया "+count:"टेक्स्ट"}</div>${ctxLine?`<div class="entry-context">${esc(ctxLine)}</div>`:""}<h3>${esc(e.title||"शीर्षकविहीन पोस्ट")}</h3><p>${esc(e.content.slice(0,150))}</p></div><span class="tap-hint">Letterhead मा हेर्नुहोस् ↗</span></article>`}).join(""):`<div class="empty-state">यहाँ अझै कुनै पोस्ट छैन। नयाँ पोस्ट सुरु गर्नुहोस्।</div>`;$$("#diaryList [data-entry-open]").forEach(card=>{const open=()=>openPostView(state.entries.find(e=>e.id===card.dataset.entryOpen));card.onclick=open;card.onkeydown=ev=>{if(ev.key==="Enter"||ev.key===" "){ev.preventDefault();open()}}})}
+  function visibilityLabel(value){return ({private:"🔒 निजी",selected:"◉ छानिएका साथी",friends:"♧ साथीहरू",public:"◎ सार्वजनिक",draft:"ड्राफ्ट"})[value]||"🔒 निजी"}
+  function renderDiary(){const q=$("#diarySearch").value.toLowerCase(),f=$("#diaryFilter").value;let arr=state.entries.filter(e=>(f==="all"||e.visibility===f)&&[e.title,e.content,e.tags,e.context?.tithi,e.context?.bsDate,e.context?.place].join(" ").toLowerCase().includes(q)).sort((x,y)=>y.updated-x.updated);$("#diaryList").innerHTML=arr.length?arr.map(e=>{const ctxLine=formatContextLine(e.context),count=e.media?.length||0;return `<article class="entry-row post-tap-row" data-entry-open="${e.id}" tabindex="0" role="button"><div><div class="entry-meta">${dateText(e.date)} · ${esc(e.mood)} · ${visibilityLabel(e.visibility)} · ${count?"मिडिया "+count:"टेक्स्ट"}</div>${ctxLine?`<div class="entry-context">${esc(ctxLine)}</div>`:""}<h3>${esc(e.title||"शीर्षकविहीन पोस्ट")}</h3><p>${esc(e.content.slice(0,150))}</p></div><span class="tap-hint">Letterhead मा हेर्नुहोस् ↗</span></article>`}).join(""):`<div class="empty-state">यहाँ अझै कुनै पोस्ट छैन। नयाँ पोस्ट सुरु गर्नुहोस्।</div>`;$$("#diaryList [data-entry-open]").forEach(card=>{const open=()=>openPostView(state.entries.find(e=>e.id===card.dataset.entryOpen));card.onclick=open;card.onkeydown=ev=>{if(ev.key==="Enter"||ev.key===" "){ev.preventDefault();open()}}})}
   $("#diarySearch").oninput=renderDiary;$("#diaryFilter").onchange=renderDiary;
   $("#saveQuick").onclick=()=>{const content=$("#quickEntry").value.trim();if(!content){toast("पहिले आफ्ना शब्दहरू लेख्नुहोस्।");return}const ctx=getContextSnapshot();state.entries.push({id:uid(),title:"आजको डायरी",date:nptISO(),mood:"शान्त",content,type:"diary",visibility:"private",tags:"",created:Date.now(),updated:Date.now(),context:ctx});persist();$("#quickEntry").value="";renderAll();toast("आजको डायरी सुरक्षित भयो · मिति/तिथि रेकर्ड।")};
   function renderPoetry(){const arr=state.entries.filter(e=>e.type==="poem").sort((a,b)=>b.updated-a.updated);$("#poetryList").innerHTML=arr.length?arr.map(e=>{const ctx=formatContextLine(e.context);return `<article class="poem-card post-tap-card" data-entry-open="${e.id}" tabindex="0" role="button"><div class="entry-meta">${dateText(e.date)} · ${e.visibility==="private"?"निजी":e.visibility==="public"?"प्रकाशनका लागि":"ड्राफ्ट"}</div>${ctx?`<div class="entry-context">${esc(ctx)}</div>`:""}<h3>${esc(e.title||"शीर्षकविहीन सिर्जना")}</h3><p class="poem-preview">${esc(e.content.slice(0,280))}</p><small class="tap-hint">Letterhead · खोल्न ट्याप गर्नुहोस्</small></article>`}).join(""):`<div class="empty-state">तपाईंका कविता र लेखहरू यहाँ सङ्ग्रहित हुनेछन्।</div>`;$$("#poetryList [data-entry-open]").forEach(card=>{const open=()=>openPostView(state.entries.find(e=>e.id===card.dataset.entryOpen));card.onclick=open;card.onkeydown=ev=>{if(ev.key==="Enter"||ev.key===" "){ev.preventDefault();open()}}})}
