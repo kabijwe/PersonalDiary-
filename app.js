@@ -101,13 +101,15 @@
   }
   function isoWeekNumber(ms){const p=nptP(ms),d=new Date(Date.UTC(p.y,p.m-1,p.d));d.setUTCDate(d.getUTCDate()+4-(d.getUTCDay()||7));const y0=new Date(Date.UTC(d.getUTCFullYear(),0,1));return Math.ceil((((d-y0)/86400000)+1)/7)}
   function setText(id,v){const el=$("#"+id);if(el&&el.textContent!==v)el.textContent=v}
+  function setServiceState(id,message,state="info"){const el=$("#"+id);if(el){el.textContent=message;el.dataset.state=state;}}
 
   /* ---------- Location (GPS only on click; manual always available) ---------- */
   const DEFAULT_LOC=LOCATIONS[0];
   let loc={mode:"default",id:DEFAULT_LOC.id,name:DEFAULT_LOC.name,lat:DEFAULT_LOC.lat,lon:DEFAULT_LOC.lon};
   (function restoreLocation(){
-    const saved=lsGet(LS_LOC),hit=saved&&LOCATIONS.find(x=>x.id===saved.id);
-    if(hit)loc={mode:"manual",id:hit.id,name:hit.name,lat:hit.lat,lon:hit.lon};
+    const saved=lsGet(LS_LOC);
+    if(saved&&saved.mode==="gps"&&Number.isFinite(saved.lat)&&Number.isFinite(saved.lon)&&Math.abs(saved.lat)<=90&&Math.abs(saved.lon)<=180){loc={mode:"gps",id:"",name:saved.name||"GPS स्थान",lat:saved.lat,lon:saved.lon,altitude:Number.isFinite(saved.altitude)?saved.altitude:null,accuracy:Number.isFinite(saved.accuracy)?saved.accuracy:null};return;}
+    const hit=saved&&LOCATIONS.find(x=>x.id===saved.id);if(hit)loc={mode:"manual",id:hit.id,name:hit.name,lat:hit.lat,lon:hit.lon};
   })();
   function modeLabel(){return loc.mode==="gps"?"GPS बाट":loc.mode==="manual"?"हातले छानिएको":"पूर्वनिर्धारित (GPS होइन)"}
   function fillManualSelect(){
@@ -158,11 +160,12 @@
   }
   async function loadBsDate(force=false){
     const now=Date.now(),key=nptKey(now),p=nptP(now),seq=++bsSeq;
+    setServiceState("bsServiceStatus","वि.सं. मिति जाँच हुँदैछ…","loading");
     if(!force&&key===bsKey&&bs&&bs.source!=="estimate")return;
     bsKey=key;
     // 1) instant answer from a cached month (so offline works after one online visit)
     const cached=readBsCache(p.y,p.m);
-    if(cached&&applyBsFromDays(cached,key,"cache")){bsFailed=false;renderDate();}
+    if(cached&&applyBsFromDays(cached,key,"cache")){bsFailed=false;renderDate();setServiceState("bsServiceStatus","वि.सं. cache बाट","success");}
     else {bs=null;renderDate();}
     // 2) live validated fetch (refreshes cache; also upgrades "cache" → "trisambat")
     try{
@@ -172,11 +175,12 @@
       // sanity check against the independent astronomical estimate: must be within ±2 days
       const est=PX.bsEstimate(now,12);
       if(est&&est.month===bs.month&&Math.abs(est.day-bs.day)>2)console.warn("BS cross-check differs",est,bs);
-      bsFailed=false;
+      bsFailed=false;setServiceState("bsServiceStatus","वि.सं. मिति सेवा सफल","success");
       if(p.d>=24){const n=new Date(Date.UTC(p.y,p.m,1));fetchBsMonth(n.getUTCFullYear(),n.getUTCMonth()+1).catch(()=>{})}
     }catch(e){
       if(seq!==bsSeq)return;
       console.warn("Bikram Sambat date:",e);
+      setServiceState("bsServiceStatus","वि.सं. सेवा असफल · "+(e.message||"नेटवर्क समस्या")+" · अनुमानित मिति","warning");
       if(!bs||bs.source==="estimate"){
         const est=PX.bsEstimate(now,12);
         bs=est?{year:est.year,month:est.month,day:est.day,source:"estimate"}:null;
@@ -222,7 +226,7 @@
   function renderPanchang(){
     const now=Date.now();
     if(!pan){
-      setText("panchangStatus","गणना असफल");
+      setServiceState("panchangServiceStatus","पञ्चाङ्ग गणना असफल","error");setText("panchangStatus","गणना असफल");
       setText("panchangFoot","पञ्चाङ्ग विवरण अहिले उपलब्ध छैन। पछि स्वतः अद्यावधिक हुनेछ।");
       return;
     }
@@ -243,6 +247,7 @@
     setText("pLunarNote",t.shukla?"अमान्त = पूर्णिमान्त":`पूर्णिमान्त · अमान्त ${lm.amanta}`);
     setText("pAyana",pan.ayana);
     setText("panchangStatus","गणना उपलब्ध (अफलाइन इन्जिन)");
+    setServiceState("panchangServiceStatus","पञ्चाङ्ग अफलाइन गणना सफल","success");
     let bsNote="";
     if(bs&&bs.source==="estimate")bsNote=" वि.सं. मिति सेवा नपाइएकाले अनुमानित हो (±१ दिन फरक पर्न सक्छ)।";
     else if(bs&&bs.source==="cache")bsNote=" वि.सं. मिति सुरक्षित प्रतिबाट देखाइएको छ।";
@@ -288,30 +293,27 @@
     const seq=++wxSeq,{lat,lon}=loc;
     if(!Number.isFinite(lat)||!Number.isFinite(lon)||Math.abs(lat)>90||Math.abs(lon)>180){setText("weatherCondition","स्थानको निर्देशाङ्क मान्य छैन");return}
     setText("weatherCondition","मौसम लोड हुँदैछ…");
-    try{
+    setServiceState("weatherServiceStatus","मौसम लोड हुँदैछ…","loading");try{
       const d=await fetchJson(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m&timezone=Asia%2FKathmandu`,{timeout:10000,retries:1});
       if(seq!==wxSeq)return;
       const c=d&&d.current;
       if(!c||!Number.isFinite(c.temperature_2m))throw Error("weather fields missing");
       const w={temp:c.temperature_2m,hum:c.relative_humidity_2m,apparent:c.apparent_temperature,wind:c.wind_speed_10m,code:c.weather_code,time:c.time,fetched:Date.now(),lat,lon};
-      lsSet(LS_WX,w);showWeather(w,false);
+      lsSet(LS_WX,w);showWeather(w,false);setServiceState("weatherServiceStatus","मौसम सेवा सफल","success");
       const history=state.locationHistory.find(x=>x.id===loc.historyId);if(history){history.weather={temp:w.temp,apparent:w.apparent,humidity:w.hum,windKmh:w.wind,condition:WX_TEXT[w.code]||"मौसम विवरण",updatedAt:w.fetched};persist();renderLocationHistory();}
     }catch(e){
       if(seq!==wxSeq)return;
       console.warn("Weather:",e);
       const old=lsGet(LS_WX);
-      if(old&&Math.abs(old.lat-lat)<.05&&Math.abs(old.lon-lon)<.05&&Date.now()-old.fetched<6*3600e3)showWeather(old,true);
-      else{setText("weatherTemp","--°");setText("weatherCondition",navigator.onLine===false?"इन्टरनेट छैन — मौसम उपलब्ध छैन":"मौसम सेवा अहिले उपलब्ध छैन");setText("weatherExtra","");setText("weatherUpdated","")}
+      if(old&&Math.abs(old.lat-lat)<.05&&Math.abs(old.lon-lon)<.05&&Date.now()-old.fetched<6*3600e3){showWeather(old,true);setServiceState("weatherServiceStatus","पुरानो मौसम · "+(e.message||"सेवा असफल"),"warning");}else{setText("weatherTemp","--°");setText("weatherCondition",navigator.onLine===false?"इन्टरनेट छैन — मौसम उपलब्ध छैन":"मौसम सेवा अहिले उपलब्ध छैन");setText("weatherExtra","");setText("weatherUpdated","");setServiceState("weatherServiceStatus","मौसम सेवा असफल · "+(e.message||"नेटवर्क समस्या"),"error");}
     }
     updateCurrentContextFromUI();
   }
   async function reverseName(lat,lon,seq){
-    try{
+    setServiceState("placeServiceStatus","स्थानको नाम खोज्दै…","loading");try{
       const g=await fetchJson(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lon}&zoom=10&accept-language=ne,en`,{timeout:8000,retries:0});
       const a=g.address||{},name=[a.suburb||a.village||a.town||a.city||a.municipality||a.county,a.state].filter(Boolean).join(", ");
-      if(seq===locSeq&&name){loc.name=name;const h=state.locationHistory.find(x=>x.id===loc.historyId);if(h){h.place=name;persist();renderLocationHistory()}renderLocation();refreshPanchang()}
-    }catch{}
-  }
+      if(seq===locSeq&&name){loc.name=name;lsSet(LS_LOC,{mode:"gps",lat:loc.lat,lon:loc.lon,name:loc.name,altitude:loc.altitude,accuracy:loc.accuracy,updatedAt:Date.now()});const h=state.locationHistory.find(x=>x.id===loc.historyId);if(h){h.place=name;persist();renderLocationHistory()}renderLocation();refreshPanchang();setServiceState("placeServiceStatus","स्थान पहिचान सफल","success");updateCurrentContextFromUI();}else if(seq===locSeq)setServiceState("placeServiceStatus","निर्देशाङ्क प्राप्त भयो · नाम उपलब्ध भएन","warning");}catch(e){if(seq===locSeq)setServiceState("placeServiceStatus","स्थान नाम सेवा असफल · "+(e.message||"नेटवर्क समस्या"),"error");}}
 
   /* ---------- Applying a location ---------- */
   let locSeq=0;
@@ -339,7 +341,7 @@
   }
   function applyLocation(next,{persist=false,historyId=null}={}){
     loc=next;locSeq++;
-    if(persist&&loc.mode==="manual")lsSet(LS_LOC,{id:loc.id});
+    if(loc.mode==="gps")lsSet(LS_LOC,{mode:"gps",lat:loc.lat,lon:loc.lon,name:loc.name,altitude:loc.altitude,accuracy:loc.accuracy,updatedAt:Date.now()});else if(persist&&loc.mode==="manual")lsSet(LS_LOC,{mode:"manual",id:loc.id});
     if(loc.mode==="gps"&&historyId){finishLocationAttempt(historyId,{status:"updated",place:loc.name,latitude:loc.lat,longitude:loc.lon,
       altitudeM:Number.isFinite(loc.altitude)?loc.altitude:null,accuracyM:Number.isFinite(loc.accuracy)?loc.accuracy:null});loc.historyId=historyId;}
     else if(loc.mode==="gps"||loc.mode==="manual")recordLocationUpdate();
@@ -355,12 +357,13 @@
     const btn=$("#timeLocationBtn"),label=btn.querySelector(".loc-text"),attemptId=recordLocationAttempt();
     if(!navigator.geolocation){finishLocationAttempt(attemptId,{status:"unsupported",note:"यो ब्राउजरमा GPS सेवा उपलब्ध छैन"});toast("यो ब्राउजरमा स्थान सेवा छैन। तलबाट स्थान छान्नुहोस्।");return}
     btn.disabled=true;label.textContent="स्थान पर्खँदै…";
-    navigator.geolocation.getCurrentPosition(p=>{
-      btn.disabled=false;label.textContent="GPS स्थान पुनः लिनुहोस्";
+    setServiceState("gpsServiceStatus","GPS स्थान प्राप्त हुँदैछ…","loading");navigator.geolocation.getCurrentPosition(p=>{
+      btn.disabled=false;label.textContent="GPS स्थान पुनः लिनुहोस्";setServiceState("gpsServiceStatus","GPS सफल · निर्देशाङ्क प्राप्त भयो","success");
       applyLocation({mode:"gps",id:"",name:"GPS स्थान",lat:p.coords.latitude,lon:p.coords.longitude,altitude:Number.isFinite(p.coords.altitude)?p.coords.altitude:null,accuracy:Number.isFinite(p.coords.accuracy)?p.coords.accuracy:null},{historyId:attemptId});
     },err=>{
       btn.disabled=false;label.textContent="मेरो GPS स्थान प्रयोग गर्नुहोस्";
       finishLocationAttempt(attemptId,{status:err.code===1?"denied":"failed",note:err.code===1?"स्थान अनुमति दिइएन":"स्थान प्राप्त गर्न सकिएन"});
+      setServiceState("gpsServiceStatus",err.code===1?"GPS अनुमति अस्वीकृत":"GPS प्राप्ति असफल · "+(err.message||"स्थान उपलब्ध भएन"),"error");
       toast(err.code===1?"GPS अनुमति दिइएन। हालको स्थान नै प्रयोग भइरहेको छ — चाहे तलबाट हातले स्थान छान्नुहोस्।":"GPS स्थान प्राप्त भएन। तलबाट हातले स्थान छान्न सक्नुहुन्छ।");
     },{enableHighAccuracy:true,timeout:15000,maximumAge:300000});
   });
