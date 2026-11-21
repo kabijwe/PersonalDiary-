@@ -8,6 +8,7 @@
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
   <title>Kabijwe — मेरो डायरी</title>
 </head>
 <body>
@@ -23,9 +24,9 @@
     <aside class="sidebar" id="sidebar">
       <div class="side-label">तपाईंको संसार</div>
       <button class="nav-item active" data-page="home"><span>⌂</span> गृहपृष्ठ</button>
-      <button class="nav-item" data-page="diary"><span>▤</span> मेरो डायरी</button>
+      <button class="nav-item" data-page="records"><span>▤</span> My Records</button>
       <button class="nav-item" data-page="calendar"><span>▦</span> नेपाली पात्रो</button>
-      <button class="nav-item" data-page="poetry"><span>✎</span> कविता र लेख</button>
+      <button class="nav-item" data-page="records"><span>✎</span> डायरी र सिर्जना</button>
       <button class="nav-item" data-page="letterpad"><span>▧</span> Letterpad Studio</button>
       <button class="nav-item" data-page="memories"><span>◷</span> सम्झनाहरू</button>
       <button class="nav-item" data-page="settings"><span>⚙</span> सेटिङ्स</button>
@@ -39,12 +40,6 @@
           <div class="date-stamp"><span id="todayDay">आज</span><b id="todayAd"></b><small id="todayBs">नेपाली मिति</small></div>
         </div>
         <div class="hero-grid">
-          <article class="paper-card writing-card">
-            <div class="card-top"><span class="eyebrow">आजको डायरी</span><span class="privacy-pill">🔒 निजी</span></div>
-            <h2>आज मनमा के चलिरहेको छ?</h2>
-            <textarea id="quickEntry" rows="4" placeholder="आजका विचार, अनुभूति र साना-साना खुसीहरू यहाँ लेख्नुहोस्..."></textarea>
-            <div class="card-bottom"><span class="muted tiny">तपाईंका शब्दहरू यही उपकरणमा सुरक्षित हुन्छन्।</span><button class="btn primary" id="saveQuick">डायरी सुरक्षित गर्नुहोस् ↗</button></div>
-          </article>
           <article class="season-card time-card" id="timeCard" aria-labelledby="timeCardTitle">
             <div class="time-card-head">
               <span class="eyebrow light" id="timeCardTitle">समयको अनुभूति</span>
@@ -147,9 +142,13 @@
             <p class="time-privacy">GPS बटन थिचेपछि मात्र स्थान माग्छ; पृष्ठभूमिमा ट्र्याक गर्दैन।</p>
           </article>
         </div>
-        <div class="section-heading"><div><p class="eyebrow">तपाईंका पानाहरू</p><h2>सबै डायरी र सिर्जना</h2></div><button class="text-btn" data-goto="diary">डायरीमा हेर्नुहोस् →</button></div>
-        <div id="recentEntries" class="entry-grid"><div class="empty-state">तपाईंको पहिलो डायरी यहाँ देखिनेछ।</div></div>
-        <section class="home-location-history"><div class="section-heading"><div><p class="eyebrow">GPS · स्थानका रेकर्ड</p><h2>मेरो स्थान इतिहास</h2></div><span class="muted small">यस उपकरणमै सुरक्षित</span></div><div id="locationHistoryList" class="location-history-list"></div></section>
+        <article class="paper-card writing-card home-thought-card">
+          <div class="card-top"><span class="eyebrow">आजको डायरी</span><span class="privacy-pill">🔒 निजी</span></div>
+          <h2>आज मनमा के चलिरहेको छ?</h2>
+          <textarea id="quickEntry" rows="4" placeholder="आजका विचार, अनुभूति र साना-साना खुसीहरू यहाँ लेख्नुहोस्..."></textarea>
+          <div class="card-bottom"><span class="muted tiny">तपाईंका शब्दहरू यही उपकरणमा सुरक्षित हुन्छन्।</span><button class="btn primary" id="saveQuick">डायरी सुरक्षित गर्नुहोस् ↗</button></div>
+        </article>
+        <div class="home-records-link"><button class="btn secondary" data-goto="records">My Records खोल्नुहोस् →</button></div>
         <div class="section-heading"><div><p class="eyebrow">सुरु गर्नुहोस्</p><h2>तपाईंको सिर्जनात्मक संसार</h2></div></div>
         <div class="shortcut-grid">
           <button class="shortcut" data-goto="calendar"><span>▦</span><b>नेपाली पात्रो</b><small>मिति र व्यक्तिगत दिनहरू</small></button>
@@ -159,10 +158,18 @@
         </div>
       </section>
 
-      <section class="page" id="page-diary">
-        <div class="page-heading"><div><p class="eyebrow">निजी संसार</p><h1>मेरो डायरी</h1><p class="muted">मनका कुरा, दिनका कथा र जीवनका साना अध्याय।</p></div><button class="btn primary" id="newDiary">＋ नयाँ पाना</button></div>
-        <div class="toolbar"><input id="diarySearch" type="search" placeholder="डायरी खोज्नुहोस्..."><select id="diaryFilter"><option value="all">सबै पाना</option><option value="private">निजी</option><option value="public">सार्वजनिक</option><option value="draft">ड्राफ्ट</option></select></div>
-        <div id="diaryList" class="entry-list"></div>
+      <section class="page" id="page-records">
+        <div class="page-heading"><div><p class="eyebrow">तपाईंको निजी सङ्ग्रह</p><h1>My Records</h1><p class="muted">स्थानका पदचिह्न र तपाईंका सबै डायरी तथा सिर्जना एउटै ठाउँमा।</p></div><button class="btn primary" id="newDiary">＋ नयाँ पोस्ट</button></div>
+        <section class="records-section">
+          <div class="section-heading"><div><p class="eyebrow">GPS · स्थानका रेकर्ड</p><h2>मेरा पहिलेहरू</h2><p class="muted small">हरेक सुरक्षित स्थान नक्सामा एउटा Landmark का रूपमा देखिन्छ।</p></div><span class="privacy-pill">यस उपकरणमै सुरक्षित</span></div>
+          <div id="locationMap" class="location-map" role="region" aria-label="GPS स्थान इतिहासको नक्सा"></div>
+          <div id="locationHistoryList" class="location-history-list"></div>
+        </section>
+        <section class="records-section">
+          <div class="section-heading"><div><p class="eyebrow">लेखिएका र सिर्जना गरिएका पोस्ट</p><h2>डायरी</h2><p class="muted small">टेक्स्ट, फोटो, अडियो र भिडियो पोस्ट। पोस्ट खोल्दा Letterhead मा हेर्न र सम्पादन गर्न सकिन्छ।</p></div></div>
+          <div class="toolbar"><input id="diarySearch" type="search" placeholder="डायरी र सिर्जना खोज्नुहोस्..."><select id="diaryFilter"><option value="all">सबै पोस्ट</option><option value="private">निजी</option><option value="public">प्रकाशनका लागि</option><option value="draft">ड्राफ्ट</option></select></div>
+          <div id="diaryList" class="entry-list"></div>
+        </section>
       </section>
 
       <section class="page" id="page-calendar">
@@ -178,7 +185,7 @@
         <div id="eventList" class="entry-list"></div>
       </section>
 
-      <section class="page" id="page-poetry">
+      <section class="page" id="page-poetry" hidden>
         <div class="page-heading"><div><p class="eyebrow">साहित्यिक संसार</p><h1>कविता र लेख</h1><p class="muted">तपाईंका शब्दहरू—निजी पानाबाट सार्वजनिक साहित्यसम्म।</p></div><button class="btn primary" id="newPoem">＋ नयाँ सिर्जना</button></div>
         <div class="privacy-info">सार्वजनिक बनाउँदा तपाईंले छानेको सिर्जना मात्र प्रकाशित हुन्छ। निजी डायरी आफैँ सार्वजनिक हुँदैन।</div>
         <div id="poetryList" class="poetry-grid"></div>
@@ -223,15 +230,15 @@
 
   <nav class="mobile-nav" aria-label="Mobile navigation">
     <button class="active" data-page="home"><span>⌂</span><small>गृह</small></button>
-    <button data-page="diary"><span>▤</span><small>डायरी</small></button>
+    <button data-page="records"><span>▤</span><small>Records</small></button>
     <button data-page="calendar"><span>▦</span><small>पात्रो</small></button>
-    <button data-page="poetry"><span>✎</span><small>कविता</small></button>
+    <button data-page="records"><span>✎</span><small>सिर्जना</small></button>
     <button data-page="settings"><span>⚙</span><small>म</small></button>
   </nav>
 
   <dialog id="postViewDialog" class="modal post-view-modal"><div class="post-view-shell"><div class="modal-head"><span class="eyebrow">डायरीको पाना</span><button class="icon-btn" onclick="this.closest('dialog').close()" aria-label="Close">×</button></div><div id="postViewContent"></div></div></dialog>
 
-  <dialog id="editorDialog" class="modal letterhead-editor-modal">>
+  <dialog id="editorDialog" class="modal letterhead-editor-modal">
     <form method="dialog" id="entryForm">
       <div class="modal-head"><div><p class="eyebrow" id="editorEyebrow">नयाँ पाना</p><h2 id="editorHeading">डायरी लेख्नुहोस्</h2></div><button class="icon-btn" value="cancel" aria-label="Close">×</button></div>
       <p id="editorContextNote" class="entry-context" style="margin:0 0 10px;font-size:11px;">समयको अनुभूति · यस पानासँग सुरक्षित गरिएको मिति, पञ्चाङ्ग, स्थान र मौसम</p>
@@ -239,7 +246,14 @@
       <input type="hidden" id="entryId">
       <label>शीर्षक<input id="entryTitle" placeholder="आजको दिन..." maxlength="120"></label>
       <div class="two-fields"><label>मिति<input id="entryDate" type="date"></label><label>मूड<select id="entryMood"><option>शान्त</option><option>खुसी</option><option>उत्साहित</option><option>सोचमग्न</option><option>उदास</option><option>कृतज्ञ</option></select></label></div>
-      <label>आफ्ना शब्दहरू<textarea id="entryContent" rows="8" placeholder="आजको कथा यहाँ लेख्नुहोस्..." required></textarea></label>
+      <label>आफ्ना शब्दहरू<textarea id="entryContent" rows="8" placeholder="आजको कथा यहाँ लेख्नुहोस्..."></textarea></label>
+      <div class="entry-media-pickers">
+        <label>फोटो पोस्ट<input id="entryPhoto" type="file" accept="image/*"></label>
+        <label>अडियो पोस्ट<input id="entryAudio" type="file" accept="audio/*"></label>
+        <label>भिडियो पोस्ट<input id="entryVideo" type="file" accept="video/*"></label>
+      </div>
+      <div id="entryMediaPreview" class="entry-media-preview"></div>
+      <p class="tiny muted">मिडिया पोस्ट स्थानीय उपकरणमै सुरक्षित हुन्छन्। प्रति फाइल २ MB सम्मको फाइल छान्नुहोस्।</p>
       <div class="two-fields"><label>प्रकार<select id="entryType"><option value="diary">डायरी</option><option value="poem">कविता / लेख</option></select></label><label>गोपनीयता<select id="entryVisibility"><option value="private">निजी</option><option value="draft">ड्राफ्ट</option><option value="public">सार्वजनिक जस्तो चिन्ह लगाउने</option></select></label></div>
       <label>ट्याग<input id="entryTags" placeholder="यात्रा, सम्झना, जीवन..."></label>
       <div class="modal-actions"><button type="button" class="btn secondary" id="deleteEntry">मेटाउनुहोस्</button><button type="submit" class="btn primary">सुरक्षित गर्नुहोस्</button></div>
@@ -255,6 +269,7 @@
     <form method="dialog" id="memoryForm"><div class="modal-head"><div><p class="eyebrow">सम्झनाको पाना</p><h2>सम्झना थप्नुहोस्</h2></div><button class="icon-btn" value="cancel">×</button></div><label>शीर्षक<input id="memoryTitle" required placeholder="त्यो सुन्दर दिन..."></label><label>कथा<textarea id="memoryText" rows="4" placeholder="यो क्षण किन विशेष छ?"></textarea></label><label>तस्वीर<input id="memoryPhoto" type="file" accept="image/*"></label><div class="button-row"><button type="button" class="btn secondary" id="captureLocation">मेरो स्थान थप्नुहोस्</button><span id="locationStatus" class="tiny muted"></span></div><div class="modal-actions"><span></span><button class="btn primary" type="submit">सम्झना सुरक्षित</button></div></form>
   </dialog>
   <div id="toast" class="toast" role="status"></div>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
   <script src="panchang.js"></script>
   <script src="app.js"></script>
 </body>
