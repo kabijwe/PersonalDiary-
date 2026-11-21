@@ -7,6 +7,7 @@
   let selectedLocation = null, memoryImage = null, letterImage = null;
   let currentContext = {};
   state.locationHistory ||= [];
+  state.reminders ||= [];
   function getContextSnapshot(at=Date.now()){
     const now=at, p=nptP(now), read=id=>$("#"+id)?.textContent?.trim()||"";
     const wx=lsGet("kabijwe.weather")||{};
@@ -562,6 +563,72 @@
   $("#importData").onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);if(!d||!Array.isArray(d.entries))throw Error();if(!confirm("हालको स्थानीय डाटा बदल्ने?"))return;Object.assign(state,d);persist();renderAll();toast("डाटा Import भयो।")}catch{toast("यो Backup फाइल मान्य छैन।")}};r.readAsText(f)};
   $("#clearData").onclick=()=>{if(confirm("सबै स्थानीय डायरी, सम्झना र ढाँचा स्थायी रूपमा मेटाउने?")){localStorage.removeItem(KEY);location.reload()}};
   function renderAll(){renderDiary();renderPoetry();renderCalendar();renderMemories();renderTemplates();renderLocationHistory()}
+
+  // Local-first reminders. They live inside the main state object and are included in JSON backups.
+  let reminderAlertTimer = null;
+  function renderReminders(){
+    const list=$("#reminderList"), alertBox=$("#reminderAlert");
+    if(!list||!alertBox)return;
+    const pending=(state.reminders||[]).filter(r=>!r.dismissed).sort((a,b)=>new Date(a.dueAt)-new Date(b.dueAt));
+    list.innerHTML=pending.length?pending.map(r=>{
+      const due=new Date(r.dueAt), overdue=due.getTime()<=Date.now();
+      return '<article class="reminder-item'+(overdue?' is-due':'')+'" data-reminder-id="'+esc(r.id)+'"><div><b>'+esc(r.title)+'</b><span>'+esc(due.toLocaleString("ne-NP",{dateStyle:"medium",timeStyle:"short"}))+'</span>'+(r.fired?'<small>सूचना पठाइएको</small>':'')+'</div><button type="button" class="small-btn reminder-dismiss" data-reminder-dismiss="'+esc(r.id)+'">हटाउनुहोस्</button></article>';
+    }).join(""):'<p class="muted small">अहिलेसम्म कुनै रिमाइन्डर छैन।</p>';
+    const dueNow=(state.reminders||[]).filter(r=>r.fired&&!r.dismissed&&r.dueAt&&new Date(r.dueAt).getTime()<=Date.now());
+    if(dueNow.length){
+      alertBox.hidden=false;
+      alertBox.innerHTML='<b>सम्झनुपर्ने कुरा</b>'+dueNow.map(r=>'<p>'+esc(r.title)+'</p>').join('')+'<button type="button" class="reminder-alert-close" id="dismissDueReminders">ठीक छ</button>';
+    }else{alertBox.hidden=true;alertBox.textContent="";}
+  }
+  function notifyReminder(reminder){
+    const title="Mero diary · रिमाइन्डर";
+    const options={body:reminder.title,tag:"kabijwe-reminder-"+reminder.id,renotify:false,data:{reminderId:reminder.id},icon:"./icons/icon.svg",badge:"./icons/icon.svg"};
+    if(navigator.serviceWorker){
+      navigator.serviceWorker.ready.then(reg=>{
+        if(reg.active)reg.active.postMessage({type:"SHOW_REMINDER_NOTIFICATION",title,options});
+        else if(reg.showNotification)reg.showNotification(title,options);
+      }).catch(()=>{});
+    }
+  }
+  function checkDueReminders(){
+    const now=Date.now();let changed=false;
+    (state.reminders||[]).forEach(r=>{
+      if(!r.dismissed&&!r.fired&&Number.isFinite(new Date(r.dueAt).getTime())&&new Date(r.dueAt).getTime()<=now){
+        r.fired=true;r.firedAt=new Date(now).toISOString();changed=true;notifyReminder(r);
+      }
+    });
+    if(changed){persist();renderReminders();}
+  }
+  $("#reminderForm")?.addEventListener("submit",e=>{
+    e.preventDefault();
+    const title=$("#reminderTitle").value.trim(), dueAt=$("#reminderDueAt").value;
+    if(!title||!dueAt){toast("रिमाइन्डरको विवरण र समय भर्नुहोस्।");return;}
+    const due=new Date(dueAt);
+    if(!Number.isFinite(due.getTime())){toast("मिति र समय मान्य छैन।");return;}
+    state.reminders.push({id:uid(),title,dueAt:due.toISOString(),createdAt:new Date().toISOString(),fired:false,dismissed:false});
+    persist();e.target.reset();renderReminders();checkDueReminders();toast("रिमाइन्डर सुरक्षित भयो।");
+  });
+  $("#enableReminderNotifications")?.addEventListener("click",async()=>{
+    if(!("Notification" in window)){toast("यो browser मा notification उपलब्ध छैन।");return;}
+    try{
+      const permission=await Notification.requestPermission();
+      toast(permission==="granted"?"सूचना अनुमति सक्रिय भयो।":permission==="denied"?"सूचना अनुमति अस्वीकार भयो।":"सूचना अनुमति दिइएन।");
+    }catch{toast("सूचना अनुमति लिन सकिएन।");}
+  });
+  $("#reminderList")?.addEventListener("click",e=>{
+    const btn=e.target.closest("[data-reminder-dismiss]");if(!btn)return;
+    const id=btn.dataset.reminderDismiss;
+    state.reminders=state.reminders.filter(r=>r.id!==id);persist();renderReminders();
+  });
+  $("#reminderAlert")?.addEventListener("click",e=>{
+    if(e.target.id!=="dismissDueReminders")return;
+    state.reminders.forEach(r=>{if(r.fired)r.dismissed=true;});persist();renderReminders();
+  });
+  renderReminders();
+  checkDueReminders();
+  window.setInterval(checkDueReminders,15000);
+  document.addEventListener("visibilitychange",()=>{if(!document.hidden)checkDueReminders();});
+
   updateLetter();renderAll();
   if("serviceWorker" in navigator && location.protocol!=="file:")navigator.serviceWorker.register("./sw.js").catch(()=>{});
 })();
