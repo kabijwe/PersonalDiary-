@@ -285,3 +285,4 @@ body.dark .history-context-details summary{color:#f0c878}
   #menuToggle{position:relative;z-index:72;touch-action:manipulation}
   .mobile-nav button{position:relative;z-index:61;pointer-events:auto}
 }
+.privacy-help{margin:-7px 0 0;padding:9px 11px;border-radius:9px;background:var(--soft);line-height:1.7}
