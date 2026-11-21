@@ -95,7 +95,7 @@ let page_;
   await ctx.setOffline?.(false);
   await page.click("#timeLocationBtn");await page.waitForTimeout(800);
   ok("GPS denied: panchang remains visible",(await t("pTithi"))==="द्वादशी"||(await t("pTithi"))!=="—");
-  ok("GPS denied: still labelled default (not GPS)",/पूर्वनिर्धारित/.test(await t("locationMode")),await t("locationMode"));
+  ok("GPS denied: still labelled default (not GPS)",/पूर्वनिर्धारित/.test(await t("locationMode")),await t("locationMode"));const deniedHistory=await page.evaluate(()=>JSON.parse(localStorage.getItem("kabijwe.v1")).locationHistory||[]);ok("denied GPS attempt is also timestamped",deniedHistory.length===1&&deniedHistory[0].status==="denied",JSON.stringify(deniedHistory[0]));
   await ctx.close();
   ({ctx,page,errors}=await setup(browser,{geo:{latitude:29.30,longitude:80.58}}));
   await page.goto(BASE);await page.waitForTimeout(1000);await page.click("#timeLocationBtn");await page.waitForTimeout(1500);
