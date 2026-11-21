@@ -320,17 +320,29 @@
     setText("locationMode",modeLabel());
     const badge=$("#locationMode");if(badge)badge.dataset.mode=loc.mode;
   }
+  function recordLocationAttempt(){
+    if(!Array.isArray(state.locationHistory))state.locationHistory=[];
+    const stamp=Date.now(),record={id:uid(),timestamp:stamp,timestampISO:new Date(stamp).toISOString(),source:"gps",
+      status:"pending",place:"GPS स्थान अनुरोध",latitude:null,longitude:null,altitudeM:null,accuracyM:null,weather:null};
+    state.locationHistory.push(record);persist();renderLocationHistory();return record.id;
+  }
+  function finishLocationAttempt(id,patch){
+    const record=state.locationHistory.find(x=>x.id===id);if(!record)return;
+    Object.assign(record,patch);persist();renderLocationHistory();
+  }
   function recordLocationUpdate(){
     if(!Array.isArray(state.locationHistory))state.locationHistory=[];
     const stamp=Date.now(),record={id:uid(),timestamp:stamp,timestampISO:new Date(stamp).toISOString(),source:loc.mode,
-      place:loc.name,latitude:loc.lat,longitude:loc.lon,altitudeM:Number.isFinite(loc.altitude)?loc.altitude:null,
+      status:"updated",place:loc.name,latitude:loc.lat,longitude:loc.lon,altitudeM:Number.isFinite(loc.altitude)?loc.altitude:null,
       accuracyM:Number.isFinite(loc.accuracy)?loc.accuracy:null,weather:null};
     state.locationHistory.push(record);loc.historyId=record.id;persist();renderLocationHistory();
   }
-  function applyLocation(next,{persist=false}={}){
+  function applyLocation(next,{persist=false,historyId=null}={}){
     loc=next;locSeq++;
     if(persist&&loc.mode==="manual")lsSet(LS_LOC,{id:loc.id});
-    if(loc.mode==="gps"||loc.mode==="manual")recordLocationUpdate();
+    if(loc.mode==="gps"&&historyId){finishLocationAttempt(historyId,{status:"updated",place:loc.name,latitude:loc.lat,longitude:loc.lon,
+      altitudeM:Number.isFinite(loc.altitude)?loc.altitude:null,accuracyM:Number.isFinite(loc.accuracy)?loc.accuracy:null});loc.historyId=historyId;}
+    else if(loc.mode==="gps"||loc.mode==="manual")recordLocationUpdate();
     fillManualSelect();renderLocation();refreshPanchang();loadWeather();
     if(loc.mode==="gps")reverseName(loc.lat,loc.lon,locSeq);
   }
@@ -340,14 +352,15 @@
     toast(`स्थान: ${hit.name} (हातले छानिएको)`);
   });
   $("#timeLocationBtn").addEventListener("click",()=>{
-    const btn=$("#timeLocationBtn"),label=btn.querySelector(".loc-text");
-    if(!navigator.geolocation){toast("यो ब्राउजरमा स्थान सेवा छैन। तलबाट स्थान छान्नुहोस्।");return}
+    const btn=$("#timeLocationBtn"),label=btn.querySelector(".loc-text"),attemptId=recordLocationAttempt();
+    if(!navigator.geolocation){finishLocationAttempt(attemptId,{status:"unsupported",note:"यो ब्राउजरमा GPS सेवा उपलब्ध छैन"});toast("यो ब्राउजरमा स्थान सेवा छैन। तलबाट स्थान छान्नुहोस्।");return}
     btn.disabled=true;label.textContent="स्थान पर्खँदै…";
     navigator.geolocation.getCurrentPosition(p=>{
       btn.disabled=false;label.textContent="GPS स्थान पुनः लिनुहोस्";
-      applyLocation({mode:"gps",id:"",name:"GPS स्थान",lat:p.coords.latitude,lon:p.coords.longitude,altitude:Number.isFinite(p.coords.altitude)?p.coords.altitude:null,accuracy:Number.isFinite(p.coords.accuracy)?p.coords.accuracy:null});
+      applyLocation({mode:"gps",id:"",name:"GPS स्थान",lat:p.coords.latitude,lon:p.coords.longitude,altitude:Number.isFinite(p.coords.altitude)?p.coords.altitude:null,accuracy:Number.isFinite(p.coords.accuracy)?p.coords.accuracy:null},{historyId:attemptId});
     },err=>{
       btn.disabled=false;label.textContent="मेरो GPS स्थान प्रयोग गर्नुहोस्";
+      finishLocationAttempt(attemptId,{status:err.code===1?"denied":"failed",note:err.code===1?"स्थान अनुमति दिइएन":"स्थान प्राप्त गर्न सकिएन"});
       toast(err.code===1?"GPS अनुमति दिइएन। हालको स्थान नै प्रयोग भइरहेको छ — चाहे तलबाट हातले स्थान छान्नुहोस्।":"GPS स्थान प्राप्त भएन। तलबाट हातले स्थान छान्न सक्नुहुन्छ।");
     },{enableHighAccuracy:true,timeout:15000,maximumAge:300000});
   });
@@ -404,7 +417,7 @@
   function renderLocationHistory(){
     const list=$("#locationHistoryList");if(!list)return;
     const rows=(state.locationHistory||[]).slice().reverse();
-    list.innerHTML=rows.length?rows.map(h=>`<article class="location-history-item"><div><b>${esc(h.place||"अज्ञात स्थान")}</b><small>${esc(new Date(h.timestamp).toLocaleString("ne-NP",{timeZone:"Asia/Kathmandu"}))} · ${esc(h.source==="gps"?"GPS":h.source==="manual"?"हातले छानिएको":"पूर्वनिर्धारित")}</small><small>${Number(h.latitude).toFixed(6)}, ${Number(h.longitude).toFixed(6)} ${h.altitudeM!=null?"· उचाइ "+Math.round(h.altitudeM)+" m":""}</small>${h.weather?`<small>${esc(h.weather.temp+"°C · "+h.weather.condition+" · आर्द्रता "+(h.weather.humidity??"—")+"% · हावा "+(h.weather.windKmh??"—")+" km/h")}</small>`:""}</div></article>`).join(""):`<p class="muted small">GPS वा स्थान परिवर्तन गरेपछि यहाँ समयसहित रेकर्ड देखिनेछ।</p>`;
+    list.innerHTML=rows.length?rows.map(h=>`<article class="location-history-item"><div><b>${esc(h.place||"अज्ञात स्थान")}</b><small>${esc(new Date(h.timestamp).toLocaleString("ne-NP",{timeZone:"Asia/Kathmandu"}))} · ${esc(h.source==="gps"?"GPS":h.source==="manual"?"हातले छानिएको":"पूर्वनिर्धारित")}</small><small>${Number.isFinite(h.latitude)&&Number.isFinite(h.longitude)?Number(h.latitude).toFixed(6)+", "+Number(h.longitude).toFixed(6):"निर्देशाङ्क उपलब्ध भएन"} ${h.altitudeM!=null?"· उचाइ "+Math.round(h.altitudeM)+" m":""} ${h.status&&h.status!=="updated"?"· "+({pending:"अनुरोध जारी",denied:"अनुमति अस्वीकृत",failed:"असफल",unsupported:"GPS अनुपलब्ध"}[h.status]||h.status):""}</small>${h.weather?`<small>${esc(h.weather.temp+"°C · "+h.weather.condition+" · आर्द्रता "+(h.weather.humidity??"—")+"% · हावा "+(h.weather.windKmh??"—")+" km/h")}</small>`:""}</div></article>`).join(""):`<p class="muted small">GPS वा स्थान परिवर्तन गरेपछि यहाँ समयसहित रेकर्ड देखिनेछ।</p>`;
   }
   function renderTemplates(){$("#templateList").innerHTML=state.templates.length?state.templates.map(t=>`<button class="template-chip" data-template="${t.id}">${esc(t.name)}</button>`).join(""):`<span class="muted tiny">अहिलेसम्म कुनै ढाँचा सुरक्षित छैन।</span>`;$$("[data-template]").forEach(b=>b.onclick=()=>{const t=state.templates.find(x=>x.id===b.dataset.template);$("#lpTitle").value=t.title;$("#lpBody").value=t.body;$("#lpSignature").value=t.signature;$("#lpColor").value=t.color;$("#lpPaper").value=t.paper;$("#lpSize").value=t.size;letterImage=t.image;$("#lpArt").innerHTML=letterImage?`<img src="${letterImage}" alt="">`:"";updateLetter()})}
   $("#settingBrand").value=state.settings.brand||"kabijwe";$("#settingSignature").value=state.settings.signature||"~बिक्रमादित्य";$("#settingAccent").value=state.settings.accent||"#153b66";$("#settingTheme").value=state.settings.theme||"light";
