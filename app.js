@@ -324,24 +324,31 @@
     }
     const sunrise=fmtClock(solar.sunriseMs),sunset=fmtClock(solar.sunsetMs);
     setText("sunriseTime",sunrise);setText("sunsetTime",sunset);setText("sunriseDetail",sunrise);setText("sunsetDetail",sunset);
+    const curve=$("#sun-single-curve");
+    if(curve)curve.setAttribute("d","M 0,43 C 42,43 68,7 115,7 C 162,7 185,33 212,38");
     $("#celestial-body")?.removeAttribute("display");
     updateSolarPosition();
   }
   function updateSolarPosition(){
     if(!solar||solar.polar)return;
-    const now=Date.now(),current=new Date(now),currentSec=current.getHours()*3600+current.getMinutes()*60+current.getSeconds()+current.getMilliseconds()/1000;
+    const now=Date.now(),current=new Date(now);
+    const currentSec=current.getHours()*3600+current.getMinutes()*60+current.getSeconds()+current.getMilliseconds()/1000;
     const sunriseDate=new Date(solar.sunriseMs),sunsetDate=new Date(solar.sunsetMs);
     const sunriseSec=sunriseDate.getHours()*3600+sunriseDate.getMinutes()*60+sunriseDate.getSeconds();
     const sunsetSec=sunsetDate.getHours()*3600+sunsetDate.getMinutes()*60+sunsetDate.getSeconds();
-    const duration=Math.max(1,sunsetSec-sunriseSec),daytime=currentSec>=sunriseSec&&currentSec<=sunsetSec;
-    let progress=.22+((currentSec-sunriseSec)/duration)*.56;
-    progress=Math.max(.02,Math.min(.98,progress));
-    const point=p=>({x:p*225,y:27-Math.sin((p-.22)*(Math.PI/.56))*19});
-    let d="";
-    for(let i=0;i<=100;i++){const p=(i/100)*progress,pt=point(p);d+=(i===0?"M ":" L ")+pt.x.toFixed(2)+","+pt.y.toFixed(2);}
-    const currentPt=point(progress);
-    $("#sun-single-curve")?.setAttribute("d",d);
-    $("#celestial-body")?.setAttribute("transform",`translate(${currentPt.x.toFixed(2)}, ${currentPt.y.toFixed(2)})`);
+    const duration=Math.max(1,sunsetSec-sunriseSec);
+    const daytime=currentSec>=sunriseSec&&currentSec<=sunsetSec;
+    const t=Math.max(0,Math.min(1,(currentSec-sunriseSec)/duration));
+    const cubic=(p0,p1,p2,p3,u)=>Math.pow(1-u,3)*p0+3*Math.pow(1-u,2)*u*p1+3*(1-u)*u*u*p2+u*u*u*p3;
+    let x,y;
+    if(t<=.5){
+      const u=t*2;
+      x=cubic(0,42,68,115,u);y=cubic(43,43,7,7,u);
+    }else{
+      const u=(t-.5)*2;
+      x=cubic(115,162,185,212,u);y=cubic(7,7,33,38,u);
+    }
+    $("#celestial-body")?.setAttribute("transform",`translate(${x.toFixed(2)}, ${y.toFixed(2)})`);
     const dayIcon=$("#day-sun-icon"),nightIcon=$("#night-moon-icon");
     if(dayIcon)dayIcon.style.display=daytime?"":"none";
     if(nightIcon)nightIcon.style.display=daytime?"none":"";
