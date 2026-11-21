@@ -143,11 +143,18 @@
             <p class="time-privacy">GPS बटन थिचेपछि मात्र स्थान माग्छ; पृष्ठभूमिमा ट्र्याक गर्दैन।</p>
           </article>
         </div>
-        <article class="paper-card writing-card home-thought-card">
+        <article class="paper-card writing-card home-thought-card social-composer">
           <div class="card-top"><span class="eyebrow">आजको डायरी</span><span class="privacy-pill">🔒 निजी</span></div>
           <h2>आज मनमा के चलिरहेको छ?</h2>
           <textarea id="quickEntry" rows="4" placeholder="आजका विचार, अनुभूति र साना-साना खुसीहरू यहाँ लेख्नुहोस्..."></textarea>
-          <div class="card-bottom"><span class="muted tiny">तपाईंका शब्दहरू यही उपकरणमा सुरक्षित हुन्छन्।</span><button class="btn primary" id="saveQuick">डायरी सुरक्षित गर्नुहोस् ↗</button></div>
+          <div class="composer-tools">
+            <label class="composer-action" for="quickPhoto"><span>▧</span> फोटो</label><input id="quickPhoto" type="file" accept="image/*" hidden>
+            <label class="composer-action" for="quickVideo"><span>▷</span> भिडियो</label><input id="quickVideo" type="file" accept="video/*" hidden>
+            <label class="composer-action" for="quickAudio"><span>♫</span> अडियो</label><input id="quickAudio" type="file" accept="audio/*" hidden>
+            <button class="composer-action" id="quickVoice"><span>🎙</span> आवाज रेकर्ड</button>
+          </div>
+          <div id="quickMediaPreview" class="entry-media-preview"></div>
+          <div class="card-bottom"><span class="muted tiny">तपाईंका शब्द र मिडिया यही उपकरणमा सुरक्षित हुन्छन्।</span><button class="btn primary" id="saveQuick">पोस्ट गर्नुहोस् ↗</button></div>
         </article>
         <div class="home-records-link"><button class="btn secondary" data-goto="records">My Records खोल्नुहोस् →</button></div>
         <div class="section-heading"><div><p class="eyebrow">सुरु गर्नुहोस्</p><h2>तपाईंको सिर्जनात्मक संसार</h2></div></div>
@@ -160,14 +167,14 @@
       </section>
 
       <section class="page" id="page-records">
-        <div class="page-heading"><div><p class="eyebrow">तपाईंको निजी सङ्ग्रह</p><h1>My Records</h1><p class="muted">स्थानका पदचिह्न र तपाईंका सबै डायरी तथा सिर्जना एउटै ठाउँमा।</p></div><button class="btn primary" id="newDiary">＋ नयाँ पोस्ट</button></div>
+        <div class="page-heading"><div><p class="eyebrow">तपाईंको निजी सङ्ग्रह</p><h1>डायरी रेकर्ड</h1><p class="muted">स्थानका पदचिह्न र तपाईंका सबै डायरी तथा सिर्जना एउटै ठाउँमा।</p></div><button class="btn primary" id="newDiary">＋ नयाँ पोस्ट</button></div>
         <section class="records-section">
-          <div class="section-heading"><div><p class="eyebrow">GPS · स्थानका रेकर्ड</p><h2>मेरा पहिलेहरू</h2><p class="muted small">हरेक सुरक्षित स्थान नक्सामा एउटा Landmark का रूपमा देखिन्छ।</p></div><span class="privacy-pill">यस उपकरणमै सुरक्षित</span></div>
-          <div id="locationMap" class="location-map" role="region" aria-label="GPS स्थान इतिहासको नक्सा"></div>
+          <div id="locationMap" class="location-map map-first" role="region" aria-label="GPS स्थान इतिहासको नक्सा"></div><div class="section-heading"><div><p class="eyebrow">GPS · स्थानका रेकर्ड</p><h2>मेरा पहिलेहरू</h2><p class="muted small">हरेक सुरक्षित स्थान नक्सामा एउटा Landmark का रूपमा देखिन्छ।</p></div><span class="privacy-pill">यस उपकरणमै सुरक्षित</span></div>
+          
           <div id="locationHistoryList" class="location-history-list"></div>
         </section>
         <section class="records-section">
-          <div class="section-heading"><div><p class="eyebrow">लेखिएका र सिर्जना गरिएका पोस्ट</p><h2>डायरी</h2><p class="muted small">टेक्स्ट, फोटो, अडियो र भिडियो पोस्ट। पोस्ट खोल्दा Letterhead मा हेर्न र सम्पादन गर्न सकिन्छ।</p></div></div>
+          <div class="section-heading"><div><p class="eyebrow">लेखिएका र सिर्जना गरिएका पोस्ट</p><h2>डायरी र सिर्जना</h2><p class="muted small">तपाईंका सबै पोस्ट, फोटो, भिडियो र आवाजका पानाहरू।</p></div></div>
           <div class="toolbar"><input id="diarySearch" type="search" placeholder="डायरी र सिर्जना खोज्नुहोस्..."><select id="diaryFilter"><option value="all">सबै पोस्ट</option><option value="private">निजी</option><option value="selected">छानिएका साथीहरू</option><option value="friends">साथीहरू</option><option value="public">सार्वजनिक</option><option value="draft">ड्राफ्ट</option></select></div>
           <div id="diaryList" class="entry-list"></div>
         </section>
@@ -237,7 +244,7 @@
     <button data-page="settings"><span>⚙</span><small>म</small></button>
   </nav>
 
-  <dialog id="postViewDialog" class="modal post-view-modal"><div class="post-view-shell"><div class="modal-head"><span class="eyebrow">डायरीको पाना</span><button class="icon-btn" onclick="this.closest('dialog').close()" aria-label="Close">×</button></div><div id="postViewContent"></div></div></dialog>
+  <dialog id="postViewDialog" class="modal post-view-modal"><div class="post-view-shell"><div class="modal-head"><span class="eyebrow">डायरीका पानाहरू</span><button class="icon-btn" id="bookClose" aria-label="Close">×</button></div><div id="postViewContent"></div></div></dialog>
 
   <dialog id="editorDialog" class="modal letterhead-editor-modal">
     <form method="dialog" id="entryForm">
@@ -249,10 +256,14 @@
       <div class="two-fields"><label>मिति<input id="entryDate" type="date"></label><label>मूड<select id="entryMood"><option>शान्त</option><option>खुसी</option><option>उत्साहित</option><option>सोचमग्न</option><option>उदास</option><option>कृतज्ञ</option></select></label></div>
       <label>आफ्ना शब्दहरू<textarea id="entryContent" rows="8" placeholder="आजको कथा यहाँ लेख्नुहोस्..."></textarea></label>
       <div class="entry-media-pickers">
-        <label>फोटो पोस्ट<input id="entryPhoto" type="file" accept="image/*"></label>
-        <label>अडियो पोस्ट<input id="entryAudio" type="file" accept="audio/*"></label>
-        <label>भिडियो पोस्ट<input id="entryVideo" type="file" accept="video/*"></label>
+        <label>▧ फोटो<input id="entryPhoto" type="file" accept="image/*"></label>
+        <label>♫ अडियो<input id="entryAudio" type="file" accept="audio/*"></label>
+        <label>▷ भिडियो<input id="entryVideo" type="file" accept="video/*"></label>
       </div>
+      <section class="voice-recorder"><div class="voice-recorder-head"><b>🎙 आवाज रेकर्डर</b><span id="voiceStatus">रेकर्ड गर्न तयार</span></div>
+        <div class="voice-progress"><span id="voiceProgress"></span></div><div class="voice-timer" id="voiceTimer">00:00</div>
+        <div class="voice-controls"><button type="button" class="btn secondary" id="voiceStart">रेकर्ड सुरु</button><button type="button" class="btn secondary" id="voicePause" disabled>पज</button><button type="button" class="btn secondary" id="voiceStop" disabled>रोक्नुहोस्</button><button type="button" class="btn primary" id="voiceSave" disabled>रेकर्ड सुरक्षित</button></div>
+        <p class="tiny muted">अरू व्यक्तिको आवाज रेकर्ड गर्नुअघि उहाँको स्पष्ट अनुमति लिनुहोस्। अनुमति बिना गोप्य रूपमा रेकर्ड नगर्नुहोस्।</p></section>
       <div id="entryMediaPreview" class="entry-media-preview"></div>
       <p class="tiny muted">मिडिया पोस्ट स्थानीय उपकरणमै सुरक्षित हुन्छन्। प्रति फाइल २ MB सम्मको फाइल छान्नुहोस्।</p>
       <div class="two-fields"><label>प्रकार<select id="entryType"><option value="diary">डायरी</option><option value="poem">कविता / लेख</option></select></label><label>गोपनीयता<select id="entryVisibility"><option value="private">🔒 निजी — म मात्र</option><option value="selected">◉ छानिएका साथीहरू</option><option value="friends">♧ साथीहरू</option><option value="public">◎ सार्वजनिक</option></select></label></div>
