@@ -24,9 +24,9 @@
     <aside class="sidebar" id="sidebar">
       <div class="side-label">तपाईंको संसार</div>
       <button class="nav-item active" data-page="home"><span>⌂</span> गृहपृष्ठ</button>
-      <button class="nav-item" data-page="records"><span>▤</span> डायरी रेकर्ड</button>
+      <button class="nav-item" data-page="records"><span>⌖</span> मेरा पाइलाहरू</button>
       <button class="nav-item" data-page="calendar"><span>▦</span> नेपाली पात्रो</button>
-      <button class="nav-item" data-page="records"><span>✎</span> सिर्जना</button>
+      <button class="nav-item" data-page="poetry"><span>✎</span> सिर्जना</button>
       <button class="nav-item" data-page="letterpad"><span>▧</span> Letterpad Studio</button>
       <button class="nav-item" data-page="memories"><span>◷</span> सम्झनाहरू</button>
       <button class="nav-item" data-page="settings"><span>⚙</span> सेटिङ्स</button>
@@ -172,19 +172,10 @@
       </section>
 
       <section class="page" id="page-records">
-        <div class="page-heading"><button class="btn primary" id="newDiary" hidden>＋ नयाँ पोस्ट</button></div>
-        <div class="page-heading"><div><p class="eyebrow">तपाईंको निजी सङ्ग्रह</p><h1>डायरी रेकर्ड</h1><p class="muted">स्थानका पदचिह्न र तपाईंका सबै डायरी तथा सिर्जना एउटै ठाउँमा।</p></div></div>
-        <div class="record-topic-nav"><button type="button" data-record-target="recordLocations">⌖ मेरा पहिलेहरू</button><button type="button" data-record-target="recordDiary">▤ डायरी</button></div>
-        <section class="records-section" id="recordLocations">
-          <div id="locationMap" class="location-map map-first" role="region" aria-label="GPS स्थान इतिहासको नक्सा"></div><div class="section-heading"><div><p class="eyebrow">GPS · स्थानका रेकर्ड</p><h2>मेरा पहिलेहरू</h2><p class="muted small">हरेक सुरक्षित स्थान नक्सामा एउटा Landmark का रूपमा देखिन्छ।</p></div><span class="privacy-pill">यस उपकरणमै सुरक्षित</span></div>
-          
-          <div id="locationHistoryList" class="location-history-list"></div>
-        </section>
-        <section class="records-section" id="recordDiary">
-          <div class="section-heading"><div><p class="eyebrow">लेखिएका र सिर्जना गरिएका पोस्ट</p><h2>डायरी र सिर्जना</h2><p class="muted small">तपाईंका सबै पोस्ट, फोटो, भिडियो र आवाजका पानाहरू।</p></div></div>
-          <div class="toolbar"><input id="diarySearch" type="search" placeholder="डायरी र सिर्जना खोज्नुहोस्..."><select id="diaryFilter"><option value="all">सबै पोस्ट</option><option value="private">निजी</option><option value="selected">छानिएका साथीहरू</option><option value="friends">साथीहरू</option><option value="public">सार्वजनिक</option><option value="draft">ड्राफ्ट</option></select></div>
-          <div id="diaryList" class="entry-list"></div>
-        </section>
+        <div class="page-heading"><div><p class="eyebrow">GPS · स्थानका रेकर्ड</p><h1>मेरा पाइलाहरू</h1><p class="muted">GPS बाट प्राप्त भई नक्सामा सुरक्षित भएका तपाईंका स्थान र यात्राका पदचिह्न।</p></div><span class="privacy-pill">यस उपकरणमै सुरक्षित</span></div>
+        <div id="locationMap" class="location-map map-first" role="region" aria-label="GPS स्थान इतिहासको नक्सा"></div>
+        <div class="section-heading"><div><p class="eyebrow">स्थानका Landmark</p><h2>मेरो स्थान इतिहास</h2><p class="muted small">नक्साको प्रत्येक चिन्ह छानेर त्यस स्थानको समय, मिति, उचाइ, मौसम र उपलब्ध विवरण हेर्नुहोस्।</p></div></div>
+        <div id="locationHistoryList" class="location-history-list"></div>
       </section>
 
       <section class="page" id="page-calendar">
@@ -200,10 +191,12 @@
         <div id="eventList" class="entry-list"></div>
       </section>
 
-      <section class="page" id="page-poetry" hidden>
-        <div class="page-heading"><div><p class="eyebrow">साहित्यिक संसार</p><h1>कविता र लेख</h1><p class="muted">तपाईंका शब्दहरू—निजी पानाबाट सार्वजनिक साहित्यसम्म।</p></div><button class="btn primary" id="newPoem">＋ नयाँ सिर्जना</button></div>
-        <div class="privacy-info">सार्वजनिक बनाउँदा तपाईंले छानेको सिर्जना मात्र प्रकाशित हुन्छ। निजी डायरी आफैँ सार्वजनिक हुँदैन।</div>
-        <div id="poetryList" class="poetry-grid"></div>
+      <section class="page" id="page-poetry">
+        <div class="page-heading"><div><p class="eyebrow">तपाईंका शब्द र अनुभूतिहरू</p><h1>सिर्जना</h1><p class="muted">तपाईंले गृहपृष्ठबाट लेखेका डायरीका पानाहरू। कुनै GPS नक्सा वा यात्रा रेकर्ड यहाँ देखाइँदैन।</p></div></div>
+        <div class="toolbar"><input id="diarySearch" type="search" placeholder="आफ्ना पानाहरू खोज्नुहोस्..."><select id="diaryFilter"><option value="all">सबै पाना</option><option value="private">निजी</option><option value="selected">छानिएका साथीहरू</option><option value="friends">साथीहरू</option><option value="public">सार्वजनिक</option><option value="draft">ड्राफ्ट</option></select></div>
+        <div class="creation-intro"><span>✧</span><p>हरेक लेखाइ एउटा छुट्टै पाना हो। पाना खोल्न ट्याप गर्नुहोस्, अनि अर्को/अघिल्लो पाना पल्टाएर पढ्नुहोस्।</p></div>
+        <div id="diaryList" class="entry-list creation-pages"></div>
+        <div id="poetryList" hidden></div>
       </section>
 
       <section class="page" id="page-letterpad">
