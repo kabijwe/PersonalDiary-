@@ -680,3 +680,18 @@ body .book-page.page-turn-prev{animation:pageTurnPrev .28s cubic-bezier(.35,.7,.
 #page-home .sun-status-bottom{font-size:12px;color:#ccc;text-align:center;margin-top:0}
 #page-home .sun-detail-grid{margin-top:10px}
 @media(max-width:650px){#page-home .sun-graph{height:58px}#page-home .sun-times b{font-size:23px}}
+
+
+/* Solar cycle: visible live sun / moon marker with cool blue tones on black */
+#page-home .sun-card{background:#000!important;color:#fff!important}
+#page-home #sunPath{overflow:visible;isolation:isolate}
+#page-home #sun-single-curve{stroke:#8FCBFF!important;stroke-width:3.2!important;stroke-linecap:round;stroke-linejoin:round;fill:none!important;opacity:1!important;filter:none!important}
+#page-home #celestial-body{display:inline!important;visibility:visible!important;opacity:1!important;pointer-events:none}
+#page-home #day-sun-icon,#page-home #night-moon-icon{transform-box:fill-box;transform-origin:center;overflow:visible}
+#page-home #day-sun-icon circle{fill:#78B5E3!important;stroke:#78B5E3!important;stroke-width:1!important}
+#page-home #day-sun-icon g{stroke:#78B5E3!important;stroke-width:2.2!important;stroke-linecap:round}
+#page-home #night-moon-icon path{fill:#4F91C5!important;stroke:#4F91C5!important;stroke-width:.7!important}
+#page-home .sun-horizon{stroke:#fff!important;stroke-width:2.3!important;stroke-dasharray:3 5!important;opacity:.9!important}
+#page-home .sun-times b{color:#fff!important}
+#page-home .sun-times small,#page-home .sun-status-bottom{color:#B8C9D8!important}
+@media(prefers-reduced-motion:reduce){#page-home #celestial-body{transition:none}}
