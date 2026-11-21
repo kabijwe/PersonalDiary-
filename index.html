@@ -3,17 +3,17 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="theme-color" content="#153b66">
-  <meta name="description" content="Kabijwe — a personal diary, poetry journal and memory garden.">
+  <meta name="theme-color" content="#080b10">
+  <meta name="description" content="Mero diary — व्यक्तिगत डायरी र सिर्जनाको संसार।">
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
-  <title>Kabijwe — मेरो डायरी</title>
+  <title>Mero diary — मेरो डायरी</title>
 </head>
 <body>
   <header class="topbar">
-    <a class="brand" href="#" data-page="home" aria-label="Kabijwe home"><span class="brand-mark">क</span><span><b>kabijwe</b><small>~ बिक्रमादित्य</small></span></a>
+    <a class="brand" href="#" data-page="home" aria-label="Mero diary home"><span class="brand-mark">म</span><span><b id="brandName">Mero diary</b><small id="brandSignature">~ बिक्रमादित्य</small></span></a>
     <div class="top-actions">
       <button class="icon-btn" id="themeToggle" aria-label="Toggle theme">◐</button>
       <button class="icon-btn" id="menuToggle" aria-label="Open menu">☰</button>
@@ -227,12 +227,12 @@
         <div class="page-heading"><div><p class="eyebrow">तपाईंको नियन्त्रण</p><h1>सेटिङ्स</h1><p class="muted">आफ्नो डायरीलाई आफ्नै शैलीमा मिलाउनुहोस्।</p></div></div>
         <div class="settings-grid">
           <div class="settings-card"><h3>पहिचान</h3><label>वेबसाइटको नाम<input id="settingBrand" value="kabijwe"></label><label>हस्ताक्षर<input id="settingSignature" value="~बिक्रमादित्य"></label><button class="btn secondary" id="saveSettings">परिवर्तन सुरक्षित</button></div>
-          <div class="settings-card"><h3>रूप रङ</h3><label>मुख्य रङ<input type="color" id="settingAccent" value="#153b66"></label><label>देखावट<select id="settingTheme"><option value="light">उज्यालो</option><option value="dark">गाढा</option><option value="system">उपकरणअनुसार</option></select></label><button class="btn secondary" id="applyTheme">रूप लागू गर्नुहोस्</button></div>
+          <div class="settings-card"><h3>रूप रङ</h3><label>मुख्य रङ<input type="color" id="settingAccent" value="#153b66"></label><label>उज्यालो मोड · पृष्ठभूमि<input type="color" id="settingLightBg" value="#f5f5f3"></label><label>उज्यालो मोड · कार्ड<input type="color" id="settingLightCard" value="#ffffff"></label><label>गाढा मोड · पृष्ठभूमि<input type="color" id="settingDarkBg" value="#080b10"></label><label>गाढा मोड · कार्ड<input type="color" id="settingDarkCard" value="#171b20"></label><label>देखावट<select id="settingTheme"><option value="light">उज्यालो</option><option value="dark">गाढा</option><option value="system">उपकरणअनुसार</option></select></label><button class="btn secondary" id="applyTheme">रूप लागू गर्नुहोस्</button></div>
           <div class="settings-card"><h3>अक्षरको आकार</h3><p class="muted small">सम्पूर्ण डायरीको अक्षर आफ्नो आँखालाई सहज हुने गरी मिलाउनुहोस्।</p><label>फन्ट साइज<select id="settingFontScale"><option value="small">सानो</option><option value="normal">सामान्य</option><option value="large">ठूलो</option><option value="xlarge">अझ ठूलो</option></select></label><button class="btn secondary" id="applyFontScale">अक्षरको आकार लागू गर्नुहोस्</button></div>
           <div class="settings-card"><h3>गोपनीयता</h3><p class="muted small">यो संस्करणमा सामग्री तपाईंको ब्राउजरको स्थानीय भण्डारणमा रहन्छ। यसमा अनलाइन खाता वा सर्भर-सिंक छैन।</p><div class="privacy-pill">🔒 निजी डायरी पूर्वनिर्धारित</div></div>
           <div class="settings-card"><h3>डाटा व्यवस्थापन</h3><p class="muted small">आफ्नो डायरीको प्रतिलिपि डाउनलोड वा पुनः आयात गर्नुहोस्।</p><div class="button-row"><button class="btn secondary" id="exportData">डाटा Export</button><label class="btn secondary import-btn">Import<input type="file" id="importData" accept="application/json"></label></div><button class="text-btn danger" id="clearData">सबै स्थानीय डाटा मेटाउनुहोस्</button></div>
         </div>
-        <div class="about-note"><b>Kabijwe — My Living Diary</b><p>एउटा डायरी, हजारौँ सम्झनाहरू।</p><small>Mobile-first progressive web app · प्रारम्भिक संस्करण</small></div>
+        <div class="about-note"><b>Mero diary — My Living Diary</b><p>एउटा डायरी, हजारौँ सम्झनाहरू।</p><small>Mobile-first progressive web app · प्रारम्भिक संस्करण</small></div>
       </section>
     </main>
   </div>
