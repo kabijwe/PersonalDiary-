@@ -218,3 +218,14 @@ body.dark .letter-context-meta{
 .time-service-status [data-state="warning"]{color:#ffdf9a}
 .time-service-status [data-state="error"]{color:#ffc0c0}
 @media(max-width:650px){.time-service-status{gap:4px 8px;padding:7px 8px;font-size:10px}.time-service-status span{flex:1 1 44%;min-width:0}}
+
+
+/* 24-hour live clock and full immutable location-history snapshots */
+.time-tithi{font-size:12px;line-height:1.4;color:#f4d89a;margin-top:3px;font-family:"Noto Serif Devanagari",serif}
+.history-context-details{margin-top:9px;padding-top:7px;border-top:1px solid var(--line)}
+.history-context-details summary{cursor:pointer;color:var(--navy);font-size:11px;font-weight:600;list-style-position:inside}
+.history-context-details[open] summary{margin-bottom:10px}
+.history-context-details .context-detail-grid{grid-template-columns:repeat(2,minmax(0,1fr));padding:8px;background:var(--canvas);border-radius:8px}
+.history-context-details .context-detail b{color:var(--ink)}
+body.dark .history-context-details summary{color:#f0c878}
+@media(max-width:520px){.time-tithi{font-size:10px;margin-top:2px}.history-context-details .context-detail-grid{grid-template-columns:1fr}}
