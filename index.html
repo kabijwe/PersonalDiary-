@@ -161,6 +161,21 @@
           <div id="quickMediaPreview" class="entry-media-preview"></div>
           <div class="card-bottom"><span class="muted tiny">तपाईंका शब्द र मिडिया यही उपकरणमा सुरक्षित हुन्छन्।</span><button class="btn primary" id="saveQuick">पोस्ट गर्नुहोस् ↗</button></div>
         </article>
+
+        <section class="reminder-manager" aria-labelledby="reminderHeading">
+          <div class="reminder-head">
+            <div><span class="eyebrow">स्थानीय सम्झना</span><h2 id="reminderHeading">रिमाइन्डर</h2><p class="muted">तपाईंको उपकरणमै सुरक्षित हुने सूचना र सम्झना।</p></div>
+            <button type="button" class="btn secondary" id="enableReminderNotifications">सूचना अनुमति दिनुहोस्</button>
+          </div>
+          <div id="reminderAlert" class="reminder-alert" role="alert" aria-live="assertive" hidden></div>
+          <form id="reminderForm" class="reminder-form">
+            <label>के सम्झनुपर्नेछ?<input id="reminderTitle" required maxlength="120" placeholder="औषधि, काम, भेटघाट..."></label>
+            <label>मिति र समय<input id="reminderDueAt" type="datetime-local" required></label>
+            <button class="btn primary" type="submit">＋ रिमाइन्डर सुरक्षित गर्नुहोस्</button>
+          </form>
+          <div id="reminderList" class="reminder-list" aria-live="polite"></div>
+          <p class="reminder-note">सूचना अनुमति तपाईंले आफैँ दिनुपर्छ। एप बन्द वा उपकरणले background काम रोक्दा स्थानीय reminder ठ्याक्कै समयमा चल्ने ग्यारेन्टी हुँदैन; एप खुला हुँदा due reminder जाँच गरिन्छ।</p>
+        </section>
         <div class="home-records-link"><button class="btn secondary" data-goto="records">मेरा पाइलाहरू खोल्नुहोस् →</button></div>
         <div class="section-heading"><div><p class="eyebrow">सुरु गर्नुहोस्</p><h2>तपाईंको सिर्जनात्मक संसार</h2></div></div>
         <div class="shortcut-grid">
