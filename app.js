@@ -10,6 +10,7 @@
   function getContextSnapshot(at=Date.now()){
     const now=at, p=nptP(now), read=id=>$("#"+id)?.textContent?.trim()||"";
     const wx=lsGet("kabijwe.weather")||{};
+    const wxMatches=Number.isFinite(wx.lat)&&Number.isFinite(wx.lon)&&Math.abs(wx.lat-loc.lat)<0.05&&Math.abs(wx.lon-loc.lon)<0.05;
     const exactClock=format24Clock(now);
     const exactDate=`${pad2(p.d)} ${AD_MONTHS[p.m-1]} ${p.y}`;
     return {
@@ -24,10 +25,10 @@
       place:loc.name||read("placeName"),locationMode:modeLabel(),latitude:Number.isFinite(loc.lat)?loc.lat:null,
       longitude:Number.isFinite(loc.lon)?loc.lon:null,altitudeM:Number.isFinite(loc.altitude)?loc.altitude:null,
       accuracyM:Number.isFinite(loc.accuracy)?loc.accuracy:null,
-      weatherTemp:read("weatherTemp"),apparentTemperature:Number.isFinite(wx.apparent)?wx.apparent:null,
-      weatherCondition:read("weatherCondition"),humidity:Number.isFinite(wx.hum)?wx.hum:null,
-      windKmh:Number.isFinite(wx.wind)?wx.wind:null,weatherUpdated:read("weatherUpdated"),
-      weatherFetchedAt:wx.fetched||null,weatherCode:Number.isFinite(wx.code)?wx.code:null
+      weatherTemp:wxMatches?read("weatherTemp"):"",apparentTemperature:wxMatches&&Number.isFinite(wx.apparent)?wx.apparent:null,
+      weatherCondition:wxMatches?read("weatherCondition"):"",humidity:wxMatches&&Number.isFinite(wx.hum)?wx.hum:null,
+      windKmh:wxMatches&&Number.isFinite(wx.wind)?wx.wind:null,weatherUpdated:wxMatches?read("weatherUpdated"):"",
+      weatherFetchedAt:wxMatches?(wx.fetched||null):null,weatherCode:wxMatches&&Number.isFinite(wx.code)?wx.code:null
     };
   }
   function updateCurrentContextFromUI(){currentContext=getContextSnapshot();}
@@ -342,7 +343,11 @@
   function finishLocationAttempt(id,patch){
     const record=state.locationHistory.find(x=>x.id===id);if(!record)return;
     Object.assign(record,patch);
-    if(patch.status==="updated")record.context=getContextSnapshot(Date.now());
+    if(patch.status==="updated"){
+      const capturedAt=Date.now();
+      record.timestamp=capturedAt;record.timestampISO=new Date(capturedAt).toISOString();
+      record.context=getContextSnapshot(capturedAt);
+    }
     persist();renderLocationHistory();
   }
   function recordLocationUpdate(){
