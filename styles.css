@@ -582,3 +582,31 @@ body:not(.dark) .sun-card,body.dark .sun-card,
 .danger{color:#e21e1e!important}
 body.dark .book-page{background:#ffffff!important;color:#000000!important}
 body.dark .book-page :is(*,h1,h2,h3,p,span,b,small){color:#000000!important}
+
+
+/* Apply the sunrise/sunset visual language to the entire diary:
+   monochrome surfaces and typography, red emphasis/graphs, yellow warnings. */
+:root{--ink:#000!important;--muted:#555!important;--paper:#fff!important;--canvas:#fff!important;--line:#dedede!important;--soft:#f4f4f4!important;--accent:#e21e1e!important;--red:#e21e1e!important;--navy:#000!important;--shadow:none!important}
+body:not(.dark){color-scheme:light!important;background:#fff!important;color:#000!important;--ink:#000!important;--muted:#555!important;--paper:#fff!important;--canvas:#fff!important;--line:#dedede!important;--soft:#f4f4f4!important}
+body.dark{color-scheme:dark!important;background:#000!important;color:#fff!important;--ink:#fff!important;--muted:#c8c8c8!important;--paper:#000!important;--canvas:#000!important;--line:#383838!important;--soft:#141414!important}
+body :is(.topbar,.sidebar,.paper-card,.calendar-panel,.settings-card,.entry-row,.entry-card,.poem-card,.memory-card,.shortcut,.modal,.studio-controls,.time-card,.sun-card,.panchang-item,.voice-recorder,.voice-equalizer,.location-coordinates,.location-coordinates strong,.composer-action,.entry-media-pickers label,.record-topic-nav button,.book-customize){background:var(--paper)!important;color:var(--ink)!important;border-color:var(--line)!important;box-shadow:none!important}
+body *:not(svg):not(path):not(circle):not(line):not(stop):not(defs):not(img):not(video):not(canvas){background-image:none!important;box-shadow:none!important;text-shadow:none!important}
+body :is(h1,h2,h3,h4,p,span,b,strong,label,small,li,a,div,summary,.nav-item,.eyebrow,.muted,.time-date-side,.season-line,.place-line,.weather-line,.panchang-item,.sun-detail-grid,.book-context-line){color:var(--ink)}
+body :is(input,textarea,select){background:var(--paper)!important;color:var(--ink)!important;border:1px solid var(--line)!important}
+body :is(button,.btn,.primary,.secondary){box-shadow:none!important;text-shadow:none!important}
+body :is(.primary,.brand-mark,.nav-item.active,.nav-item:hover,.composer-action:active,.panchang-more,.sun-card-live i,.place-pin){background-color:#e21e1e!important;color:#fff!important;border-color:#e21e1e!important}
+body :is(.primary,.brand-mark){color:#fff!important}
+body .secondary{background:var(--paper)!important;color:var(--ink)!important;border:1px solid var(--ink)!important}
+body :is(.warning,.warning-sign,.notification,.toast,[data-state="warning"]){background:#ffdf4d!important;color:#000!important;border:1px solid #e2bd21!important}
+body :is(.warning,.warning-sign,.notification,.toast,[data-state="warning"]) *{color:#000!important}
+body :is(.error,.danger,.error-text,[data-state="error"]){color:#e21e1e!important}
+body .sun-curve,body .sun-visual-wide .sun-curve{stroke:#e21e1e!important;fill:none!important;filter:none!important}
+body .sun-marker,body .sun-visual-wide .sun-marker{fill:#e21e1e!important;stroke:#e21e1e!important;filter:none!important}
+body .sun-horizon,body .sun-visual-wide .sun-horizon{stroke:var(--ink)!important;opacity:.8!important}
+body .sun-endpoint,body .sun-visual-wide .sun-endpoint{fill:var(--ink)!important}
+body .voice-equalizer i,body .voice-progress span{background:#e21e1e!important;box-shadow:none!important}
+body .book-page{background:var(--paper)!important;color:var(--ink)!important;border-color:var(--line)!important}
+body .book-page *{color:var(--ink)!important}
+body .book-page .book-rule{background:#e21e1e!important}
+body .book-page .book-sign{color:#e21e1e!important}
+body .sun-times-top,body .sun-times-top b,body .sun-times-top small,body .sun-svg-time,body .sun-svg-label,body .sun-status-bottom,body .sun-card-heading h2,body .sun-card-heading .eyebrow,body .sun-card-live,body .sun-detail-grid b,body .sun-detail-grid span,body .sun-detail-grid small{color:var(--ink)!important}
