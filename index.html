@@ -24,9 +24,9 @@
     <aside class="sidebar" id="sidebar">
       <div class="side-label">तपाईंको संसार</div>
       <button class="nav-item active" data-page="home"><span>⌂</span> गृहपृष्ठ</button>
-      <button class="nav-item" data-page="records"><span>▤</span> My Records</button>
+      <button class="nav-item" data-page="records"><span>▤</span> डायरी रेकर्ड</button>
       <button class="nav-item" data-page="calendar"><span>▦</span> नेपाली पात्रो</button>
-      <button class="nav-item" data-page="records"><span>✎</span> डायरी र सिर्जना</button>
+      <button class="nav-item" data-page="records"><span>✎</span> सिर्जना</button>
       <button class="nav-item" data-page="letterpad"><span>▧</span> Letterpad Studio</button>
       <button class="nav-item" data-page="memories"><span>◷</span> सम्झनाहरू</button>
       <button class="nav-item" data-page="settings"><span>⚙</span> सेटिङ्स</button>
@@ -168,12 +168,13 @@
 
       <section class="page" id="page-records">
         <div class="page-heading"><div><p class="eyebrow">तपाईंको निजी सङ्ग्रह</p><h1>डायरी रेकर्ड</h1><p class="muted">स्थानका पदचिह्न र तपाईंका सबै डायरी तथा सिर्जना एउटै ठाउँमा।</p></div><button class="btn primary" id="newDiary">＋ नयाँ पोस्ट</button></div>
-        <section class="records-section">
+        <div class="record-topic-nav"><button type="button" data-record-target="recordLocations">⌖ मेरा पहिलेहरू</button><button type="button" data-record-target="recordDiary">▤ डायरी</button></div>
+        <section class="records-section" id="recordLocations">
           <div id="locationMap" class="location-map map-first" role="region" aria-label="GPS स्थान इतिहासको नक्सा"></div><div class="section-heading"><div><p class="eyebrow">GPS · स्थानका रेकर्ड</p><h2>मेरा पहिलेहरू</h2><p class="muted small">हरेक सुरक्षित स्थान नक्सामा एउटा Landmark का रूपमा देखिन्छ।</p></div><span class="privacy-pill">यस उपकरणमै सुरक्षित</span></div>
           
           <div id="locationHistoryList" class="location-history-list"></div>
         </section>
-        <section class="records-section">
+        <section class="records-section" id="recordDiary">
           <div class="section-heading"><div><p class="eyebrow">लेखिएका र सिर्जना गरिएका पोस्ट</p><h2>डायरी र सिर्जना</h2><p class="muted small">तपाईंका सबै पोस्ट, फोटो, भिडियो र आवाजका पानाहरू।</p></div></div>
           <div class="toolbar"><input id="diarySearch" type="search" placeholder="डायरी र सिर्जना खोज्नुहोस्..."><select id="diaryFilter"><option value="all">सबै पोस्ट</option><option value="private">निजी</option><option value="selected">छानिएका साथीहरू</option><option value="friends">साथीहरू</option><option value="public">सार्वजनिक</option><option value="draft">ड्राफ्ट</option></select></div>
           <div id="diaryList" class="entry-list"></div>
