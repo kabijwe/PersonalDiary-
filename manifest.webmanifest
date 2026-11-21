@@ -1,11 +1,11 @@
 {
-  "name": "Kabijwe — My Living Diary",
+  "name": "Mero diary",
   "short_name": "Mero diary",
-  "description": "A personal diary, poetry journal and memory garden.",
+  "description": "Mero diary — व्यक्तिगत डायरी र सिर्जनाको संसार।",
   "start_url": "./",
   "display": "standalone",
-  "background_color": "#f5f5f3",
-  "theme_color": "#153b66",
+  "background_color": "#080b10",
+  "theme_color": "#080b10",
   "lang": "ne",
   "icons": [
     {
