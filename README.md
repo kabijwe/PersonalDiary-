@@ -21,12 +21,14 @@ For PWA installation and service-worker offline caching, use localhost or HTTPS 
 
 ## Included in this starter
 - Responsive mobile and desktop interface
-- Diary entries with private/draft/public-intent labels, search and filtering
+- Diary entries with private/draft/public-intent labels, search and filtering; every post opens as a full Letterhead reading page with its saved context snapshot
 - Poetry and writing collection
 - Personal calendar events (Gregorian calendar view)
 - Six-season overview (rough Gregorian-month approximation)
 - Live Nepal clock and a single sunrise-to-sunset curve with a moving current-time marker
-- Optional, user-initiated GPS location, reverse-geocoded place name and current weather via Open-Meteo
+- Optional, user-initiated GPS location, reverse-geocoded place name, GPS altitude/accuracy when supplied by the device, and current weather via Open-Meteo
+- Expanded immutable per-post time-context snapshots: Nepal time, AD/BS date, weekday/week, Panchang fields and end times, rashis, lunar month, ayana, ghadi-pala, sunrise/sunset, season, coordinates, altitude/accuracy, temperature, feels-like temperature, humidity, wind and weather update time
+- Timestamped local location history for each successful GPS fix and manual place change, including coordinates and later-enriched place/weather details; records are exportable with the local JSON backup
 - Letterpad Studio with live preview, image, colours, page size, saved templates and print-to-PDF
 - Memories with optional image and explicit geolocation permission
 - Local JSON export/import
@@ -42,7 +44,7 @@ This is a functional **local-first prototype**, not a deployed production servic
 - Season display is a rough Gregorian-month approximation, not an authoritative Nepali season calendar.
 - The time card requests GPS only after the user taps its location button. Sunrise/sunset use an approximate NOAA solar calculation for the returned coordinates; weather comes from Open-Meteo and place names from OpenStreetMap Nominatim. These external services require an internet connection.
 - Weather and reverse-geocoding requests send the chosen coordinates to Open-Meteo and OpenStreetMap respectively. Do not enable location unless you are comfortable sharing it with those services.
-- Geolocation is requested only when the user taps "मेरो स्थान थप्नुहोस्". The saved memory stores coordinates as text; it does not expose a live map.
+- Time-card GPS is requested only after the user taps its GPS button. Each successful GPS fix and each manual place change is appended to local timestamped location history. GPS altitude/accuracy are stored only if the device/browser supplies them. A historical map-plotting screen is a planned follow-up, not included yet.
 - Letterpad print-to-PDF uses the browser/device print dialog. Font rendering depends on installed/available fonts and internet access for Google Fonts.
 - Photos are embedded in browser storage as data URLs and limited to 2 MB for memory images / 3 MB for letterpad artwork. Browser storage can be cleared by the operating system or user.
 
@@ -51,7 +53,7 @@ Use Settings → Export regularly. Keep backup JSON files somewhere safe. Do not
 
 ## Next production milestones
 1. Inspect and integrate the existing `~/Documents/kabijwe` project rather than replacing its backend blindly.
-2. Add backend, authentication, server-side authorization, encrypted/private media and cloud sync.
+2. Keep storage strictly local-first; add local backup/restore validation and storage safeguards (no cloud sync or cloud-provider backups).
 3. Integrate a verified BS/AD conversion dataset and festival data.
 4. Implement authoritative Nepali season boundaries.
 5. Add weather/maps APIs with protected server-side keys, caching and offline fallbacks.
@@ -92,24 +94,15 @@ Open the hosted HTTPS URL on your phone, then use the browser menu's **Add to Ho
 
 Tests: `node tests/engine.test.js`, `node tests/ui.test.js` (needs Playwright). See `TEST_REPORT.md`.
 
-## नयाँ सुविधा — Auto Context Snapshot (मिति / तिथि / मौसम)
+## डायरी Letterhead र समयको अनुभूति snapshot
 
-जब तपाईं नयाँ डायरी पोस्ट, कविता वा Letterpad ढाँचा सुरक्षित गर्नुहुन्छ, त्यसबेलाको:
+हरेक डायरी/कविता पोस्ट सुरक्षित गर्दा त्यसबेलाको context object पोस्टमै snapshot का रूपमा राखिन्छ। डायरी सूची, गृहपृष्ठका हालका पोस्ट र कविता सूचीबाट पोस्ट खोल्दा Letterhead पढ्ने दृश्य खुल्छ; त्यसमा लेख, हस्ताक्षर र उपलब्ध समय/पञ्चाङ्ग/स्थान/मौसम विवरण देखिन्छ। Print/PDF पनि यही पोस्ट Letterhead बाट गर्न सकिन्छ। पुराना पोस्टमा पहिले सुरक्षित भएका सीमित विवरण मात्र देखिन्छन्; पुरानो डेटा अनुमान गरेर भरिँदैन।
 
-- वि.सं. मिति
-- तिथि / पक्ष
-- स्थान
-- मौसम (तापक्रम + अवस्था)
-- सूर्योदय / सूर्यास्त (उपलब्ध भएमा)
+Snapshot मा नेपाल समय, AD/BS मिति, बार/हप्ता, तिथि/पक्ष/समाप्ति, नक्षत्र/पाद/समाप्ति, योग/करण, चन्द्र/सूर्य राशि, चन्द्रमास, अयन, घडी-पला, सूर्योदय/सूर्यास्त, ऋतु, स्थानको नाम/स्रोत/निर्देशाङ्क, GPS altitude/accuracy (उपलब्ध भएमा), तापक्रम, महसुस हुने तापक्रम, मौसम अवस्था, आर्द्रता, हावाको गति र मौसम अद्यावधिक समय समावेश हुन्छन्। उपलब्ध नभएका मानहरू खाली वा स्पष्ट रूपमा अनुपलब्ध देखाइन्छन्।
 
-स्वतः `context` फिल्डमा snapshot को रूपमा सुरक्षित हुन्छ।
+### स्थान इतिहास
 
-यो जानकारी:
-- डायरी सूची र हालका पोस्ट कार्डमा देखिन्छ
-- Letterpad प्रिभ्यु र प्रिन्टमा माथि सानो मेटा लाइनको रूपमा आउँछ
-- JSON export मा पनि रहन्छ
-
-**नोट:** Snapshot त्यसबेलाको UI बाट लिइन्छ। राम्रो नतिजाका लागि पहिले “मेरो स्थान, मौसम र पञ्चाङ्ग हेर्नुहोस्” बटन थिचेर डेटा लोड गर्नुहोस्।
+हरेक सफल GPS fix र हातले छानेको स्थान परिवर्तनलाई छुट्टै timestamp, latitude/longitude, स्रोत, उपलब्ध altitude/accuracy सहित स्थानीय `locationHistory` मा राखिन्छ। reverse-geocoding वा मौसम पछि आएमा सोही location record मा विवरण थपिन्छ; event को मूल timestamp जस्ताको तस्तै रहन्छ। इतिहास JSON export मा समावेश हुन्छ। भविष्यको चरणमा यही रेकर्डहरूलाई नक्सामा plot गर्ने UI थपिनेछ। GPS ले altitude नदिएमा मान अनुमान गरिँदैन।
 
 ### API स्रोतहरू
 - **Bikram Sambat + तिथि**: [Trisambat](https://trisambat.com) (`/api/v1/ad/{year}/{month}.json`) — attribution आवश्यक, beta feed।
