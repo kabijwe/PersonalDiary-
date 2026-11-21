@@ -229,3 +229,23 @@ body.dark .letter-context-meta{
 .history-context-details .context-detail b{color:var(--ink)}
 body.dark .history-context-details summary{color:#f0c878}
 @media(max-width:520px){.time-tithi{font-size:10px;margin-top:2px}.history-context-details .context-detail-grid{grid-template-columns:1fr}}
+
+
+/* My Records: separated location landmarks and diary posts */
+.home-thought-card{margin-top:22px}
+.home-records-link{display:flex;justify-content:flex-end;margin-top:14px}
+.records-section{margin-top:26px}
+.records-section+.records-section{margin-top:42px;padding-top:22px;border-top:1px solid var(--line)}
+.location-map{height:340px;min-height:260px;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#e7edf0;margin-bottom:14px;z-index:1}
+.location-map .leaflet-popup-content{max-width:260px;max-height:300px;overflow:auto}
+.location-map .context-detail-grid{grid-template-columns:1fr}
+.entry-media-pickers{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.entry-media-pickers label{min-width:0}
+.entry-media-pickers input{font-size:10px;padding:8px 4px}
+.entry-media-preview{display:grid;gap:10px}
+.entry-media-preview img,.entry-media-preview video{display:block;max-width:100%;max-height:320px;border-radius:10px}
+.entry-media-preview audio{width:100%}
+.post-view-media{display:grid;gap:12px;margin:18px 0}
+.post-view-media img,.post-view-media video{max-width:100%;max-height:420px;border-radius:10px}
+.post-view-media audio{width:100%}
+@media(max-width:520px){.location-map{height:280px}.entry-media-pickers{grid-template-columns:1fr}.home-thought-card{margin-top:14px}}
