@@ -69,7 +69,7 @@ let page_;
   await page.click('#entryForm button[type="submit"]');await page.waitForTimeout(300);
   let state=await page.evaluate(()=>JSON.parse(localStorage.getItem("kabijwe.v1")));
   ok("diary entry created with Nepal date + context",state.entries.length===1&&state.entries[0].date==="2026-11-21"&&!!state.entries[0].context.bsDate,JSON.stringify(state.entries[0].context).slice(0,200));
-  await page.click("[data-edit]");await page.fill("#entryTitle","सम्पादित");await page.click('#entryForm button[type="submit"]');await page.waitForTimeout(200);
+  await page.click("[data-view]");ok("diary post opens in Letterhead with context details",await page.locator("#postLetterhead").count()===1&&await page.locator(".context-detail-grid").count()===1);await page.click("#postEditBtn");await page.fill("#entryTitle","सम्पादित");await page.click('#entryForm button[type="submit"]');await page.waitForTimeout(200);
   state=await page.evaluate(()=>JSON.parse(localStorage.getItem("kabijwe.v1")));ok("diary edit works",state.entries[0].title==="सम्पादित");
   await page.fill("#diarySearch","सम्पादित");ok("diary search works",await page.locator(".entry-row").count()===1);
   const [dl]=await Promise.all([page.waitForEvent("download"),page.evaluate(()=>{showPage&&0}).catch(()=>{}),go("settings").then(()=>page.click("#exportData"))]);
@@ -99,7 +99,7 @@ let page_;
   await ctx.close();
   ({ctx,page,errors}=await setup(browser,{geo:{latitude:29.30,longitude:80.58}}));
   await page.goto(BASE);await page.waitForTimeout(1000);await page.click("#timeLocationBtn");await page.waitForTimeout(1500);
-  ok("GPS granted: labelled GPS बाट",/GPS बाट/.test(await t("locationMode")),await t("locationMode")+" | "+await t("placeName"));
+  ok("GPS granted: labelled GPS बाट",/GPS बाट/.test(await t("locationMode")),await t("locationMode")+" | "+await t("placeName"));const gpsHistory=await page.evaluate(()=>JSON.parse(localStorage.getItem("kabijwe.v1")).locationHistory||[]);ok("successful GPS update saved in timestamped location history",gpsHistory.length===1&&!!gpsHistory[0].timestamp&&Number.isFinite(gpsHistory[0].latitude)&&Number.isFinite(gpsHistory[0].longitude),JSON.stringify(gpsHistory[0]));
   await ctx.close();
 
   // ---------- C: everything offline from first load ----------
