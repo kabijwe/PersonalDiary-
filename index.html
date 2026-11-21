@@ -168,7 +168,7 @@
         </section>
         <section class="records-section">
           <div class="section-heading"><div><p class="eyebrow">लेखिएका र सिर्जना गरिएका पोस्ट</p><h2>डायरी</h2><p class="muted small">टेक्स्ट, फोटो, अडियो र भिडियो पोस्ट। पोस्ट खोल्दा Letterhead मा हेर्न र सम्पादन गर्न सकिन्छ।</p></div></div>
-          <div class="toolbar"><input id="diarySearch" type="search" placeholder="डायरी र सिर्जना खोज्नुहोस्..."><select id="diaryFilter"><option value="all">सबै पोस्ट</option><option value="private">निजी</option><option value="public">प्रकाशनका लागि</option><option value="draft">ड्राफ्ट</option></select></div>
+          <div class="toolbar"><input id="diarySearch" type="search" placeholder="डायरी र सिर्जना खोज्नुहोस्..."><select id="diaryFilter"><option value="all">सबै पोस्ट</option><option value="private">निजी</option><option value="selected">छानिएका साथीहरू</option><option value="friends">साथीहरू</option><option value="public">सार्वजनिक</option><option value="draft">ड्राफ्ट</option></select></div>
           <div id="diaryList" class="entry-list"></div>
         </section>
       </section>
@@ -255,10 +255,10 @@
       </div>
       <div id="entryMediaPreview" class="entry-media-preview"></div>
       <p class="tiny muted">मिडिया पोस्ट स्थानीय उपकरणमै सुरक्षित हुन्छन्। प्रति फाइल २ MB सम्मको फाइल छान्नुहोस्।</p>
-      <div class="two-fields"><label>प्रकार<select id="entryType"><option value="diary">डायरी</option><option value="poem">कविता / लेख</option></select></label><label>गोपनीयता<select id="entryVisibility"><option value="private">निजी</option><option value="draft">ड्राफ्ट</option><option value="public">सार्वजनिक जस्तो चिन्ह लगाउने</option></select></label></div>
+      <div class="two-fields"><label>प्रकार<select id="entryType"><option value="diary">डायरी</option><option value="poem">कविता / लेख</option></select></label><label>गोपनीयता<select id="entryVisibility"><option value="private">🔒 निजी — म मात्र</option><option value="selected">◉ छानिएका साथीहरू</option><option value="friends">♧ साथीहरू</option><option value="public">◎ सार्वजनिक</option><option value="draft">ड्राफ्ट</option></select></label></div>
       <label>ट्याग<input id="entryTags" placeholder="यात्रा, सम्झना, जीवन..."></label>
       <div class="modal-actions"><button type="button" class="btn secondary" id="deleteEntry">मेटाउनुहोस्</button><button type="submit" class="btn primary">सुरक्षित गर्नुहोस्</button></div>
-      <p class="tiny muted">“सार्वजनिक” भनेको यस स्थानीय संस्करणमा सार्वजनिक रूपमा अनलाइन प्रकाशित भएको होइन; यो केवल प्रकाशनका लागि तयार भनेर चिन्ह हो।</p>
+      <p class="tiny muted">गोपनीयता स्तरले पोस्टको दर्शक वर्ग चिनाउँछ। हालको संस्करण पूर्ण रूपमा स्थानीय छ—साथी छनोट, खाता र अनलाइन प्रकाशन सुविधा जोडिएको छैन; त्यसैले यी स्तरहरू अहिले स्थानीय वर्गीकरण मात्र हुन्।</p>
     </form>
   </dialog>
 
