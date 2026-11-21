@@ -37,6 +37,31 @@
       <section class="page active" id="page-home">
         <div class="hero-grid">
           <article class="season-card time-card" id="timeCard" aria-labelledby="timeCardTitle">
+        <article class="sun-card" aria-labelledby="sunCardTitle">
+          <div class="sun-card-heading">
+            <div><span class="eyebrow">आजको सूर्यचक्र</span><h2 id="sunCardTitle">सूर्योदयदेखि सूर्यास्तसम्म</h2></div>
+            <span class="sun-card-live"><i></i> स्थानीय समय</span>
+          </div>
+          <div class="sun-visual sun-visual-wide">
+            <svg id="sunPath" viewBox="0 0 640 104" role="img" aria-label="सूर्योदयदेखि सूर्यास्तसम्मको एकल सूर्यचक्र">
+              <defs><linearGradient id="sunArcGrad" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#7d1111"/><stop offset="48%" stop-color="#e21e1e"/><stop offset="100%" stop-color="#ff4938"/></linearGradient></defs>
+              <path d="M18 76 H622" class="sun-horizon"/>
+              <path d="M18 76 C132 76 190 16 320 16 C450 16 508 76 622 76" class="sun-curve"/>
+              <circle cx="18" cy="76" r="4" class="sun-endpoint"/><circle cx="622" cy="76" r="4" class="sun-endpoint"/>
+              <text id="sunriseTime" x="18" y="56" text-anchor="start" class="sun-svg-time">--:--</text>
+              <text x="18" y="68" text-anchor="start" class="sun-svg-label">सूर्योदय</text>
+              <text id="sunsetTime" x="622" y="56" text-anchor="end" class="sun-svg-time">--:--</text>
+              <text x="622" y="68" text-anchor="end" class="sun-svg-label">सूर्यास्त</text>
+              <circle id="sunMarker" cx="18" cy="76" r="5" class="sun-marker"/>
+            </svg>
+            <div class="sun-status sun-status-bottom" id="sunStatus">सूर्यचक्र गणना हुँदैछ…</div>
+          </div>
+          <div class="sun-detail-grid">
+            <div><span>सूर्योदय</span><b id="sunriseDetail">--</b><small>पूर्वी क्षितिज</small></div>
+            <div><span>सूर्यास्त</span><b id="sunsetDetail">--</b><small>पश्चिमी क्षितिज</small></div>
+            <div><span>घडी · पला</span><b id="sunGhadiDetail">गणना हुँदैछ…</b><small>सूर्योदयदेखि बितेको समय</small></div>
+          </div>
+        </article>
             <div class="time-card-head">
               <span class="eyebrow light" id="timeCardTitle">समयको अनुभूति</span>
               <span class="live-dot" aria-label="Live"></span>
@@ -121,39 +146,16 @@
             <p class="time-privacy">GPS बटन थिचेपछि मात्र स्थान माग्छ; पृष्ठभूमिमा ट्र्याक गर्दैन।</p>
           </article>
         </div>
-        <article class="sun-card" aria-labelledby="sunCardTitle">
-          <div class="sun-card-heading">
-            <div><span class="eyebrow">आजको सूर्यचक्र</span><h2 id="sunCardTitle">सूर्योदयदेखि सूर्यास्तसम्म</h2></div>
-            <span class="sun-card-live"><i></i> स्थानीय समय</span>
-          </div>
-          <div class="sun-visual sun-visual-wide">
-            <svg id="sunPath" viewBox="0 0 640 104" role="img" aria-label="सूर्योदयदेखि सूर्यास्तसम्मको एकल सूर्यचक्र">
-              <defs><linearGradient id="sunArcGrad" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#7d1111"/><stop offset="48%" stop-color="#e21e1e"/><stop offset="100%" stop-color="#ff4938"/></linearGradient></defs>
-              <path d="M18 76 H622" class="sun-horizon"/>
-              <path d="M18 76 C132 76 190 16 320 16 C450 16 508 76 622 76" class="sun-curve"/>
-              <circle cx="18" cy="76" r="4" class="sun-endpoint"/><circle cx="622" cy="76" r="4" class="sun-endpoint"/>
-              <text id="sunriseTime" x="18" y="56" text-anchor="start" class="sun-svg-time">--:--</text>
-              <text x="18" y="68" text-anchor="start" class="sun-svg-label">सूर्योदय</text>
-              <text id="sunsetTime" x="622" y="56" text-anchor="end" class="sun-svg-time">--:--</text>
-              <text x="622" y="68" text-anchor="end" class="sun-svg-label">सूर्यास्त</text>
-              <circle id="sunMarker" cx="18" cy="76" r="5" class="sun-marker"/>
-            </svg>
-            <div class="sun-status sun-status-bottom" id="sunStatus">सूर्यचक्र गणना हुँदैछ…</div>
-          </div>
-          <div class="sun-detail-grid">
-            <div><span>सूर्योदय</span><b id="sunriseDetail">--</b><small>पूर्वी क्षितिज</small></div>
-            <div><span>सूर्यास्त</span><b id="sunsetDetail">--</b><small>पश्चिमी क्षितिज</small></div>
-            <div><span>घडी · पला</span><b id="sunGhadiDetail">गणना हुँदैछ…</b><small>सूर्योदयदेखि बितेको समय</small></div>
-          </div>
-        </article>
         <article class="paper-card writing-card home-thought-card social-composer">
           <div class="card-top"><span class="eyebrow">आजको डायरी</span><label class="quick-privacy">गोपनीयता <select id="quickVisibility"><option value="private">🔒 निजी</option><option value="selected">छानिएका साथीहरू</option><option value="friends">साथीहरू</option><option value="public">सार्वजनिक</option></select></label></div>
           <h2>आज मनमा के चलिरहेको छ?</h2>
           <textarea id="quickEntry" rows="4" placeholder="आजका विचार, अनुभूति र साना-साना खुसीहरू यहाँ लेख्नुहोस्..."></textarea>
           <div class="composer-tools">
-            <label class="composer-action" for="quickPhoto"><span>▧</span> फोटो</label><input id="quickPhoto" type="file" accept="image/*" hidden>
-            <label class="composer-action" for="quickVideo"><span>▷</span> भिडियो</label><input id="quickVideo" type="file" accept="video/*" hidden>
-            <label class="composer-action" for="quickAudio"><span>♫</span> अडियो</label><input id="quickAudio" type="file" accept="audio/*" hidden>
+            <label class="composer-action" for="quickPhotoCamera"><span>▣</span> क्यामेरा</label><input id="quickPhotoCamera" type="file" accept="image/*" capture="environment" hidden>
+            <label class="composer-action" for="quickPhoto"><span>▧</span> फोटो अपलोड</label><input id="quickPhoto" type="file" accept="image/*" hidden>
+            <label class="composer-action" for="quickVideoCamera"><span>●</span> भिडियो खिच्नुहोस्</label><input id="quickVideoCamera" type="file" accept="video/*" capture="environment" hidden>
+            <label class="composer-action" for="quickVideo"><span>▷</span> भिडियो अपलोड</label><input id="quickVideo" type="file" accept="video/*" hidden>
+            <label class="composer-action" for="quickAudio"><span>♫</span> अडियो अपलोड</label><input id="quickAudio" type="file" accept="audio/*" hidden>
             <button class="composer-action" id="quickVoice"><span>🎙</span> आवाज रेकर्ड</button>
           </div>
           <div id="quickMediaPreview" class="entry-media-preview"></div>
@@ -262,12 +264,14 @@
       <div class="two-fields"><label>मिति<input id="entryDate" type="date"></label><label>मूड<select id="entryMood"><option>शान्त</option><option>खुसी</option><option>उत्साहित</option><option>सोचमग्न</option><option>उदास</option><option>कृतज्ञ</option></select></label></div>
       <label>आफ्ना शब्दहरू<textarea id="entryContent" rows="8" placeholder="आजको कथा यहाँ लेख्नुहोस्..."></textarea></label>
       <div class="entry-media-pickers">
-        <label>▧ फोटो<input id="entryPhoto" type="file" accept="image/*"></label>
-        <label>♫ अडियो<input id="entryAudio" type="file" accept="audio/*"></label>
-        <label>▷ भिडियो<input id="entryVideo" type="file" accept="video/*"></label>
+        <label>▣ क्यामेराबाट फोटो<input id="entryPhotoCamera" type="file" accept="image/*" capture="environment"></label>
+        <label>▧ फोटो अपलोड<input id="entryPhoto" type="file" accept="image/*"></label>
+        <label>● भिडियो खिच्नुहोस्<input id="entryVideoCamera" type="file" accept="video/*" capture="environment"></label>
+        <label>▷ भिडियो अपलोड<input id="entryVideo" type="file" accept="video/*"></label>
+        <label>♫ अडियो अपलोड<input id="entryAudio" type="file" accept="audio/*"></label>
       </div>
       <section class="voice-recorder"><div class="voice-recorder-head"><b>🎙 आवाज रेकर्डर</b><span id="voiceStatus">रेकर्ड गर्न तयार</span></div>
-        <div class="voice-progress"><span id="voiceProgress"></span></div><div class="voice-timer" id="voiceTimer">00:00</div>
+        <div class="voice-equalizer" id="voiceEqualizer" aria-label="रेकर्ड भइरहेको आवाजको तरंग"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="voice-progress"><span id="voiceProgress"></span></div><div class="voice-timer" id="voiceTimer">00:00</div>
         <div class="voice-controls"><button type="button" class="btn secondary" id="voiceStart">रेकर्ड सुरु</button><button type="button" class="btn secondary" id="voicePause" disabled>पज</button><button type="button" class="btn secondary" id="voiceStop" disabled>रोक्नुहोस्</button><button type="button" class="btn primary" id="voiceSave" disabled>रेकर्ड सुरक्षित</button></div>
         <p class="tiny muted">अरू व्यक्तिको आवाज रेकर्ड गर्नुअघि उहाँको स्पष्ट अनुमति लिनुहोस्। अनुमति बिना गोप्य रूपमा रेकर्ड नगर्नुहोस्।</p></section>
       <div id="entryMediaPreview" class="entry-media-preview"></div>
