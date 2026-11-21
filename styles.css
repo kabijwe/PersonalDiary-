@@ -9,16 +9,16 @@ body.dark{--ink:#ecebe7;--muted:#a4a6ab;--paper:#20252c;--canvas:#171b20;--line:
 /* Living time card — Nepali-first, navy + warm gold */
 .time-card{padding:16px 16px 14px;min-height:0;background:linear-gradient(160deg,#163a62 0%,#0f2a48 100%);border-color:#2a4d70;border-radius:16px;overflow:hidden}
 .time-card-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:2px}
-.live-dot{width:7px;height:7px;border-radius:50%;background:#f0c878;box-shadow:0 0 0 3px #f0c87828}
+.live-dot{width:7px;height:7px;border-radius:50%;background:#C40014;box-shadow:0 0 0 3px #C4001428}
 .time-date{display:flex;align-items:flex-end;justify-content:space-between;gap:10px;margin:8px 0 8px}
 .nepali-clock{font-family:"Noto Serif Devanagari",serif;font-size:clamp(28px,7.5vw,36px);line-height:1.15;color:#fff;font-variant-numeric:tabular-nums}
 .time-weekday{font-size:13px;color:#d3dfeb;margin-top:2px}
 .time-date-side{text-align:right;display:flex;flex-direction:column;gap:2px;padding-bottom:2px;min-width:0}
-.time-date-side b{font-size:13px;color:#f4d89a;font-weight:600}
+.time-date-side b{font-size:13px;color:#8B0010;font-weight:600}
 .time-date-side span{font-size:13px;color:#dbe5ef;overflow-wrap:anywhere}
 .time-date-side span#timeWeekNumber{font-size:11px;color:#a9bed2}
 .season-line{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;margin:6px 0 2px;font-size:13px}
-.season-line #seasonName{color:#f0c878;font-weight:600;font-family:"Noto Serif Devanagari",serif}
+.season-line #seasonName{color:#C40014;font-weight:600;font-family:"Noto Serif Devanagari",serif}
 .season-line #seasonDesc{color:#bccddd;font-size:12px;line-height:1.5}
 
 /* One smooth sunrise → sunset curve */
@@ -26,8 +26,8 @@ body.dark{--ink:#ecebe7;--muted:#a4a6ab;--paper:#20252c;--canvas:#171b20;--line:
 .sun-visual svg{width:100%;height:auto;display:block;overflow:visible;max-height:64px}
 .sun-curve{fill:none;stroke:url(#sunArcGrad);stroke-width:2.2;stroke-linecap:round}
 .sun-horizon{stroke:#ffffff40;stroke-width:1;stroke-dasharray:2.5 3.5}
-.sun-endpoint{fill:#f0c878}
-.sun-marker{fill:#fff6d8;stroke:#e9c77e;stroke-width:1.6;filter:drop-shadow(0 0 3px #ffd27a88)}
+.sun-endpoint{fill:#C40014}
+.sun-marker{fill:#FCE8E9;stroke:#C40014;stroke-width:1.6;filter:drop-shadow(0 0 3px #C4001488)}
 .sun-labels{display:grid;grid-template-columns:1fr 1.3fr 1fr;align-items:start;gap:4px}
 .sun-labels span{display:flex;flex-direction:column;gap:1px}
 .sun-labels span:nth-child(2){text-align:center}
@@ -39,11 +39,11 @@ body.dark{--ink:#ecebe7;--muted:#a4a6ab;--paper:#20252c;--canvas:#171b20;--line:
 /* Place + weather */
 .time-weather{margin-top:8px;padding-top:9px;border-top:1px solid #ffffff18}
 .place-line{display:flex;align-items:center;gap:6px;font-size:13px;color:#e1eaf3;min-width:0;flex-wrap:wrap}
-.place-pin{font-size:15px;color:#f0c878;flex-shrink:0}
+.place-pin{font-size:15px;color:#C40014;flex-shrink:0}
 #placeName{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%}
 .mode-badge{font-size:10.5px;padding:2px 8px;border-radius:20px;border:1px solid #ffffff30;color:#d9e4ef;white-space:nowrap}
 .mode-badge[data-mode="gps"]{border-color:#7fd1a0;color:#a9e8c3}
-.mode-badge[data-mode="manual"]{border-color:#f0c878;color:#f4d89a}
+.mode-badge[data-mode="manual"]{border-color:#C40014;color:#8B0010}
 .weather-line{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;margin-top:4px}
 .weather-line b{font-family:"Noto Serif Devanagari",serif;font-size:22px;color:#fff;font-weight:500}
 .weather-line span{font-size:13px;color:#d3dfeb}
@@ -54,7 +54,7 @@ body.dark{--ink:#ecebe7;--muted:#a4a6ab;--paper:#20252c;--canvas:#171b20;--line:
 .panchang-panel{display:block!important;visibility:visible!important;margin-top:12px;padding:11px 0 0;border-top:1px solid #ffffff1c}
 .panchang-heading{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:8px}
 .panchang-kicker{font-size:10.5px;letter-spacing:.08em;color:#a9bed2}
-.panchang-heading h3{font-family:"Noto Serif Devanagari",serif;font-size:17px;font-weight:500;color:#f0c878;margin:1px 0 0}
+.panchang-heading h3{font-family:"Noto Serif Devanagari",serif;font-size:17px;font-weight:500;color:#C40014;margin:1px 0 0}
 .panchang-status{font-size:11px;color:#c9d8e7;text-align:right;line-height:1.4;max-width:60%}
 .panchang-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
 .panchang-item{min-width:0;padding:8px 9px;border:1px solid #ffffff18;border-radius:9px;background:#ffffff09;display:flex;flex-direction:column;gap:2px}
@@ -62,19 +62,19 @@ body.dark{--ink:#ecebe7;--muted:#a4a6ab;--paper:#20252c;--canvas:#171b20;--line:
 .panchang-item b{font-family:"Noto Serif Devanagari",serif;font-size:15px;font-weight:500;color:#fff;overflow-wrap:anywhere;line-height:1.35}
 .panchang-item span{font-size:11.5px;color:#c3d2e1;line-height:1.45;overflow-wrap:anywhere}
 .panchang-item span:empty{display:none}
-.panchang-primary{background:#ffffff12;border-color:#e9c77e45}
-.panchang-primary b{font-size:17px;color:#f4d89a}
+.panchang-primary{background:#ffffff12;border-color:#C4001445}
+.panchang-primary b{font-size:17px;color:#8B0010}
 .panchang-wide{grid-column:1/-1}
 .panchang-foot{font-size:11px;line-height:1.6;color:#a9bbcd;margin:9px 0 0}
-.panchang-foot a{color:#f0c878;text-decoration:underline}
-.retry-btn{margin-top:8px;border:1px solid #f0c878;background:transparent;color:#f4d89a;border-radius:9px;padding:8px 12px;font-size:12.5px;width:100%}
+.panchang-foot a{color:#C40014;text-decoration:underline}
+.retry-btn{margin-top:8px;border:1px solid #C40014;background:transparent;color:#8B0010;border-radius:9px;padding:8px 12px;font-size:12.5px;width:100%}
 .retry-btn[hidden]{display:none}
 
 /* Location controls */
 .loc-controls{display:grid;gap:8px;margin-top:12px}
-.location-button{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:10px 12px;font-size:13px;border-radius:10px;border:1px solid #f0c87866;background:linear-gradient(135deg,#f0c87822,#f0c87810);color:#f8e3b4;font-weight:600;transition:background .2s}
-.location-button .loc-icon{font-size:16px;color:#f0c878}
-.location-button:hover,.location-button:focus-visible{background:#f0c87833;outline:none}
+.location-button{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:10px 12px;font-size:13px;border-radius:10px;border:1px solid #C4001466;background:linear-gradient(135deg,#C4001422,#C4001410);color:#f8e3b4;font-weight:600;transition:background .2s}
+.location-button .loc-icon{font-size:16px;color:#C40014}
+.location-button:hover,.location-button:focus-visible{background:#C4001433;outline:none}
 .location-button:active{transform:scale(.99)}
 .location-button:disabled{opacity:.6;cursor:wait}
 .manual-place{display:flex;flex-direction:column;gap:4px;font-size:11.5px;color:#b3c5d6;font-weight:400}
@@ -82,7 +82,7 @@ body.dark{--ink:#ecebe7;--muted:#a4a6ab;--paper:#20252c;--canvas:#171b20;--line:
 .time-privacy{font-size:11px;color:#8ea4ba;margin:8px 0 0;text-align:center}
 body.dark .time-card{background:linear-gradient(160deg,#132a42 0%,#0e1f32 100%);border-color:#243d56}
 .season-chips span small{display:block;font-size:9.5px;color:#777;font-family:"DM Sans",sans-serif}
-.season-chips span.current{background:var(--navy);color:#fff;box-shadow:0 0 0 2px #f0c878}
+.season-chips span.current{background:var(--navy);color:#fff;box-shadow:0 0 0 2px #C40014}
 .season-chips span.current small{color:#d5dfeb}
 body.dark .season-chips span small{color:#9aa3ad}
 
@@ -214,20 +214,20 @@ body.dark .letter-context-meta{
 .time-service-status span{display:inline-flex;align-items:center;gap:4px;max-width:100%;overflow-wrap:anywhere}
 .time-service-status span::before{content:"";width:6px;height:6px;flex:0 0 6px;border-radius:50%;background:currentColor;opacity:.8}
 .time-service-status [data-state="success"]{color:#b9f5d0}
-.time-service-status [data-state="loading"]{color:#ffe6a3}
-.time-service-status [data-state="warning"]{color:#ffdf9a}
+.time-service-status [data-state="loading"]{color:#C40014}
+.time-service-status [data-state="warning"]{color:#C40014}
 .time-service-status [data-state="error"]{color:#ffc0c0}
 @media(max-width:650px){.time-service-status{gap:4px 8px;padding:7px 8px;font-size:10px}.time-service-status span{flex:1 1 44%;min-width:0}}
 
 
 /* 24-hour live clock and full immutable location-history snapshots */
-.time-tithi{font-size:12px;line-height:1.4;color:#f4d89a;margin-top:3px;font-family:"Noto Serif Devanagari",serif}
+.time-tithi{font-size:12px;line-height:1.4;color:#8B0010;margin-top:3px;font-family:"Noto Serif Devanagari",serif}
 .history-context-details{margin-top:9px;padding-top:7px;border-top:1px solid var(--line)}
 .history-context-details summary{cursor:pointer;color:var(--navy);font-size:11px;font-weight:600;list-style-position:inside}
 .history-context-details[open] summary{margin-bottom:10px}
 .history-context-details .context-detail-grid{grid-template-columns:repeat(2,minmax(0,1fr));padding:8px;background:var(--canvas);border-radius:8px}
 .history-context-details .context-detail b{color:var(--ink)}
-body.dark .history-context-details summary{color:#f0c878}
+body.dark .history-context-details summary{color:#C40014}
 @media(max-width:520px){.time-tithi{font-size:10px;margin-top:2px}.history-context-details .context-detail-grid{grid-template-columns:1fr}}
 
 
@@ -254,8 +254,8 @@ body.dark .history-context-details summary{color:#f0c878}
 /* Panchang: show the three essential elements first; expand the rest on demand. */
 .panchang-extra{display:none}
 .panchang-panel.expanded .panchang-extra{display:flex}
-.panchang-more{display:block;width:100%;margin-top:8px;padding:9px 12px;border:1px solid #f0c87855;border-radius:9px;background:#ffffff0b;color:#f4d89a;font:600 13px inherit;text-align:center;cursor:pointer}
-.panchang-more:focus-visible{outline:2px solid #f0c878;outline-offset:2px}
+.panchang-more{display:block;width:100%;margin-top:8px;padding:9px 12px;border:1px solid #C4001455;border-radius:9px;background:#ffffff0b;color:#8B0010;font:600 13px inherit;text-align:center;cursor:pointer}
+.panchang-more:focus-visible{outline:2px solid #C40014;outline-offset:2px}
 .panchang-panel:not(.expanded) .panchang-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
 .panchang-panel:not(.expanded) .panchang-item{min-height:66px;padding:9px 8px;justify-content:center}
 .panchang-panel:not(.expanded) .panchang-item small{font-size:11px;line-height:1.4}
@@ -419,27 +419,27 @@ input,textarea,select,.toolbar input,.toolbar select{background:#0d1219;color:#f
 #page-home .sun-detail-grid{margin-top:7px;padding-top:8px}
 #page-home .sun-detail-grid b{color:#f7f8fa}
 #page-home .time-card-head{padding-top:13px;margin-bottom:3px}
-#page-home .time-card-head .eyebrow{color:#f0cc70}
+#page-home .time-card-head .eyebrow{color:#C40014}
 #page-home .nepali-clock{color:#fff;font-size:clamp(26px,6vw,34px)}
 #page-home .time-weekday,#page-home .time-date-side span{color:#d4deea}
-#page-home .time-date-side b{color:#f1cc68}
-#page-home .season-line{color:#f1cc68}
+#page-home .time-date-side b{color:#C40014}
+#page-home .season-line{color:#C40014}
 #page-home .season-line #seasonDesc{color:#c1ccd8}
 #page-home .time-weather{border-top:1px solid #ffffff20}
 #page-home .place-line,#page-home .location-coordinates{color:#d7e0e9}
-#page-home .place-pin,#page-home .location-coordinates strong{color:#f1cc68}
-#page-home .weather-line b{color:#f1cc68}
+#page-home .place-pin,#page-home .location-coordinates strong{color:#C40014}
+#page-home .weather-line b{color:#C40014}
 #page-home .weather-line #weatherCondition{color:#f4f6f8}
 #page-home .weather-line #weatherExtra,#page-home .weather-updated{color:#b6c3d0}
 #page-home .panchang-panel{border-top:1px solid #ffffff20}
-#page-home .panchang-kicker{color:#f1cc68}
+#page-home .panchang-kicker{color:#C40014}
 #page-home .panchang-heading h3{color:#fff}
 #page-home .panchang-status{color:#9dc9f5}
 #page-home .panchang-item{background:#101b29;border:1px solid #263b52}
 #page-home .panchang-item small{color:#9fb0c2}
 #page-home .panchang-item b{color:#fff}
 #page-home .panchang-item span{color:#c0cbd7}
-#page-home .panchang-more{color:#f1cc68}
+#page-home .panchang-more{color:#C40014}
 #page-home .panchang-foot,#page-home .time-privacy{color:#aab7c5}
 #page-home .loc-controls .location-button{background:#15283c;color:#fff;border-color:#2c4c6b}
 #page-home .manual-place{color:#b9c6d4}
@@ -448,17 +448,17 @@ input,textarea,select,.toolbar input,.toolbar select{background:#0d1219;color:#f
 #page-home .home-thought-card{margin-top:15px}
 #page-home .home-thought-card h2{color:#fff}
 #page-home .home-thought-card textarea{color:#f4f6f9}
-#page-home .home-thought-card .eyebrow{color:#f1cc68}
+#page-home .home-thought-card .eyebrow{color:#C40014}
 .composer-tools{gap:7px}
 .composer-action{background:#111b27;color:#eaf1f8;border-color:#2b3c50;padding:9px 11px}
-.composer-action span{color:#f1cc68}
+.composer-action span{color:#C40014}
 .composer-action:active{border-color:#e73535}
 .voice-recorder{background:#090e15;border:1px solid #2c3a4b;color:#f4f6f9}
-.voice-recorder-head b{color:#f1cc68}
+.voice-recorder-head b{color:#C40014}
 .voice-equalizer{height:42px;display:flex;align-items:center;justify-content:center;gap:3px;padding:3px 4px;background:linear-gradient(90deg,#101a27,#0b1017);border:1px solid #26384d;border-radius:9px;overflow:hidden}
-.voice-equalizer i{display:block;flex:1;max-width:7px;height:4px;min-height:4px;border-radius:5px;background:linear-gradient(180deg,#f1cc68 0%,#e73535 58%,#2478c8 100%);transition:height .075s ease;box-shadow:0 0 7px #e7353530}
-.voice-progress{background:#202c3a}.voice-progress span{background:linear-gradient(90deg,#2478c8,#e73535,#f1cc68)}
-.voice-timer{color:#f1cc68!important;font-variant-numeric:tabular-nums}
+.voice-equalizer i{display:block;flex:1;max-width:7px;height:4px;min-height:4px;border-radius:5px;background:linear-gradient(180deg,#C40014 0%,#e73535 58%,#2478c8 100%);transition:height .075s ease;box-shadow:0 0 7px #e7353530}
+.voice-progress{background:#202c3a}.voice-progress span{background:linear-gradient(90deg,#2478c8,#e73535,#C40014)}
+.voice-timer{color:#C40014!important;font-variant-numeric:tabular-nums}
 .book-page{background:#fffdf6!important;color:#25221d!important;border-color:#d8cfbd}
 .book-head{color:#6d5c48}.book-rule{background:linear-gradient(90deg,#d62e32,#d8b85e,transparent)}
 .book-date-row{color:#2c5f91}.book-bs-date{color:#8a6c36}
@@ -496,7 +496,7 @@ body.dark :is(input,textarea,select){background:#000000;color:#ffffff;border-col
 body :is(.primary,.brand-mark,.nav-item.active){background:#C40014;color:#ffffff;border-color:#C40014}
 body :is(.primary,.brand-mark,.nav-item.active) *{color:#ffffff}
 body .secondary,body .small-btn{background:var(--paper);color:var(--ink);border:1px solid var(--ink)}
-body :is(.warning,.warning-sign,.notification,[data-state="warning"],.reminder-alert){background:#FFD60A;color:#000000;border-color:#000000}
+body :is(.warning,.warning-sign,.notification,[data-state="warning"],.reminder-alert){background:#8B0010;color:#000000;border-color:#000000}
 body :is(.warning,.warning-sign,.notification,[data-state="warning"],.reminder-alert) *{color:#000000}
 body :is(.error,.danger,.error-text,[data-state="error"]){color:#C40014}
 #page-home .time-card,#page-home .sun-card{background:#000000;color:#ffffff;border-color:#333333;box-shadow:none}
@@ -525,7 +525,7 @@ body .panchang-panel .panchang-grid{grid-template-columns:repeat(3,minmax(0,1fr)
 body .panchang-more{display:none}
 #timeLocationBtn{background:#C40014;color:#ffffff;border:1px solid #C40014}
 #timeLocationBtn *{color:#ffffff}
-#gpsServiceStatus[data-state="error"]{background:#FFD60A;color:#000000;border:1px solid #000000}
+#gpsServiceStatus[data-state="error"]{background:#8B0010;color:#000000;border:1px solid #000000}
 #gpsServiceStatus[data-state="success"]{background:#000000;color:#ffffff;border:1px solid #ffffff}
 body.dark #gpsServiceStatus[data-state="success"]{background:#ffffff;color:#000000}
 .gps-help{color:var(--ink);border-left:3px solid #FF2D20}
@@ -576,3 +576,30 @@ body.dark #gpsServiceStatus[data-state="success"]{background:#ffffff;color:#0000
 }
 body.dark .location-stat,body.dark .location-latest,body.dark .location-history-item{background:#000;color:#fff;border-color:#303030}
 body.dark .location-latest{border-left-color:#e11}
+
+
+/* Final accent correction: red / dark red only; no yellow warning or gold accents */
+:root{--red:#C40014;--accent:#C40014}
+body.dark{--red:#ff3024;--accent:#ff3024}
+body :is(.warning,.warning-sign,.notification,[data-state="warning"],.reminder-alert){
+ background:#8B0010!important;color:#ffffff!important;border-color:#C40014!important
+}
+body :is(.warning,.warning-sign,.notification,[data-state="warning"],.reminder-alert) *{color:#ffffff!important}
+#gpsServiceStatus[data-state="error"]{background:#8B0010!important;color:#ffffff!important;border:1px solid #C40014!important}
+#gpsServiceStatus[data-state="error"] *{color:#ffffff!important}
+#page-home .time-card .panchang-kicker,
+#page-home .time-card .season-line,
+#page-home .time-card .weather-line b,
+#page-home .time-card .place-pin,
+#page-home .time-card .location-coordinates strong,
+#page-home .time-card .panchang-more,
+#page-home .time-card .home-thought-card .eyebrow{color:#ffffff!important}
+body .book-page .book-rule{background:#8B0010!important}
+body .book-page .book-sign{color:#8B0010!important}
+body .book-page .book-date-row,body .book-page .book-bs-date{color:#8B0010!important}
+body .book-navigation .btn:focus-visible,body .book-actions .btn:focus-visible{outline:2px solid #C40014;outline-offset:3px}
+body .book-page.page-turn-next{animation:pageTurnNext .28s cubic-bezier(.35,.7,.2,1) both}
+body .book-page.page-turn-prev{animation:pageTurnPrev .28s cubic-bezier(.35,.7,.2,1) both}
+@media(prefers-reduced-motion:reduce){
+ body .book-page.page-turn-next,body .book-page.page-turn-prev{animation-duration:.01ms}
+}
