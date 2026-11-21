@@ -350,3 +350,53 @@ body{zoom:var(--font-scale,1)}
 @media(max-width:650px){.location-coordinates{font-size:10px;gap:5px 8px}.location-coordinates strong{font-size:11px}.sun-visual svg{height:50px}}
 
 .time-weather .weather-line{display:flex;flex-wrap:wrap;align-items:center}
+
+
+/* Home layout: compact time context followed by a full-width solar timeline */
+#page-home .hero-grid{grid-template-columns:minmax(0,1fr);gap:10px}
+#page-home .time-card{padding:12px 14px 11px;min-height:0}
+#page-home .time-card-head{margin-bottom:0}
+#page-home .time-date{margin:5px 0 5px;align-items:center}
+#page-home .nepali-clock{font-size:clamp(25px,5.8vw,32px)}
+#page-home .season-line{margin:3px 0 0;font-size:12px}
+#page-home .season-line #seasonDesc{font-size:11px}
+#page-home .time-weather{margin-top:6px;padding-top:7px}
+#page-home .panchang-panel{margin-top:8px;padding-top:8px}
+#page-home .panchang-heading{margin-bottom:6px}
+#page-home .panchang-grid{gap:6px}
+#page-home .panchang-item{padding:7px 8px}
+#page-home .loc-controls{margin-top:8px}
+#page-home .time-service-status{margin-top:7px}
+#page-home .time-privacy{margin:5px 0 0}
+.sun-card{width:100%;box-sizing:border-box;margin:12px 0 18px;padding:16px 20px 14px;background:#080b10;color:#f4f6f8;border:1px solid #252a32;border-radius:16px;box-shadow:0 8px 24px #00018;overflow:hidden}
+.sun-card-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:2px}
+.sun-card-heading .eyebrow{font-size:10px;letter-spacing:.08em;color:#aeb8c5}
+.sun-card-heading h2{font-size:clamp(17px,2.4vw,22px);font-weight:500;margin:3px 0 0;color:#fff}
+.sun-card-live{display:flex;align-items:center;gap:6px;color:#aeb8c5;font-size:10px;white-space:nowrap}
+.sun-card-live i{width:6px;height:6px;border-radius:50%;background:#ef3930;box-shadow:0 0 8px #ef393088}
+.sun-visual-wide{padding:0!important;margin-top:4px}
+.sun-visual-wide svg{width:100%;height:auto;max-height:none;display:block;overflow:visible}
+.sun-visual-wide .sun-curve{stroke:#ef3028;stroke-width:3.4;filter:drop-shadow(0 0 5px #ef302866)}
+.sun-visual-wide .sun-horizon{stroke:#fff;stroke-width:1.6;stroke-dasharray:3 6;opacity:.82}
+.sun-visual-wide .sun-endpoint{fill:#fff}
+.sun-visual-wide .sun-marker{fill:#ff3024;stroke:#ff3024;stroke-width:1.5;filter:drop-shadow(0 0 5px #ff3024)}
+.sun-svg-time{font:600 15px sans-serif;fill:#fff}
+.sun-svg-label{font:10px sans-serif;fill:#cbd3dd}
+.sun-status-bottom{text-align:center;font-size:10px;color:#aeb8c5;margin-top:-2px}
+.sun-detail-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:10px;padding-top:11px;border-top:1px solid #ffffff20}
+.sun-detail-grid>div{display:flex;flex-direction:column;gap:3px;min-width:0}
+.sun-detail-grid>div+div{border-left:1px solid #ffffff20;padding-left:14px}
+.sun-detail-grid span{font-size:10px;color:#aeb8c5}
+.sun-detail-grid b{font-size:14px;color:#fff;font-weight:650;overflow-wrap:anywhere}
+.sun-detail-grid small{font-size:9px;color:#8995a4}
+@media(max-width:650px){
+  #page-home .time-card{padding:11px 12px}
+  .sun-card{padding:13px 12px 12px;margin:10px 0 15px}
+  .sun-card-heading h2{font-size:16px}
+  .sun-visual-wide .sun-svg-time{font-size:13px}
+  .sun-visual-wide .sun-svg-label{font-size:9px}
+  .sun-detail-grid{gap:6px;margin-top:7px;padding-top:8px}
+  .sun-detail-grid>div+div{padding-left:8px}
+  .sun-detail-grid b{font-size:12px}
+  .sun-detail-grid small{font-size:8px}
+}
