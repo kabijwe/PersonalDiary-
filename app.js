@@ -348,10 +348,17 @@
       const u=(t-.5)*2;
       x=cubic(115,162,185,212,u);y=cubic(7,7,33,38,u);
     }
-    $("#celestial-body")?.setAttribute("transform",`translate(${x.toFixed(2)}, ${y.toFixed(2)})`);
+    const body=$("#celestial-body");
+    if(body){
+      body.setAttribute("transform",`translate(${x.toFixed(2)}, ${y.toFixed(2)})`);
+      body.removeAttribute("display");
+      body.style.display="inline";
+      body.style.visibility="visible";
+      body.style.opacity="1";
+    }
     const dayIcon=$("#day-sun-icon"),nightIcon=$("#night-moon-icon");
-    if(dayIcon)dayIcon.style.display=daytime?"":"none";
-    if(nightIcon)nightIcon.style.display=daytime?"none":"";
+    if(dayIcon){dayIcon.style.display=daytime?"inline":"none";dayIcon.style.visibility=daytime?"visible":"hidden";dayIcon.style.opacity=daytime?"1":"0";}
+    if(nightIcon){nightIcon.style.display=daytime?"none":"inline";nightIcon.style.visibility=daytime?"hidden":"visible";nightIcon.style.opacity=daytime?"0":"1";}
     setText("sunStatus",daytime?"अहिले दिनको समय":currentSec<sunriseSec?"सूर्योदयअघि":"सूर्यास्तपछि");
   }
   /* ---------- Weather (Open-Meteo) ---------- */
