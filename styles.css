@@ -208,3 +208,13 @@ body.dark .letter-context-meta{
   .manual-place select { padding: 6px 8px; font-size: 11px; }
   .time-privacy { font-size: 9px; margin: 5px 0 0; }
 }
+
+/* Time-card service diagnostics: compact, readable on Android. */
+.time-service-status{display:flex;flex-wrap:wrap;gap:5px 9px;margin:8px 0 2px;padding:8px 10px;border:1px solid rgba(255,255,255,.2);border-radius:10px;background:rgba(0,0,0,.12);font-size:11px;line-height:1.45;color:inherit}
+.time-service-status span{display:inline-flex;align-items:center;gap:4px;max-width:100%;overflow-wrap:anywhere}
+.time-service-status span::before{content:"";width:6px;height:6px;flex:0 0 6px;border-radius:50%;background:currentColor;opacity:.8}
+.time-service-status [data-state="success"]{color:#b9f5d0}
+.time-service-status [data-state="loading"]{color:#ffe6a3}
+.time-service-status [data-state="warning"]{color:#ffdf9a}
+.time-service-status [data-state="error"]{color:#ffc0c0}
+@media(max-width:650px){.time-service-status{gap:4px 8px;padding:7px 8px;font-size:10px}.time-service-status span{flex:1 1 44%;min-width:0}}
