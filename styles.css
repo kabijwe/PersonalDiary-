@@ -720,3 +720,16 @@ body .book-page.page-turn-prev{animation:pageTurnPrev .28s cubic-bezier(.35,.7,.
 #page-home .time-card .time-weather #locationAltitude,
 #page-home .time-card .time-weather #locationAccuracy{color:#D0D8E2!important}
 #page-home .time-card .time-weather #locationAltitude{font-weight:650}
+
+
+/* Solar graph v36: taller arc, red live sun/curve, crisp white horizon */
+#page-home #sunPath{height:78px!important;overflow:visible!important;}
+#page-home #sun-single-curve{stroke:#FF2D20!important;stroke-width:3.8!important;stroke-linecap:round!important;stroke-linejoin:round!important;fill:none!important;filter:none!important;}
+#page-home #celestial-body{display:inline!important;visibility:visible!important;opacity:1!important;}
+#page-home #day-sun-icon{display:inline!important;visibility:visible!important;}
+#page-home #day-sun-icon circle{fill:#FF2D20!important;stroke:#FF2D20!important;stroke-width:1.2!important;}
+#page-home #day-sun-icon g{stroke:#FF2D20!important;stroke-width:2.2!important;}
+#page-home #night-moon-icon path{fill:#FF2D20!important;stroke:#FF2D20!important;}
+#page-home .sun-horizon{stroke:#FFFFFF!important;stroke-width:2.4!important;stroke-dasharray:3 5!important;opacity:1!important;}
+#page-home .sun-endpoint{fill:#FFFFFF!important;}
+@media(max-width:650px){#page-home #sunPath{height:72px!important;}}
