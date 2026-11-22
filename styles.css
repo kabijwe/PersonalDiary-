@@ -3156,3 +3156,18 @@ body .book-page.page-turn-prev{animation:pageTurnPrev .28s cubic-bezier(.35,.7,.
     line-height:1.1!important;
   }
 }
+
+
+/* Place the complete weather and date stack flush to the time card's top-right inset. */
+#page-home .time-date-side{
+  top:0!important;
+  right:12px!important;
+  margin:0!important;
+  transform:none!important;
+}
+@media(max-width:650px){
+  #page-home .time-date-side{
+    top:0!important;
+    right:10px!important;
+  }
+}
