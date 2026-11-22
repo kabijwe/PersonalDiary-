@@ -2437,3 +2437,21 @@ body .book-page.page-turn-prev{animation:pageTurnPrev .28s cubic-bezier(.35,.7,.
   #page-home .time-card p#panchangSummary #panchangSummaryText .panchang-row .panchang-label{font-size:11px!important}
   #page-home .time-card p#panchangSummary #panchangSummaryText .panchang-row .panchang-value{font-size:11.5px!important}
 }
+
+
+/* Panchang opening row: show the weekday, paksha and lunar month directly, without a duplicate label. */
+#page-home .panchang-summary #panchangSummaryText > .panchang-row:first-child{
+  grid-column:1 / -1!important;
+  flex-direction:row!important;
+  align-items:center!important;
+}
+#page-home .panchang-summary #panchangSummaryText > .panchang-row:first-child .panchang-value{
+  color:#fff!important;
+  font-size:12px!important;
+  font-weight:700!important;
+}
+@media(max-width:650px){
+  #page-home .panchang-summary #panchangSummaryText > .panchang-row:first-child .panchang-value{
+    font-size:11.5px!important;
+  }
+}
