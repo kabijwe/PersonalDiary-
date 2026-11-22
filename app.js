@@ -761,7 +761,7 @@
   window.setInterval(checkDueReminders,15000);
   document.addEventListener("visibilitychange",()=>{if(!document.hidden)checkDueReminders();});
 
-  window.setInterval(updateSolarPosition,1000);
+  window.setInterval(()=>{if(solarSimulation===null)updateSolarPosition();},1000);
   updateLetter();renderAll();
   if("serviceWorker" in navigator && location.protocol!=="file:")navigator.serviceWorker.register("./sw.js").catch(()=>{});
 })();
