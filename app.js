@@ -404,7 +404,7 @@
     if(marker){marker.setAttribute("transform",`translate(${sunX.toFixed(2)} ${sunY.toFixed(2)})`);marker.setAttribute("visibility","visible");}
     const daytime=nowMins>=sunriseMins&&nowMins<=sunsetMins;
     setText("sunStatus",daytime?"अहिले दिनको समय":nowMins<sunriseMins?"सूर्योदय हुन बाँकी":"सूर्यास्त भइसकेको");
-    setText("sunLiveClock",solarMinuteLabel(clampedNow));
+    setText("sunLiveClock",solarMinuteLabel(nowMins));
     const badge=$("#sunCardLiveText");if(badge)badge.textContent=solarMinuteLabel(clampedNow);
   }
   /* ---------- Weather (Open-Meteo) ---------- */
