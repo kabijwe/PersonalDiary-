@@ -1,8 +1,8 @@
-(() => {
-  const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
+(async () => {
+  const $ = s => document.querySelector(s), $ = s => [...document.querySelectorAll(s)];
   const KEY = "kabijwe.v1";
   const today = new Date();
-  const state = load();
+  const state = await window.KabijweSync.load(KEY, load);
   let selectedCalendar = new Date(today.getFullYear(), today.getMonth(), 1);
   let selectedLocation = null, memoryImage = null, letterImage = null;
   let currentContext = {};
@@ -50,11 +50,12 @@
   }
 
   function load(){try{return JSON.parse(localStorage.getItem(KEY)) || {entries:[],events:[],memories:[],templates:[],settings:{}}}catch{return {entries:[],events:[],memories:[],templates:[],settings:{}}}}
-  function persist(){try{localStorage.setItem(KEY,JSON.stringify(state));return true;}catch(error){console.error("Mero diary local save failed:",error);try{toast("स्थानीय भण्डारण भरिएको वा रोकिएको छ। ठूलो media backup गरी ठाउँ खाली गर्नुहोस्।");}catch{}return false;}}
+  function persist(){try{localStorage.setItem(KEY,JSON.stringify(state));window.KabijweSync?.save(state);return true;}catch(error){console.error("Mero diary local save failed:",error);try{toast("स्थानीय भण्डारण भरिएको वा रोकिएको छ। ठूलो media backup गरी ठाउँ खाली गर्नुहोस्।");}catch{}return false;}}
   function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,7)}
   function esc(s=""){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
   function dateText(d){return new Date(d+"T12:00:00").toLocaleDateString("ne-NP",{year:"numeric",month:"long",day:"numeric"})}
   function toast(msg){const el=$("#toast");el.textContent=msg;el.classList.add("show");setTimeout(()=>el.classList.remove("show"),2400)}
+  window.addEventListener("kabijwe:sync",e=>{const el=$("#serverSyncStatus");if(el){el.textContent=e.detail.message;el.dataset.state=e.detail.status;}if(e.detail.status==="conflict")toast("Sync conflict: पहिले Reload गर्नुहोस्।");});
   function showPage(name){
     if(name==="diary")name="poetry";
     const target=$("#page-"+name);
