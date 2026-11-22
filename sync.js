@@ -1,9 +1,10 @@
 /* Shared local-network sync. Local browser storage remains a recoverable cache. */
 (() => {
   const API="/api/state";
-  let revision=0, connected=false, initialized=false, conflict=false, timer=null, queue=Promise.resolve();
+  let revision=0, connected=false, initialized=false, conflict=false, timer=null, queue=Promise.resolve(), lastStatus="checking", lastMessage="LAN server जाँच हुँदैछ…";
   const listeners=[];
   function announce(status,message){
+    lastStatus=status; lastMessage=message;
     window.dispatchEvent(new CustomEvent("kabijwe:sync",{detail:{status,message,revision}}));
   }
   function hasLocalData(s){
@@ -61,5 +62,5 @@
       });
     },450);
   }
-  window.KabijweSync={load,save,getStatus:()=>({connected,initialized,revision,conflict})};
+  window.KabijweSync={load,save,getStatus:()=>({connected,initialized,revision,conflict,status:lastStatus,message:lastMessage})};
 })();
