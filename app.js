@@ -335,7 +335,6 @@
       ["मास पद्धति",t?.shukla?"अमान्त = पूर्णिमान्त":(lm?.amanta?"पूर्णिमान्त · अमान्त "+lm.amanta:"")],
       ["अयन",pan.ayana],
       ["घडी · पला",$("#pGhadiPala")?.textContent?.trim()],
-      ["सूर्योदयदेखि",$("#pGhadiNote")?.textContent?.trim()]
     ].filter(([,value])=>value);
     el.replaceChildren();
     rows.forEach(([label,value])=>{
