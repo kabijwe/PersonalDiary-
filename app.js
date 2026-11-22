@@ -179,7 +179,7 @@
     const s=bsMonth?PX.seasonForBsMonth(bsMonth):null;
     setText("seasonName",s?`ऋतु · ${s.name}`:"ऋतु");
     setText("seasonDesc",s?s.desc:"नेपाली मिति पर्खँदै…");
-    $("#seasonDetails [data-season], #seasonChips [data-season]").forEach(c=>c.classList.toggle("current",!!s&&c.dataset.season===s.name));
+    $("#seasonDetails > [data-season], #seasonChips [data-season]").forEach(c=>c.classList.toggle("current",!!s&&c.dataset.season===s.name));
   }
 
   /* ---------- Bikram Sambat date ---------- */
