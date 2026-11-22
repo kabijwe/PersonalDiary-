@@ -587,7 +587,9 @@
       const ward=admin.find(x=>/ward|वडा/i.test((x.description||"")+" "+(x.name||"")));
       const locality=g.locality||g.localityInfo?.informative?.find(x=>/neighbourhood|suburb|hamlet|village/i.test((x.description||"")+" "+(x.name||"")) )?.name;
       const city=g.city||g.locality||g.localityInfo?.administrative?.find(x=>/municipality|city|district/i.test((x.description||"")+" "+(x.name||"")) )?.name;
-      const province=g.principalSubdivision;
+      const provinceRaw=g.principalSubdivision||"";
+      const provinceMap={"Koshi Province":"कोशी","Madhesh Province":"मधेश","Bagmati Province":"बागमती","Gandaki Province":"गण्डकी","Lumbini Province":"लुम्बिनी","Karnali Province":"कर्णाली","Sudurpashchim Province":"सुदूरपश्चिम","Sudurpaschim Province":"सुदूरपश्चिम"};
+      const province=provinceMap[provinceRaw]||provinceRaw.replace(/ Province$/,"");
       const parts=[ward?.name,locality,city,province].filter((x,i,a)=>x&&a.indexOf(x)===i);
       const name=parts.join(", ")||g.locality||g.city||"GPS स्थान";
       if(seq===locSeq&&name){
