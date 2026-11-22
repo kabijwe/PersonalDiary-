@@ -536,7 +536,7 @@
       const base=`latitude=${lat}&longitude=${lon}&timezone=Asia%2FKathmandu`;
       const [d,air]=await Promise.all([
         fetchJson("https://api.open-meteo.com/v1/forecast?"+base+"&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m,wind_direction_10m,wind_gusts_10m,cloud_cover,precipitation,surface_pressure,dew_point_2m,visibility&daily=temperature_2m_min,temperature_2m_max,precipitation_probability_max,sunrise,sunset,uv_index_max&forecast_days=1",{timeout:12000,retries:1}),
-        fetchJson("https://air-quality-api.open-meteo.com/v1/air-quality?"+base+"&current=us_aqi,pm2_5&hourly=uv_index&forecast_days=1",{timeout:12000,retries:0}).catch(e=>{console.warn("Air quality:",e);return null;})
+        fetchJson("https://air-quality-api.open-meteo.com/v1/air-quality?"+base+"&current=us_aqi,pm2_5,uv_index&hourly=uv_index&forecast_days=1",{timeout:12000,retries:0}).catch(e=>{console.warn("Air quality:",e);return null;})
       ]);
       if(seq!==wxSeq)return;
       const c=d?.current,day=d?.daily,ac=air?.current;
@@ -546,7 +546,7 @@
         pressure:c.surface_pressure,dewPoint:c.dew_point_2m,visibility:c.visibility,
         tempMin:day?.temperature_2m_min?.[0],tempMax:day?.temperature_2m_max?.[0],
         rainProbability:day?.precipitation_probability_max?.[0],sunrise:day?.sunrise?.[0],sunset:day?.sunset?.[0],
-        aqi:ac?.us_aqi,pm25:ac?.pm2_5,uv:nearestHourlyValue(air?.hourly,"uv_index",c.time)??day?.uv_index_max?.[0],
+        aqi:ac?.us_aqi,pm25:ac?.pm2_5,uv:ac?.uv_index??nearestHourlyValue(air?.hourly,"uv_index",c.time)??day?.uv_index_max?.[0],
         elevation:d.elevation,timezone:d.timezone||"Asia/Kathmandu",time:c.time,fetched:Date.now(),lat,lon};
       w.suggestion=smartWeatherAdvice(w);
       if(Number.isFinite(w.elevation)){loc.elevation=w.elevation;if(loc.mode==="gps")lsSet(LS_LOC,{mode:"gps",lat:loc.lat,lon:loc.lon,name:loc.name,altitude:loc.altitude,accuracy:loc.accuracy,speed:loc.speed,elevation:loc.elevation,updatedAt:Date.now()});}
