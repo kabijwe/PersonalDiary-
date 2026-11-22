@@ -2279,3 +2279,28 @@ body .book-page.page-turn-prev{animation:pageTurnPrev .28s cubic-bezier(.35,.7,.
  #page-home .sun-location-controls .manual-place select{font-size:9px!important;min-height:26px!important;padding:3px 6px!important}
  #page-home .time-service-status,#page-home .gps-help,#page-home .time-privacy{display:none!important}
 }
+
+/* Final time header alignment and neutral live-data typography. */
+#page-home .time-date{display:flex!important;justify-content:space-between!important;align-items:flex-start!important;gap:10px!important;flex-wrap:nowrap!important}
+#page-home .time-date>div:first-child{min-width:0!important}
+#page-home .time-date-side{margin:0!important;margin-left:auto!important;text-align:right!important;align-items:flex-end!important;min-width:max-content!important}
+#page-home .nepali-clock,#page-home .time-weekday,#page-home .time-tithi,
+#page-home .time-date-side b,#page-home .time-date-side span{color:#f4f4f4!important}
+#page-home .time-card-head .eyebrow{color:#C40014!important;font-weight:750!important;font-size:12px!important}
+#page-home .panchang-summary .panchang-summary-heading{color:#C40014!important;font-weight:750!important;font-size:13px!important}
+#page-home .panchang-summary #panchangSummaryText{color:#f2f2f2!important}
+@media(max-width:650px){
+ #page-home .time-date{gap:8px!important;flex-wrap:nowrap!important}
+ #page-home .time-date-side{min-width:0!important;max-width:46%!important}
+ #page-home .time-date-side b,#page-home .time-date-side span{font-size:9.5px!important;line-height:1.25!important}
+ #page-home .nepali-clock{font-size:23px!important}
+ #page-home .time-card-head .eyebrow{font-size:11px!important}
+ #page-home .sun-location-controls{position:sticky!important;bottom:calc(62px + env(safe-area-inset-bottom))!important;z-index:25!important;background:#000!important;padding:3px 0!important}
+}
+@media(max-height:760px) and (max-width:650px){
+ #page-home .panchang-summary #panchangSummaryText{font-size:9px!important;line-height:1.28!important}
+ #page-home .time-weather .location-coordinates{display:flex!important;flex-wrap:wrap!important}
+ #page-home .sun-card{padding-top:6px!important;padding-bottom:5px!important}
+ #page-home #sunPath{max-height:92px!important}
+ #page-home .sun-location-controls .location-button{min-height:28px!important;padding:4px 7px!important}
+}
