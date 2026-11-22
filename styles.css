@@ -2304,3 +2304,29 @@ body .book-page.page-turn-prev{animation:pageTurnPrev .28s cubic-bezier(.35,.7,.
  #page-home #sunPath{max-height:92px!important}
  #page-home .sun-location-controls .location-button{min-height:28px!important;padding:4px 7px!important}
 }
+
+
+/* Today's Panchang: aligned, readable rows without GPS source label. */
+#page-home .time-card .panchang-summary{
+  display:block!important;margin:9px 0 10px!important;padding:0!important;
+  color:#f4f4f5!important;font-family:"Noto Serif Devanagari",serif!important;
+  font-size:13px!important;line-height:1.65!important;
+}
+#page-home .panchang-summary .panchang-summary-heading{
+  display:block;color:#C40014!important;font-size:16px!important;
+  font-weight:800!important;line-height:1.5!important;margin-bottom:5px;
+}
+#page-home .panchang-summary #panchangSummaryText{
+  display:grid;grid-template-columns:minmax(82px,auto) minmax(0,1fr);
+  column-gap:12px;row-gap:3px;color:#f4f4f5!important;
+  font:400 13px/1.6 "Noto Serif Devanagari",serif!important;
+}
+#page-home .panchang-summary .panchang-row{display:contents}
+#page-home .panchang-summary .panchang-label{color:#d1d5db;font-weight:650;white-space:nowrap}
+#page-home .panchang-summary .panchang-value{color:#fff;overflow-wrap:anywhere}
+#page-home .time-card #locationMode{display:none!important}
+@media(max-width:650px){
+ #page-home .time-card .panchang-summary{font-size:12.5px!important;line-height:1.55!important;margin:7px 0 8px!important}
+ #page-home .panchang-summary .panchang-summary-heading{font-size:15px!important;margin-bottom:4px}
+ #page-home .panchang-summary #panchangSummaryText{grid-template-columns:86px minmax(0,1fr);column-gap:8px;row-gap:2px;font-size:12px!important;line-height:1.5!important}
+}
