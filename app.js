@@ -325,7 +325,7 @@
     const sunrise=fmtClock(solar.sunriseMs),sunset=fmtClock(solar.sunsetMs);
     setText("sunriseTime",sunrise);setText("sunsetTime",sunset);setText("sunriseDetail",sunrise);setText("sunsetDetail",sunset);
     const curve=$("#sun-single-curve");
-    if(curve)curve.setAttribute("d","M 0,27 C 40,27 80,6 120,6 C 160,6 200,27 240,27");
+    if(curve)curve.setAttribute("d","M 0,48 C 40,48 80,2 120,2 C 160,2 200,48 240,48");
     $("#celestial-body")?.removeAttribute("display");
     updateSolarPosition();
   }
@@ -334,23 +334,26 @@
     const now=Date.now();
     const sunriseMs=solar.sunriseMs,sunsetMs=solar.sunsetMs;
     const daytime=now>=sunriseMs&&now<=sunsetMs;
-    const t=Math.max(0,Math.min(1,(now-sunriseMs)/Math.max(1,sunsetMs-sunriseMs)));
+    // Nepal local 12:00 is the exact apex; morning and afternoon progress independently.
+    const npt=nptP(now);
+    const noonMs=Date.UTC(npt.y,npt.m-1,npt.d,6,15);
+    const noonClamped=Math.max(sunriseMs+1,Math.min(sunsetMs-1,noonMs));
     const cubic=(p0,p1,p2,p3,u)=>Math.pow(1-u,3)*p0+3*Math.pow(1-u,2)*u*p1+3*(1-u)*u*u*p2+u*u*u*p3;
     let x,y;
     if(daytime){
-      if(t<=.5){
-        const u=t*2;
+      if(now<=noonClamped){
+        const u=Math.max(0,Math.min(1,(now-sunriseMs)/(noonClamped-sunriseMs)));
         x=120*u;
-        y=cubic(27,27,6,6,u);
+        y=cubic(48,48,2,2,u);
       }else{
-        const u=(t-.5)*2;
+        const u=Math.max(0,Math.min(1,(now-noonClamped)/(sunsetMs-noonClamped)));
         x=120+120*u;
-        y=cubic(6,6,27,27,u);
+        y=cubic(2,2,48,48,u);
       }
     }else{
       // At night, keep the moon at the matching horizon endpoint.
       x=now<sunriseMs?0:240;
-      y=27;
+      y=48;
     }
     const body=$("#celestial-body");
     if(body){
