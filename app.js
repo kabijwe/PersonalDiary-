@@ -327,6 +327,7 @@
     }
     const sunrise=fmtClock(solar.sunriseMs),sunset=fmtClock(solar.sunsetMs);
     setText("sunriseTime",sunrise);setText("sunsetTime",sunset);setText("sunriseDetail",sunrise);setText("sunsetDetail",sunset);
+    setText("sunrise-graph-time",sunrise);setText("sunset-graph-time",sunset);
     $("#sun-marker")?.setAttribute("visibility","visible");
     drawFullSunCycle();
     updateSolarPosition();
