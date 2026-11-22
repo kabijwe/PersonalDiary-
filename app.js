@@ -514,7 +514,7 @@
     if(Number.isFinite(w.uv))addMetric("UV",nepaliNumber(w.uv.toFixed(1)));
     // Sunrise, sunset and day length are already shown in the dedicated solar-cycle section.
     const extra=$("#weatherExtra");
-    if(extra)extra.innerHTML=lines.map((item,i)=>`<span class="weather-metric" data-index="${i}"><span class="weather-label">${esc(item.label)}</span><span class="weather-value">${esc(item.value)}</span></span>`).join("");
+    if(extra)extra.innerHTML=lines.map((item,i)=>`<span class="weather-metric" data-index="${i}" data-label="${esc(item.label)}"><span class="weather-label">${esc(item.label)}</span><span class="weather-value">${esc(item.value)}</span></span>`).join("");
     const suggestion=$("#weatherSuggestion");
     if(suggestion){
       suggestion.hidden=!w.suggestion;
