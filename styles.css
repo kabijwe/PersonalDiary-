@@ -2639,3 +2639,28 @@ body .book-page.page-turn-prev{animation:pageTurnPrev .28s cubic-bezier(.35,.7,.
     line-height:1.6!important;
   }
 }
+
+
+/* Readability pass: gently enlarge live date, Panchang, weather and location details. */
+#page-home .time-tithi{font-size:16px!important;line-height:1.7!important}
+#page-home .panchang-summary #panchangSummaryText .panchang-label{font-size:13px!important;line-height:1.5!important}
+#page-home .panchang-summary #panchangSummaryText .panchang-value{font-size:14px!important;line-height:1.55!important}
+#page-home .time-weather .weather-line span{font-size:14px!important}
+#page-home .time-weather .weather-extra{font-size:13px!important;line-height:1.8!important}
+#page-home .time-weather .weather-suggestion,
+#page-home .time-weather .weather-suggestion-label,
+#page-home .time-weather .weather-suggestion-text{font-size:13px!important;line-height:1.75!important}
+#page-home .time-weather .weather-updated{font-size:11px!important}
+#page-home .time-weather .location-coordinates{font-size:12px!important;line-height:1.8!important}
+@media(max-width:650px){
+ #page-home .time-tithi{font-size:14px!important;line-height:1.65!important}
+ #page-home .panchang-summary #panchangSummaryText .panchang-label{font-size:11.5px!important;line-height:1.45!important}
+ #page-home .panchang-summary #panchangSummaryText .panchang-value{font-size:12px!important;line-height:1.5!important}
+ #page-home .time-weather .weather-line span{font-size:13px!important}
+ #page-home .time-weather .weather-extra{font-size:11px!important;line-height:1.7!important}
+ #page-home .time-weather .weather-suggestion,
+ #page-home .time-weather .weather-suggestion-label,
+ #page-home .time-weather .weather-suggestion-text{font-size:11.5px!important;line-height:1.7!important}
+ #page-home .time-weather .weather-updated{font-size:10.5px!important}
+ #page-home .time-weather .location-coordinates{font-size:11px!important;line-height:1.7!important}
+}
