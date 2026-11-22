@@ -44,18 +44,18 @@
           </div>
           <div class="sun-visual sun-visual-wide">
             <div class="sun-times"><span><b id="sunriseTime">--:--</b><small>सूर्योदय</small></span><span><b id="sunsetTime">--:--</b><small>सूर्यास्त</small></span></div>
-            <svg id="sunPath" class="sun-graph" viewBox="0 0 340 110" role="img" aria-label="२४ घण्टाको सूर्यचक्र र हालको स्थानीय समय">
+            <svg id="sunPath" class="sun-graph" viewBox="0 0 800 245" role="img" aria-label="२४ घण्टाको सूर्यचक्र र हालको स्थानीय समय">
               <defs>
-                <linearGradient id="sun-curve-gradient" gradientUnits="userSpaceOnUse" x1="16" y1="0" x2="250" y2="0">
+                <linearGradient id="sun-curve-gradient" gradientUnits="userSpaceOnUse" x1="40" y1="0" x2="760" y2="0">
                   <stop offset="0" stop-color="#ffffff" stop-opacity="0.95"/>
                   <stop offset="0.65" stop-color="#ffffff" stop-opacity="0.62"/>
                   <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
                 </linearGradient>
               </defs>
-              <line id="sun-horizon-line" x1="16" y1="57" x2="324" y2="57" class="sun-horizon" stroke-dasharray="3 4"/>
-              <path id="full-sun-path" fill="none" stroke="url(#sun-curve-gradient)" stroke-width="2.5" stroke-linecap="round"/>
-              <path id="elapsed-sun-path" fill="none" stroke="url(#sun-curve-gradient)" stroke-width="2.5" stroke-linecap="round"/>
-              <circle id="sun-marker" cx="0" cy="0" r="6.5" fill="#FF2D20"/>
+              <line id="sun-horizon-line" x1="20" y1="141" x2="780" y2="141" class="sun-horizon" stroke-dasharray="3 4"/>
+              <path id="full-sun-path" fill="none" stroke="url(#sun-curve-gradient)" stroke-width="5" stroke-linecap="round"/>
+              <path id="elapsed-sun-path" fill="none" stroke="url(#sun-curve-gradient)" stroke-width="5.5" stroke-linecap="round"/>
+              <circle id="sun-marker" cx="0" cy="0" r="11" fill="#FF2D20"/>
             </svg>
             <div class="sun-status sun-status-bottom" id="sunStatus">सूर्यचक्र गणना हुँदैछ…</div>
           </div>
