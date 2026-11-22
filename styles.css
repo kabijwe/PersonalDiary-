@@ -2057,3 +2057,171 @@ body .book-page.page-turn-prev{animation:pageTurnPrev .28s cubic-bezier(.35,.7,.
 #page-home .time-card .location-coordinates #locationCoordinates,#page-home .time-card .location-coordinates #locationAccuracy{color:#c4cfda!important}
 #page-home .time-card .time-weather,#page-home .time-card .time-weather *{font-family:"Noto Serif Devanagari",serif}
 @media(max-width:760px){#page-home .time-card .season-line #seasonDesc{font-size:10.5px!important}}
+
+
+/* FINAL OVERRIDE: weather is plain content inside the existing time card,
+   never a second card or a bordered inset panel. */
+#page-home .time-card .time-weather,
+#page-home .time-card .time-weather:hover,
+#page-home .time-card .time-weather:before,
+#page-home .time-card .time-weather:after,
+#page-home .time-card .time-weather .weather-summary,
+#page-home .time-card .time-weather .location-coordinates,
+#page-home .time-card .time-weather .weather-location-controls,
+#page-home .time-card .time-weather .weather-panel-heading{
+  background:transparent!important;
+  background-image:none!important;
+  border:0!important;
+  outline:0!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+}
+#page-home .time-card .time-weather{
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:flex-start!important;
+  justify-content:flex-start!important;
+  gap:5px!important;
+  width:100%!important;
+  min-width:0!important;
+  margin:9px 0 0!important;
+  padding:0!important;
+  color:#f2f2f2!important;
+  text-align:left!important;
+}
+#page-home .time-card .weather-panel-heading{
+  display:block!important;
+  width:100%!important;
+  margin:0 0 2px!important;
+  padding:0!important;
+  color:#C40014!important;
+  font:600 12px/1.5 "Noto Serif Devanagari",serif!important;
+  text-align:left!important;
+}
+#page-home .time-card .time-weather .weather-summary{
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:flex-start!important;
+  gap:2px!important;
+  width:100%!important;
+  margin:0!important;
+  padding:0!important;
+}
+#page-home .time-card .time-weather .place-line,
+#page-home .time-card .time-weather .weather-main,
+#page-home .time-card .time-weather .weather-extra,
+#page-home .time-card .time-weather .weather-updated,
+#page-home .time-card .time-weather .location-coordinates{
+  display:flex!important;
+  align-items:baseline!important;
+  justify-content:flex-start!important;
+  flex-wrap:wrap!important;
+  gap:4px 12px!important;
+  width:100%!important;
+  min-width:0!important;
+  margin:0!important;
+  padding:0!important;
+  background:transparent!important;
+  border:0!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+  text-align:left!important;
+  font-family:"Noto Serif Devanagari",serif!important;
+}
+#page-home .time-card .time-weather #placeName{
+  color:#fff!important;
+  font:600 13px/1.55 "Noto Serif Devanagari",serif!important;
+}
+#page-home .time-card .time-weather .place-pin,
+#page-home .time-card .time-weather #locationAltitude,
+#page-home .time-card .time-weather #weatherTemp{
+  color:#C40014!important;
+}
+#page-home .time-card .time-weather #weatherTemp{
+  font:600 20px/1.45 "Noto Serif Devanagari",serif!important;
+}
+#page-home .time-card .time-weather #weatherCondition{
+  color:#e8e8e8!important;
+  font:400 12px/1.6 "Noto Serif Devanagari",serif!important;
+}
+#page-home .time-card .time-weather .weather-extra{
+  color:#c4c4c4!important;
+  font:400 10.5px/1.65 "Noto Serif Devanagari",serif!important;
+}
+#page-home .time-card .time-weather .weather-updated{
+  color:#999!important;
+  font:400 10px/1.5 "Noto Serif Devanagari",serif!important;
+}
+#page-home .time-card .time-weather .location-coordinates{
+  gap:3px 14px!important;
+  margin-top:2px!important;
+}
+#page-home .time-card .time-weather .location-coordinates span,
+#page-home .time-card .time-weather .location-coordinates strong{
+  display:inline-flex!important;
+  margin:0!important;
+  padding:0!important;
+  background:transparent!important;
+  border:0!important;
+  color:#bdbdbd!important;
+  font:400 10px/1.6 "Noto Serif Devanagari",serif!important;
+}
+#page-home .time-card .time-weather .location-coordinates #locationAltitude{
+  color:#C40014!important;
+  font-weight:600!important;
+}
+#page-home .time-card .weather-location-controls{
+  display:flex!important;
+  flex-direction:row!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  flex-wrap:wrap!important;
+  gap:7px 12px!important;
+  width:100%!important;
+  margin:5px 0 0!important;
+  padding:0!important;
+}
+#page-home .time-card .weather-location-controls .location-button{
+  width:auto!important;
+  min-height:29px!important;
+  margin:0!important;
+  padding:4px 9px!important;
+  background:#111!important;
+  border:1px solid #444!important;
+  border-radius:6px!important;
+  box-shadow:none!important;
+  color:#eee!important;
+  font:500 10.5px/1.5 "Noto Serif Devanagari",serif!important;
+}
+#page-home .time-card .weather-location-controls .manual-place{
+  display:flex!important;
+  flex-direction:row!important;
+  align-items:center!important;
+  gap:6px!important;
+  margin:0!important;
+  padding:0!important;
+  background:transparent!important;
+  border:0!important;
+  color:#aaa!important;
+  font:400 10.5px/1.5 "Noto Serif Devanagari",serif!important;
+}
+#page-home .time-card .weather-location-controls .manual-place select{
+  max-width:170px!important;
+  min-height:29px!important;
+  margin:0!important;
+  padding:3px 22px 3px 7px!important;
+  background:#080808!important;
+  border:1px solid #444!important;
+  border-radius:5px!important;
+  color:#eee!important;
+  font:400 10.5px/1.5 "Noto Serif Devanagari",serif!important;
+}
+@media(max-width:760px){
+  #page-home .time-card .time-weather{gap:4px!important;margin-top:7px!important}
+  #page-home .time-card .time-weather .weather-location-controls{
+    flex-direction:column!important;align-items:stretch!important;gap:6px!important;
+  }
+  #page-home .time-card .weather-location-controls .location-button{width:100%!important;justify-content:center!important}
+  #page-home .time-card .weather-location-controls .manual-place{width:100%!important;justify-content:space-between!important}
+  #page-home .time-card .weather-location-controls .manual-place select{max-width:62%!important;flex:0 1 62%!important}
+}
