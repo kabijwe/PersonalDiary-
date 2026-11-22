@@ -337,20 +337,23 @@
     const sunriseParts=nptP(solar.sunriseMs),sunsetParts=nptP(solar.sunsetMs);
     const sunriseMins=sunriseParts.hh*60+sunriseParts.mm;
     const sunsetMins=sunsetParts.hh*60+sunsetParts.mm;
-    const legacyNoon=(sunriseMins+sunsetMins)/2;
-    const sunriseY=midY-amplitude*Math.cos(((sunriseMins-legacyNoon)/1440)*2*Math.PI)-7;
+    const solarNoon=(sunriseMins+sunsetMins)/2;
+    const sunriseY=midY-amplitude*Math.cos(((sunriseMins-solarNoon)/1440)*2*Math.PI)-7;
     const dayLength=Math.max(1,sunsetMins-sunriseMins);
+    const nightLength=Math.max(1,1440-dayLength);
     const waveY=mins=>{
-      if(mins<sunriseMins){
-        const p=Math.max(0,Math.min(1,(mins+1440-sunsetMins)/(1440-dayLength)));
-        return troughY+(sunriseY-troughY)*(0.5-0.5*Math.cos(Math.PI*p));
+      if(mins>=sunriseMins&&mins<=sunsetMins){
+        // Cosine daylight arc: exact sunrise/sunset baseline, highest point at solar noon.
+        const angle=(2*Math.PI*(mins-solarNoon))/dayLength;
+        const height=(1+Math.cos(angle))/2;
+        return sunriseY-(sunriseY-peakY)*height;
       }
-      if(mins<=sunsetMins){
-        const progress=(mins-sunriseMins)/dayLength;
-        return sunriseY-(sunriseY-peakY)*Math.sin(Math.PI*progress);
-      }
-      const p=Math.max(0,Math.min(1,(mins-sunsetMins)/(1440-dayLength)));
-      return sunriseY+(troughY-sunriseY)*(0.5-0.5*Math.cos(Math.PI*p));
+      // Smooth cosine trough through the night, returning to the sunrise baseline.
+      const nightProgress=mins>sunsetMins
+        ?(mins-sunsetMins)/nightLength
+        :(mins+1440-sunsetMins)/nightLength;
+      const depth=(1-Math.cos(2*Math.PI*Math.max(0,Math.min(1,nightProgress))))/2;
+      return sunriseY+(troughY-sunriseY)*depth;
     };
     return {waveY,sunriseY,sunriseMins,sunsetMins};
   }
