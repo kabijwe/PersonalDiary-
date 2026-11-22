@@ -13,7 +13,7 @@
     const wx=lsGet("kabijwe.weather")||{};
     const wxMatches=Number.isFinite(wx.lat)&&Number.isFinite(wx.lon)&&Math.abs(wx.lat-loc.lat)<0.05&&Math.abs(wx.lon-loc.lon)<0.05;
     const exactClock=format24Clock(now);
-    const exactDate=`${pad2(p.d)} ${AD_MONTHS[p.m-1]} ${p.y}`;
+    const exactDate=nepaliNumber(`${pad2(p.d)} ${AD_MONTHS[p.m-1]} ${p.y}`);
     return {
       capturedAt:now,capturedAtISO:new Date(now).toISOString(),nepalTime:exactClock,adDate:exactDate,
       bsDate:bsText()||read("timeBsDate"),weekday:WEEKDAYS[dayOfWeek(now)],weekNumber:`हप्ता ${nepaliNumber(isoWeekNumber(now))}`,
@@ -251,17 +251,16 @@
   function renderDate(){
     const now=Date.now(),p=nptP(now),c=clock12(now),wd=WEEKDAYS[dayOfWeek(now)];
     setText("clock",format24Clock(now));
-    setText("timeWeekday",wd);
     const tithiName=$("#pTithi")?.textContent?.trim()||"";
     const pakshaName=$("#pPaksha")?.textContent?.trim()||"";
     setText("timeCardTitle",wd);
     const tithiEnd=pan?.tithi?.endMs?(" · समाप्ति "+fmtEnd(pan.tithi.endMs,now)):"";
     setText("timeTithi",[pan?.lunarMonth?.amanta||pan?.lunarMonth?.purnimanta,pakshaName,tithiName].filter(x=>x&&x!=="—").join(" ")+(tithiName&&tithiName!=="—"?tithiEnd:"")||"पञ्चाङ्ग गणना हुँदैछ…");
-    setText("timeAdDate",`${pad2(p.d)} ${AD_MONTHS[p.m-1]} ${p.y}`);
+    setText("timeAdDate",nepaliNumber(`${pad2(p.d)} ${AD_MONTHS[p.m-1]} ${p.y}`));
     setText("timeWeekNumber",`हप्ता ${nepaliNumber(isoWeekNumber(now))}`);
     const t=bsText();
     setText("timeBsDate",t||(bsFailed?"वि.सं. मिति उपलब्ध भएन":"नेपाली मिति लोड हुँदै…"));
-    setText("todayDay",wd);setText("todayAd",`${pad2(p.d)} ${AD_MONTHS[p.m-1]}`);
+    setText("todayDay",wd);setText("todayAd",nepaliNumber(`${pad2(p.d)} ${AD_MONTHS[p.m-1]}`));
     setText("todayBs",t||(bsFailed?"मिति उपलब्ध भएन":"नेपाली मिति लोड हुँदै…"));
     setText("todayNepali",`आजको दिन · ${t||wd}`);
     renderSeason(bs?bs.month:null);
@@ -526,7 +525,7 @@
   function nearestHourlyValue(hourly,field,clock){
     if(!hourly?.time?.length||!Array.isArray(hourly[field]))return null;
     let best=-1,delta=Infinity;
-    hourly.time.forEach((t,i)=>{const d=Math.abs(new Date(t).getTime()-new Date(clock).getTime());if(Number.isFinite(d)&&d<delta){delta=d;best=i;}});
+    hourly.time.forEach((t,i)=>{const d=Math.abs(Date.parse(t+"+05:45")-Date.parse(String(clock).slice(0,16)+":00+05:45"));if(Number.isFinite(d)&&d<delta){delta=d;best=i;}});
     return best>=0&&delta<=90*60e3&&Number.isFinite(hourly[field][best])?hourly[field][best]:null;
   }
   async function loadWeather(){
@@ -551,7 +550,7 @@
         aqi:ac?.us_aqi,pm25:ac?.pm2_5,uv:nearestHourlyValue(air?.hourly,"uv_index",c.time)??day?.uv_index_max?.[0],
         elevation:d.elevation,timezone:d.timezone||"Asia/Kathmandu",time:c.time,fetched:Date.now(),lat,lon};
       w.suggestion=smartWeatherAdvice(w);
-      if(Number.isFinite(w.elevation))loc.elevation=w.elevation;
+      if(Number.isFinite(w.elevation)){loc.elevation=w.elevation;if(loc.mode==="gps")lsSet(LS_LOC,{mode:"gps",lat:loc.lat,lon:loc.lon,name:loc.name,altitude:loc.altitude,accuracy:loc.accuracy,speed:loc.speed,elevation:loc.elevation,updatedAt:Date.now()});}
       lsSet(LS_WX,w);showWeather(w,false);renderLocation();
       setServiceState("weatherServiceStatus",Number.isFinite(w.aqi)?"मौसम र वायु गुणस्तर अद्यावधिक":"मौसम अद्यावधिक · वायु गुणस्तर उपलब्ध भएन","success");
       const history=state.locationHistory.find(x=>x.id===loc.historyId);if(history){
