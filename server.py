@@ -4,7 +4,7 @@ import argparse,base64,hashlib,hmac,json,os,sqlite3,ssl,time,socket
 from contextlib import closing
 from http.server import SimpleHTTPRequestHandler,ThreadingHTTPServer
 from pathlib import Path
-from urllib.parse import urlparse
+from urllib.parse import urlparse,unquote
 ROOT=Path(__file__).resolve().parent
 DATA=Path.home()/".local"/"share"/"kabijwe"
 DB=DATA/"diary.sqlite3"; AUTH=DATA/"auth.json"; MAX_BODY=50*1024*1024
@@ -31,9 +31,11 @@ class Handler(SimpleHTTPRequestHandler):
  server_version="KabijweLAN/1.0"
  def __init__(self,*args,**kwargs): super().__init__(*args,directory=str(ROOT),**kwargs)
  def translate_path(self,path):
-  parts=Path(urlparse(path).path).parts
+  parts=Path(unquote(urlparse(path).path)).parts
   if any(part.startswith(".") for part in parts): return str(ROOT/"__not_found__")
   return super().translate_path(path)
+ def list_directory(self,path):
+  self.send_error(403,"Directory listing disabled"); return None
  def log_message(self,fmt,*args): print("%s - request"%self.client_address[0])
  def end_headers(self):
   self.send_header("X-Content-Type-Options","nosniff"); self.send_header("Referrer-Policy","no-referrer")
