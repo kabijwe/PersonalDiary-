@@ -940,3 +940,12 @@ body .book-page.page-turn-prev{animation:pageTurnPrev .28s cubic-bezier(.35,.7,.
 #page-home .loc-controls .manual-place select{background:#101010!important;color:#fff!important;border-color:#63302d!important}
 #page-home .time-service-status span{color:#c9c9c9!important}
 #page-home .time-service-status span[data-state="success"]{color:#ff8a82!important}
+
+/* Compact sunrise / sunset labels anchored just above their horizon intersections */
+#page-home .sun-intersection-time{fill:#fff;font-family:inherit;font-size:14px;font-weight:700;letter-spacing:.1px}
+#page-home .sun-intersection-label{fill:#c3cbd5;font-family:inherit;font-size:10px;font-weight:500}
+#page-home .sun-intersection-text{pointer-events:none}
+@media(max-width:650px){
+  #page-home .sun-intersection-time{font-size:12px}
+  #page-home .sun-intersection-label{font-size:9px}
+}
