@@ -24,4 +24,4 @@ echo "Mobile  : https://$LAN_IP:8443"
 echo "Root CA : $(mkcert -CAROOT)/rootCA.pem"
 echo "Phone मा Root CA विश्वासयोग्य बनाएपछि GPS चल्छ।"
 echo "=============================================="
-python3 https_server.py
+KABIJWE_LAN_IP="$LAN_IP" python3 https_server.py
