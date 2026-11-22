@@ -929,3 +929,14 @@ body .book-page.page-turn-prev{animation:pageTurnPrev .28s cubic-bezier(.35,.7,.
 @media(max-width:650px){
  #page-home .time-date{gap:12px!important;flex-wrap:wrap!important}
 }
+
+
+#page-home .loc-controls .location-button{
+ background:#160707!important;color:#fff!important;border:1px solid #8e2925!important;
+ border-radius:10px!important;font-size:14px!important;font-weight:650!important;padding:11px 14px!important;
+}
+#page-home .loc-controls .location-button .loc-icon{color:#ff5148!important}
+#page-home .loc-controls .manual-place{font-size:13px!important;color:#ddd!important}
+#page-home .loc-controls .manual-place select{background:#101010!important;color:#fff!important;border-color:#63302d!important}
+#page-home .time-service-status span{color:#c9c9c9!important}
+#page-home .time-service-status span[data-state="success"]{color:#ff8a82!important}
