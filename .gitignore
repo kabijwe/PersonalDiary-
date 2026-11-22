@@ -5,3 +5,14 @@ dist/
 !.env.example
 .DS_Store
 *.log
+
+# Local-only diary database, credentials, TLS keys and encrypted backups
+*.sqlite3
+*.sqlite3-wal
+*.sqlite3-shm
+*.gpg
+auth.json
+ca.key
+server.key
+server.crt
+ca.crt
