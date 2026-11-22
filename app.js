@@ -325,7 +325,7 @@
     const sunrise=fmtClock(solar.sunriseMs),sunset=fmtClock(solar.sunsetMs);
     setText("sunriseTime",sunrise);setText("sunsetTime",sunset);setText("sunriseDetail",sunrise);setText("sunsetDetail",sunset);
     const curve=$("#sun-single-curve");
-    if(curve)curve.setAttribute("d","M 12,27 C 48,27 76,2 120,2 C 164,2 192,27 228,27");
+    if(curve)curve.setAttribute("d","M 12,48 C 48,48 76,2 120,2 C 164,2 192,48 228,48");
     $("#celestial-body")?.removeAttribute("display");
     updateSolarPosition();
   }
@@ -343,17 +343,18 @@
     if(daytime){
       if(now<=noonClamped){
         const u=Math.max(0,Math.min(1,(now-sunriseMs)/(noonClamped-sunriseMs)));
-        x=12+108*u;
-        y=cubic(27,27,2,2,u);
+        // Use the exact same Bezier controls as the drawn curve, so the dot never drifts off it.
+        x=cubic(12,48,76,120,u);
+        y=cubic(48,48,2,2,u);
       }else{
         const u=Math.max(0,Math.min(1,(now-noonClamped)/(sunsetMs-noonClamped)));
-        x=120+108*u;
-        y=cubic(2,2,27,27,u);
+        x=cubic(120,164,192,228,u);
+        y=cubic(2,2,48,48,u);
       }
     }else{
-      // Night moon rests on the corresponding horizon intersection.
+      // Night moon rests on the corresponding inset horizon intersection.
       x=now<sunriseMs?12:228;
-      y=27;
+      y=48;
     }
     const body=$("#celestial-body");
     if(body){
