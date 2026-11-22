@@ -1118,3 +1118,68 @@ body .book-page.page-turn-prev{animation:pageTurnPrev .28s cubic-bezier(.35,.7,.
   }
   #page-home .time-weather .weather-main b{font-size:34px!important}
 }
+
+/* Plain-text location and weather, aligned to the right of the time overview */
+#page-home .time-weather{
+  align-items:flex-end!important;
+  text-align:right!important;
+  padding:4px 0!important;
+  background:transparent!important;
+  border:0!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+}
+#page-home .weather-panel-heading{
+  width:100%!important;
+  text-align:right!important;
+  margin:0 0 8px!important;
+  padding:0!important;
+  border:0!important;
+  background:transparent!important;
+  color:#ff8a82!important;
+  font-size:13px!important;
+  font-weight:700!important;
+}
+#page-home .time-weather .place-line{
+  justify-content:flex-end!important;
+  text-align:right!important;
+}
+#page-home .time-weather .weather-main{
+  justify-content:flex-end!important;
+  margin:7px 0 3px!important;
+}
+#page-home .time-weather .weather-extra,
+#page-home .time-weather .weather-updated{
+  width:100%!important;
+  text-align:right!important;
+}
+#page-home .time-weather .location-coordinates{
+  justify-content:flex-end!important;
+  text-align:right!important;
+  margin-top:7px!important;
+  padding:0!important;
+  background:transparent!important;
+  border:0!important;
+  border-radius:0!important;
+}
+#page-home .time-weather .location-coordinates span,
+#page-home .time-weather .location-coordinates strong{
+  padding:0!important;
+  background:transparent!important;
+  border:0!important;
+}
+@media(max-width:760px){
+  #page-home .time-weather{
+    align-items:flex-end!important;
+    padding:8px 0 0!important;
+    border:0!important;
+  }
+  #page-home .time-weather .place-line,
+  #page-home .time-weather .weather-main,
+  #page-home .time-weather .weather-extra,
+  #page-home .time-weather .weather-updated,
+  #page-home .time-weather .location-coordinates{
+    justify-content:flex-end!important;
+    text-align:right!important;
+  }
+}
