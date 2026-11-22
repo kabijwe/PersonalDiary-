@@ -286,7 +286,7 @@
   function renderPanchang(){
     const now=Date.now();
     if(!pan){
-      setServiceState("panchangServiceStatus","पञ्चाङ्ग गणना असफल","error");setText("panchangStatus","गणना असफल");
+      setServiceState("panchangServiceStatus","पञ्चाङ्ग गणना असफल","error");
       return;
     }
     const t=pan.tithi,n=pan.nakshatra,y=pan.yoga,k=pan.karana;
@@ -305,7 +305,6 @@
     setText("pLunarMonth",t.shukla?lm.amanta:lm.purnimanta);
     setText("pLunarNote",t.shukla?"अमान्त = पूर्णिमान्त":`पूर्णिमान्त · अमान्त ${lm.amanta}`);
     setText("pAyana",pan.ayana);
-    setText("panchangStatus","गणना उपलब्ध (अफलाइन इन्जिन)");
     setServiceState("panchangServiceStatus","पञ्चाङ्ग अफलाइन गणना सफल","success");
     renderPanchangSummary();
     // Retry control was removed; report BS availability in the status and date fields.
