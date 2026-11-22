@@ -2664,3 +2664,29 @@ body .book-page.page-turn-prev{animation:pageTurnPrev .28s cubic-bezier(.35,.7,.
  #page-home .time-weather .weather-updated{font-size:10.5px!important}
  #page-home .time-weather .location-coordinates{font-size:11px!important;line-height:1.7!important}
 }
+
+
+/* Weather metric hierarchy: red bold headings, white readings and units. */
+#page-home .time-card .time-weather .weather-metric{
+  display:flex!important;
+  flex-wrap:wrap!important;
+  align-items:baseline!important;
+  column-gap:5px!important;
+  row-gap:0!important;
+  color:#fff!important;
+  line-height:1.65!important;
+}
+#page-home .time-card .time-weather .weather-label{
+  color:#ff4655!important;
+  font-weight:800!important;
+  white-space:normal!important;
+}
+#page-home .time-card .time-weather .weather-value{
+  color:#fff!important;
+  font-weight:500!important;
+  overflow-wrap:anywhere!important;
+}
+@media(max-width:520px){
+  #page-home .time-card .time-weather .weather-metric{column-gap:3px!important;line-height:1.55!important}
+  #page-home .time-card .time-weather .weather-label{font-weight:800!important}
+}
