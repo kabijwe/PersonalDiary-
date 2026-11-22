@@ -3350,3 +3350,95 @@ body .book-page.page-turn-prev{animation:pageTurnPrev .28s cubic-bezier(.35,.7,.
     gap:7px!important;
   }
 }
+
+
+/* Final compact header: separate temperature/date stack; Panchang immediately below at full width. */
+#page-home .time-overview-grid{
+  display:block!important;
+  width:100%!important;
+}
+#page-home .time-overview-main{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;
+  align-items:start!important;
+  gap:0 12px!important;
+  width:100%!important;
+}
+#page-home .time-overview-left{
+  grid-column:1!important;
+  grid-row:1!important;
+  min-width:0!important;
+}
+#page-home .time-date-side{
+  grid-column:2!important;
+  grid-row:1!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:flex-end!important;
+  justify-content:flex-start!important;
+  justify-self:stretch!important;
+  width:100%!important;
+  max-width:none!important;
+  min-width:0!important;
+  margin:0!important;
+  padding:0!important;
+  gap:0!important;
+  text-align:right!important;
+}
+#page-home .time-date-side .date-side-weather{
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:flex-end!important;
+  justify-content:flex-start!important;
+  gap:1px!important;
+  margin:0 0 2px!important;
+  padding:0!important;
+  line-height:1.2!important;
+}
+#page-home .time-date-side .date-side-weather b#weatherTemp{
+  display:block!important;
+  margin:0!important;
+  padding:0!important;
+  font-size:23px!important;
+  line-height:1.05!important;
+  font-weight:750!important;
+}
+#page-home .time-date-side .date-side-weather span#weatherCondition{
+  display:block!important;
+  margin:0!important;
+  padding:0!important;
+  font-size:11px!important;
+  line-height:1.25!important;
+}
+#page-home #panchangPanel{
+  display:block!important;
+  width:100%!important;
+  max-width:none!important;
+  min-width:0!important;
+  margin:0!important;
+  padding:8px 0 0!important;
+  grid-column:1/-1!important;
+  align-self:stretch!important;
+}
+#page-home #panchangPanel .panchang-heading{margin:0 0 7px!important}
+#page-home #panchangPanel .panchang-grid{
+  display:grid!important;
+  width:100%!important;
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  gap:7px!important;
+}
+#page-home #panchangPanel .panchang-item,
+#page-home #panchangPanel .panchang-extra{display:flex!important;min-width:0!important;max-width:none!important}
+#page-home #panchangPanel .panchang-more{display:none!important}
+#page-home .time-weather{
+  display:flex!important;
+  width:100%!important;
+  margin:10px 0 0!important;
+}
+@media(max-width:650px){
+  #page-home .time-overview-main{grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;gap:0 8px!important}
+  #page-home .time-date-side .date-side-weather b#weatherTemp{font-size:21px!important}
+  #page-home .time-date-side .date-side-weather span#weatherCondition{font-size:10px!important}
+  #page-home #panchangPanel{padding-top:6px!important}
+  #page-home #panchangPanel .panchang-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:6px!important}
+}
