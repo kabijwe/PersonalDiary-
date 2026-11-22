@@ -1863,3 +1863,182 @@ body .book-page.page-turn-prev{animation:pageTurnPrev .28s cubic-bezier(.35,.7,.
     max-width:62%!important;
   }
 }
+
+
+/* Weather/location is content inside the time card, never a nested card.
+   Reuse the time card's typography, spacing and monochrome palette. */
+#page-home .time-weather,
+#page-home .time-weather .weather-summary,
+#page-home .time-weather .location-coordinates,
+#page-home .time-weather .weather-location-controls{
+  box-sizing:border-box!important;
+  width:100%!important;
+  min-width:0!important;
+  background:transparent!important;
+  border:0!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+}
+#page-home .time-weather{
+  display:block!important;
+  margin:10px 0 0!important;
+  padding:10px 0 0!important;
+  border-top:1px solid #ffffff20!important;
+  color:inherit!important;
+  font-family:inherit!important;
+  text-align:left!important;
+}
+#page-home .weather-panel-heading{
+  display:block!important;
+  margin:0 0 7px!important;
+  padding:0!important;
+  background:transparent!important;
+  border:0!important;
+  color:#C40014!important;
+  font-family:"Noto Serif Devanagari",serif!important;
+  font-size:13px!important;
+  font-weight:600!important;
+  letter-spacing:0!important;
+  line-height:1.5!important;
+  text-align:left!important;
+}
+#page-home .time-weather .weather-summary{
+  display:block!important;
+  padding:0!important;
+  margin:0!important;
+}
+#page-home .time-weather .place-line{
+  display:flex!important;
+  align-items:baseline!important;
+  justify-content:flex-start!important;
+  flex-wrap:wrap!important;
+  gap:5px 8px!important;
+  margin:0!important;
+  color:#d4deea!important;
+  font-family:"Noto Serif Devanagari",serif!important;
+  font-size:13px!important;
+  line-height:1.6!important;
+}
+#page-home .time-weather .place-pin{color:#C40014!important}
+#page-home .time-weather #placeName{
+  color:#fff!important;
+  font:600 14px/1.5 "Noto Serif Devanagari",serif!important;
+}
+#page-home .time-weather .mode-badge{
+  padding:0 7px!important;
+  min-height:0!important;
+  background:transparent!important;
+  border:1px solid #ffffff30!important;
+  border-radius:20px!important;
+  color:#c1ccd8!important;
+  font:400 10px/1.6 "Noto Serif Devanagari",serif!important;
+}
+#page-home .time-weather .weather-main{
+  display:flex!important;
+  align-items:baseline!important;
+  justify-content:flex-start!important;
+  flex-wrap:wrap!important;
+  gap:3px 10px!important;
+  margin:4px 0 0!important;
+  padding:0!important;
+  text-align:left!important;
+}
+#page-home .time-weather .weather-main b{
+  color:#fff!important;
+  font:500 23px/1.35 "Noto Serif Devanagari",serif!important;
+}
+#page-home .time-weather .weather-main span{
+  color:#dbe5ef!important;
+  font:400 13px/1.6 "Noto Serif Devanagari",serif!important;
+}
+#page-home .time-weather .weather-extra{
+  display:block!important;
+  margin:2px 0 0!important;
+  color:#b6c3d0!important;
+  font:400 11.5px/1.7 "Noto Serif Devanagari",serif!important;
+  text-align:left!important;
+}
+#page-home .time-weather .weather-updated{
+  display:block!important;
+  margin:2px 0 0!important;
+  color:#9fb4c9!important;
+  font:400 10.5px/1.6 "Noto Serif Devanagari",serif!important;
+  text-align:left!important;
+}
+#page-home .time-weather .location-coordinates{
+  display:flex!important;
+  align-items:baseline!important;
+  justify-content:flex-start!important;
+  flex-wrap:wrap!important;
+  gap:3px 15px!important;
+  margin:6px 0 0!important;
+  padding:0!important;
+  text-align:left!important;
+}
+#page-home .time-weather .location-coordinates span,
+#page-home .time-weather .location-coordinates strong{
+  display:inline!important;
+  margin:0!important;
+  padding:0!important;
+  color:#c1ccd8!important;
+  background:transparent!important;
+  border:0!important;
+  font:400 10.5px/1.6 "Noto Serif Devanagari",serif!important;
+  overflow-wrap:anywhere!important;
+}
+#page-home .time-weather .location-coordinates strong{color:#d4deea!important}
+#page-home .weather-location-controls{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  flex-wrap:wrap!important;
+  gap:7px 13px!important;
+  margin:7px 0 0!important;
+  padding:0!important;
+}
+#page-home .weather-location-controls .location-button{
+  width:auto!important;
+  min-height:30px!important;
+  margin:0!important;
+  padding:5px 10px!important;
+  color:#fff!important;
+  background:#101010!important;
+  border:1px solid #454545!important;
+  border-radius:7px!important;
+  box-shadow:none!important;
+  font:500 11px/1.5 "Noto Serif Devanagari",serif!important;
+}
+#page-home .weather-location-controls .location-button .loc-icon{color:#C40014!important}
+#page-home .weather-location-controls .manual-place{
+  display:flex!important;
+  flex-direction:row!important;
+  align-items:center!important;
+  flex-wrap:wrap!important;
+  gap:6px!important;
+  margin:0!important;
+  color:#b6c3d0!important;
+  font:400 11px/1.5 "Noto Serif Devanagari",serif!important;
+}
+#page-home .weather-location-controls .manual-place>span{color:#b6c3d0!important}
+#page-home .weather-location-controls .manual-place select{
+  width:auto!important;
+  max-width:180px!important;
+  min-height:30px!important;
+  margin:0!important;
+  padding:4px 25px 4px 8px!important;
+  color:#f4f6f9!important;
+  background:#0d1219!important;
+  border:1px solid #454545!important;
+  border-radius:7px!important;
+  font:400 11px/1.5 "Noto Serif Devanagari",serif!important;
+}
+@media(max-width:760px){
+  #page-home .time-weather{margin-top:8px!important;padding-top:8px!important}
+  #page-home .time-weather .weather-main b{font-size:21px!important}
+  #page-home .time-weather .weather-extra{font-size:10.5px!important}
+  #page-home .time-weather .location-coordinates{gap:3px 10px!important}
+  #page-home .weather-location-controls{align-items:stretch!important;flex-direction:column!important;gap:7px!important}
+  #page-home .weather-location-controls .location-button{width:100%!important}
+  #page-home .weather-location-controls .manual-place{width:100%!important;justify-content:space-between!important}
+  #page-home .weather-location-controls .manual-place select{max-width:62%!important;flex:0 1 62%!important}
+}
