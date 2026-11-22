@@ -316,7 +316,6 @@
   }
 
   /* ---------- Live day/night solar cycle ---------- */
-  let solarSimulation=null;
   function drawSun(){
     if(!solar||solar.polar){
       setText("sunriseTime","--:--");setText("sunsetTime","--:--");setText("sunriseDetail","उपलब्ध छैन");setText("sunsetDetail","उपलब्ध छैन");
@@ -385,10 +384,10 @@
     const h=Math.floor(mins/60)%24,m=Math.floor(mins%60),h12=h%12||12;
     return nepaliNumber(h12)+":"+nepaliNumber(String(m).padStart(2,"0"))+" "+periodWord(h);
   }
-  function updateSolarPosition(overrideMinutes=null){
+  function updateSolarPosition(){
     if(!solar||solar.polar)return;
     const p=nptP(Date.now()),liveMins=p.hh*60+p.mm+p.ss/60;
-    const nowMins=overrideMinutes==null?liveMins:overrideMinutes;
+    const nowMins=liveMins;
     const startX=40,endX=760,width=endX-startX;
     const {waveY,sunriseMins,sunsetMins}=solarWaveGeometry();
     const clampedNow=Math.max(0,Math.min(1440,nowMins));
@@ -404,22 +403,7 @@
     setText("sunStatus",daytime?"अहिले दिनको समय":nowMins<sunriseMins?"सूर्योदय हुन बाँकी":"सूर्यास्त भइसकेको");
     setText("sunLiveClock",solarMinuteLabel(clampedNow));
     const badge=$("#sunCardLiveText");if(badge)badge.textContent=solarMinuteLabel(clampedNow);
-    const simSlider=$("#sunSimSlider");if(simSlider&&solarSimulation===null)simSlider.value=String(Math.round(liveMins));
   }
-  function setSolarSimulation(value){
-    solarSimulation=value;
-    const dot=$("#sunCardLiveDot");
-    if(dot){dot.classList.toggle("simulating",value!==null);}
-    const slider=$("#sunSimSlider");if(slider&&value!==null)slider.value=String(Math.round(value));
-    updateSolarPosition(value);
-  }
-  $("#sunSimToggle")?.addEventListener("click",()=>$("#sunSimControls")?.classList.toggle("active"));
-  $("#sunSimSlider")?.addEventListener("input",e=>setSolarSimulation(Number(e.target.value)));
-  $("#sunSimLive")?.addEventListener("click",()=>{
-    solarSimulation=null;
-    $("#sunCardLiveDot")?.classList.remove("simulating");
-    updateSolarPosition();
-  });
   /* ---------- Weather (Open-Meteo) ---------- */
   const WX_TEXT={0:"सफा आकाश",1:"मुख्यतः सफा",2:"आंशिक बादल",3:"बादल लागेको",45:"कुहिरो",48:"बाक्लो कुहिरो",51:"हल्का झरी",53:"झरी",55:"घना झरी",56:"चिसो झरी",57:"चिसो झरी",61:"हल्का वर्षा",63:"वर्षा",65:"भारी वर्षा",66:"चिसो वर्षा",67:"चिसो वर्षा",71:"हल्का हिमपात",73:"हिमपात",75:"भारी हिमपात",77:"हिउँका कण",80:"छिटफुट वर्षा",81:"वर्षा",82:"भारी वर्षा",85:"हिउँ वर्षा",86:"भारी हिउँ वर्षा",95:"मेघगर्जन",96:"असिनासहित मेघगर्जन",99:"असिनासहित मेघगर्जन"};
   let wxSeq=0;
@@ -761,7 +745,7 @@
   window.setInterval(checkDueReminders,15000);
   document.addEventListener("visibilitychange",()=>{if(!document.hidden)checkDueReminders();});
 
-  window.setInterval(()=>{if(solarSimulation===null)updateSolarPosition();},1000);
+  window.setInterval(updateSolarPosition,1000);
   updateLetter();renderAll();
   if("serviceWorker" in navigator && location.protocol!=="file:")navigator.serviceWorker.register("./sw.js").catch(()=>{});
 })();
