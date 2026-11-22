@@ -325,7 +325,7 @@
     const sunrise=fmtClock(solar.sunriseMs),sunset=fmtClock(solar.sunsetMs);
     setText("sunriseTime",sunrise);setText("sunsetTime",sunset);setText("sunriseDetail",sunrise);setText("sunsetDetail",sunset);
     const curve=$("#sun-single-curve");
-    if(curve)curve.setAttribute("d","M 12,53 C 48,53 76,2 120,2 C 164,2 192,53 228,53");
+    if(curve)curve.setAttribute("d","M 0,53 C 40,53 80,2 120,2 C 160,2 200,53 240,53");
     $("#celestial-body")?.removeAttribute("display");
     updateSolarPosition();
   }
@@ -344,11 +344,11 @@
       if(now<=noonClamped){
         const u=Math.max(0,Math.min(1,(now-sunriseMs)/(noonClamped-sunriseMs)));
         // Use the exact same Bezier controls as the drawn curve, so the dot never drifts off it.
-        x=cubic(12,48,76,120,u);
+        x=cubic(0,40,80,120,u);
         y=cubic(53,53,2,2,u);
       }else{
         const u=Math.max(0,Math.min(1,(now-noonClamped)/(sunsetMs-noonClamped)));
-        x=cubic(120,164,192,228,u);
+        x=cubic(120,160,200,240,u);
         y=cubic(2,2,53,53,u);
       }
     }else{
