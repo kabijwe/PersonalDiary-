@@ -333,17 +333,14 @@
   // Clock-aligned solar curve: the marker follows Nepal wall-clock time horizontally,
   // while the daylight arc rises smoothly to the exact midpoint between sunrise and sunset.
   function solarWaveGeometry(){
-    // Daylight-only cosine arc: exact baseline at sunrise/sunset and a smooth peak at solar noon.
-    // The graph still uses a full 24-hour clock on the X axis.
-    const baselineY=58,amplitude=40;
+    // Restore the original full-day cosine profile: low at night, high at solar noon.
+    // Sunrise and sunset are symmetric around solar noon, so the curve meets the horizon at both points.
+    const peakY=18,troughY=96,midY=(peakY+troughY)/2,amplitude=(troughY-peakY)/2;
     const sunriseParts=nptP(solar.sunriseMs),sunsetParts=nptP(solar.sunsetMs);
     const sunriseMins=sunriseParts.hh*60+sunriseParts.mm;
     const sunsetMins=sunsetParts.hh*60+sunsetParts.mm;
-    const daylightDuration=Math.max(1,sunsetMins-sunriseMins);
-    const waveY=mins=>{
-      const t=Math.max(0,Math.min(1,(mins-sunriseMins)/daylightDuration));
-      return baselineY-amplitude*(1-Math.cos(2*Math.PI*t))/2;
-    };
+    const solarNoon=(sunriseMins+sunsetMins)/2;
+    const waveY=mins=>midY-amplitude*Math.cos(((mins-solarNoon)/1440)*2*Math.PI)-7;
     const sunriseY=waveY(sunriseMins);
     return {waveY,sunriseY,sunriseMins,sunsetMins};
   }
@@ -354,7 +351,7 @@
     const {waveY,sunriseY,sunsetMins}=solarWaveGeometry();
     const sunsetX=16+(sunsetMins/1440)*308;
     const fade=$("#sun-curve-gradient");if(fade)fade.setAttribute("x2",sunsetX.toFixed(2));
-    const horizonY=sunriseY; // The curve meets the horizon exactly at sunrise and sunset.
+    const horizonY=sunriseY; // Intersects the restored full-day cosine at sunrise and sunset.
     const horizon=$("#sun-horizon-line");
     if(horizon){horizon.setAttribute("y1",horizonY.toFixed(2));horizon.setAttribute("y2",horizonY.toFixed(2));}
     let d="";
