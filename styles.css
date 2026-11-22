@@ -3105,3 +3105,32 @@ body .book-page.page-turn-prev{animation:pageTurnPrev .28s cubic-bezier(.35,.7,.
     right:10px!important;
   }
 }
+
+
+/* Keep the live clock directly beneath the weekday heading; remove the vertical gap. */
+#page-home .time-card-head{
+  height:auto!important;
+  min-height:0!important;
+  margin:0!important;
+  padding:0!important;
+  line-height:1.1!important;
+}
+#page-home .time-date{
+  margin:0!important;
+  padding:0!important;
+  align-items:flex-start!important;
+}
+#page-home .time-date>div:first-child{
+  margin:0!important;
+  padding:0!important;
+}
+#page-home .time-date #clock{
+  margin-top:-2px!important;
+  padding:0!important;
+  line-height:1.08!important;
+}
+#page-home .time-date #timeTithi{margin-top:0!important}
+@media(max-width:650px){
+  #page-home .time-date{margin-top:0!important}
+  #page-home .time-date #clock{margin-top:-2px!important}
+}
