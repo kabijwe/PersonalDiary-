@@ -323,7 +323,7 @@
     const el=$("#panchangSummaryText");if(!el||!pan)return;
     const t=pan.tithi,n=pan.nakshatra,y=pan.yoga,k=pan.karana,lm=pan.lunarMonth;
     const rows=[
-      [["बार","पक्ष","चन्द्रमास"].join(" · "),[
+      ["",[
         $("#timeWeekday")?.textContent?.trim(),t?.paksha,(t?.shukla?lm?.amanta:lm?.purnimanta)
       ].filter(Boolean).join(" · ")],
       ["तिथि",t?.name? t.name+" · समाप्ति "+fmtEnd(t.endMs,Date.now()):""],
@@ -339,9 +339,12 @@
     el.replaceChildren();
     rows.forEach(([label,value])=>{
       const row=document.createElement("span");row.className="panchang-row";
-      const key=document.createElement("span");key.className="panchang-label";key.textContent=label;
+      if(label){
+        const key=document.createElement("span");key.className="panchang-label";key.textContent=label;
+        row.append(key);
+      }
       const detail=document.createElement("span");detail.className="panchang-value";detail.textContent=value;
-      row.append(key,detail);el.append(row);
+      row.append(detail);el.append(row);
     });
   }
 
