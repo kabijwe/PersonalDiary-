@@ -657,7 +657,7 @@
   if(state.settings.theme==="dark"||(state.settings.theme==="system"&&matchMedia("(prefers-color-scheme: dark)").matches))document.body.classList.add("dark");applyPalette();syncBrand();
   $("#exportData").onclick=()=>{const blob=new Blob([JSON.stringify(state,null,2)],{type:"application/json"}),url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download="kabijwe-backup.json";a.click();URL.revokeObjectURL(url);toast("डाटा Export भयो।")};
   $("#importData").onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);if(!d||!Array.isArray(d.entries))throw Error();if(!confirm("हालको स्थानीय डाटा बदल्ने?"))return;Object.assign(state,d);persist();renderAll();toast("डाटा Import भयो।")}catch{toast("यो Backup फाइल मान्य छैन।")}};r.readAsText(f)};
-  $("#clearData").onclick=()=>{if(confirm("सबै स्थानीय डायरी, सम्झना र ढाँचा स्थायी रूपमा मेटाउने?")){localStorage.removeItem(KEY);location.reload()}};
+  $("#clearData").onclick=()=>{if(confirm("यो उपकरणको browser cache मात्र reset हुनेछ। मुख्य diary database Kali server मा सुरक्षित रहनेछ र reload पछि फेरि sync हुनेछ। जारी राख्ने?")){localStorage.removeItem(KEY);localStorage.removeItem("kabijwe.synced.v1");location.reload()}};
   function renderAll(){renderDiary();renderPoetry();renderCalendar();renderMemories();renderTemplates();renderLocationHistory()}
 
   // Local-first reminders. They live inside the main state object and are included in JSON backups.
