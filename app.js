@@ -362,15 +362,16 @@
     if(!solar||solar.polar)return;
     const startX=40,endX=760,width=endX-startX;
     const {waveY,horizonY,sunriseMins,sunsetMins}=solarWaveGeometry();
-    const xAt=m=>startX+(m/1440)*width;
+    const xAt=m=>startX+((m-sunriseMins)/(sunsetMins-sunriseMins))*width;
     const horizon=$("#sun-horizon-line");
     if(horizon){horizon.setAttribute("y1",horizonY.toFixed(2));horizon.setAttribute("y2",horizonY.toFixed(2));}
-    const night=$("#sun-night-bg");if(night){night.setAttribute("y",horizonY.toFixed(2));night.setAttribute("height",(238-horizonY).toFixed(2));}
-    const clip=$("#sun-above-horizon-rect");if(clip)clip.setAttribute("height",horizonY.toFixed(2));
+    const night=$("#sun-night-bg");if(night){night.setAttribute("x",startX);night.setAttribute("width",width);night.setAttribute("y",horizonY.toFixed(2));night.setAttribute("height",(238-horizonY).toFixed(2));}
+    const clip=$("#sun-above-horizon-rect");if(clip){clip.setAttribute("x",startX);clip.setAttribute("width",width);clip.setAttribute("height",horizonY.toFixed(2));}
     let d="";
-    for(let m=0;m<=1440;m+=1){const x=xAt(m),y=waveY(m);d+=(m===0?"M ":" L ")+x.toFixed(2)+","+y.toFixed(2);}
+    for(let m=sunriseMins;m<=sunsetMins;m+=0.5){const x=xAt(m),y=waveY(m);d+=(m===sunriseMins?"M ":" L ")+x.toFixed(2)+","+y.toFixed(2);}
+    d+=" L "+endX+" "+horizonY.toFixed(2);
     $("#full-sun-path")?.setAttribute("d",d);
-    $("#sun-day-area")?.setAttribute("d",d+" L "+endX+" "+horizonY.toFixed(2)+" L "+startX+" "+horizonY.toFixed(2)+" Z");
+    $("#sun-day-area")?.setAttribute("d",d+" L "+startX+" "+horizonY.toFixed(2)+" Z");
     const setMarker=(prefix,m)=>{
       const x=xAt(m);
       const dot=$("#"+prefix+"-dot"),tick=$("#"+prefix+"-tick");
@@ -390,13 +391,15 @@
     const nowMins=liveMins;
     const startX=40,endX=760,width=endX-startX;
     const {waveY,sunriseMins,sunsetMins}=solarWaveGeometry();
-    const clampedNow=Math.max(0,Math.min(1440,nowMins));
-    const sunX=startX+(clampedNow/1440)*width,sunY=waveY(clampedNow);
+    const visibleMins=Math.max(sunriseMins,Math.min(sunsetMins,nowMins));
+    const sunX=startX+((visibleMins-sunriseMins)/(sunsetMins-sunriseMins))*width,sunY=waveY(visibleMins);
     let elapsed="";
-    for(let m=0;m<=clampedNow;m+=1){const x=startX+(m/1440)*width,y=waveY(m);elapsed+=(m===0?"M ":" L ")+x.toFixed(2)+","+y.toFixed(2);}
-    elapsed+=" L "+sunX.toFixed(2)+","+sunY.toFixed(2);
+    if(nowMins>=sunriseMins){
+      for(let m=sunriseMins;m<=visibleMins;m+=0.5){const x=startX+((m-sunriseMins)/(sunsetMins-sunriseMins))*width,y=waveY(m);elapsed+=(m===sunriseMins?"M ":" L ")+x.toFixed(2)+","+y.toFixed(2);}
+      elapsed+=" L "+sunX.toFixed(2)+","+sunY.toFixed(2);
+    }
     $("#elapsed-sun-path")?.setAttribute("d",elapsed);
-    const progress=$("#sun-progress-rect");if(progress)progress.setAttribute("width",sunX.toFixed(2));
+    const progress=$("#sun-progress-rect");if(progress){progress.setAttribute("x",startX);progress.setAttribute("width",Math.max(0,sunX-startX).toFixed(2));}
     const marker=$("#sun-marker");
     if(marker){marker.setAttribute("transform",`translate(${sunX.toFixed(2)} ${sunY.toFixed(2)})`);marker.setAttribute("visibility","visible");}
     const daytime=nowMins>=sunriseMins&&nowMins<=sunsetMins;
