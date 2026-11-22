@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
+from pathlib import Path
+import os
 import ssl
-from pathlib import Path\nimport os
 
 ROOT = Path(__file__).resolve().parent
 CERT = ROOT / ".certs" / "diary.pem"
@@ -13,7 +14,8 @@ class LocalOnlyHandler(SimpleHTTPRequestHandler):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, directory=str(ROOT), **kwargs)
 
-host = os.environ.get("KABIJWE_LAN_IP", "127.0.0.1")\nserver = ThreadingHTTPServer((host, 8443), LocalOnlyHandler)
+host = os.environ.get("KABIJWE_LAN_IP", "127.0.0.1")
+server = ThreadingHTTPServer((host, 8443), LocalOnlyHandler)
 context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
 context.minimum_version = ssl.TLSVersion.TLSv1_2
 context.load_cert_chain(CERT, KEY)
