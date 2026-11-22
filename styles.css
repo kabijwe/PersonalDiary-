@@ -733,3 +733,11 @@ body .book-page.page-turn-prev{animation:pageTurnPrev .28s cubic-bezier(.35,.7,.
 #page-home .sun-horizon{stroke:#FFFFFF!important;stroke-width:2.4!important;stroke-dasharray:3 5!important;opacity:1!important;}
 #page-home .sun-endpoint{fill:#FFFFFF!important;}
 @media(max-width:650px){#page-home #sunPath{height:72px!important;}}
+
+
+/* Solar graph v38: slightly wider, curve dips below horizon at both ends */
+#page-home .sun-visual-wide{width:105%!important;margin-left:-2.5%!important;}
+#page-home #sunPath{width:100%!important;height:84px!important;overflow:visible!important;}
+#page-home #sun-single-curve{stroke:#FF2D20!important;stroke-width:3.8!important;stroke-linecap:round!important;stroke-linejoin:round!important;fill:none!important;}
+#page-home .sun-horizon{stroke:#FFFFFF!important;stroke-width:2.4!important;opacity:1!important;}
+@media(max-width:650px){#page-home .sun-visual-wide{width:104%!important;margin-left:-2%!important;}#page-home #sunPath{height:78px!important;}}
