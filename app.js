@@ -333,27 +333,39 @@
   // Clock-aligned solar curve: the marker follows Nepal wall-clock time horizontally,
   // while the daylight arc rises smoothly to the exact midpoint between sunrise and sunset.
   function solarWaveGeometry(){
-    // One continuous, smooth cosine arc: above the horizon by day and below it by night.
-    // Both sunrise and sunset meet the same lowered horizon with a flat tangent.
-    const horizonY=66,dayHeight=46,nightDepth=28;
+    // Smooth phase spline: the curve crosses the horizon exactly at the real
+    // sunrise and sunset times, while keeping a broad daytime arc and a deeper night trough.
+    const peakY=10,troughY=102,midY=(peakY+troughY)/2,amplitude=(troughY-peakY)/2;
+    const horizonPhase=0.725;
     const sunriseParts=nptP(solar.sunriseMs),sunsetParts=nptP(solar.sunsetMs);
     const sunriseMins=sunriseParts.hh*60+sunriseParts.mm;
     const sunsetMins=sunsetParts.hh*60+sunsetParts.mm;
-    const dayLength=Math.max(1,sunsetMins-sunriseMins);
-    const nightLength=Math.max(1,1440-dayLength);
-    const waveY=mins=>{
-      if(mins>=sunriseMins&&mins<=sunsetMins){
-        const t=(mins-sunriseMins)/dayLength;
-        return horizonY-dayHeight*(1-Math.cos(2*Math.PI*t))/2;
-      }
-      const elapsed=mins>sunsetMins
-        ? mins-sunsetMins
-        : (1440-sunsetMins)+mins;
-      const t=elapsed/nightLength;
-      return horizonY+nightDepth*(1-Math.cos(2*Math.PI*t))/2;
+    const solarNoon=(sunriseMins+sunsetMins)/2;
+    const horizonY=midY-amplitude*Math.cos(Math.PI*horizonPhase);
+    const knotsT=[0,sunriseMins,solarNoon,sunsetMins,1440];
+    const knotsU=[-1,-horizonPhase,0,horizonPhase,1];
+    const slopes=[
+      (knotsU[1]-knotsU[0])/(knotsT[1]-knotsT[0]),
+      (knotsU[2]-knotsU[0])/(knotsT[2]-knotsT[0]),
+      (knotsU[3]-knotsU[1])/(knotsT[3]-knotsT[1]),
+      (knotsU[4]-knotsU[2])/(knotsT[4]-knotsT[2]),
+      (knotsU[4]-knotsU[3])/(knotsT[4]-knotsT[3])
+    ];
+    const phaseAt=mins=>{
+      const m=Math.max(0,Math.min(1440,mins));
+      let i=0;
+      while(i<knotsT.length-2&&m>knotsT[i+1])i++;
+      const h=knotsT[i+1]-knotsT[i];
+      const t=(m-knotsT[i])/h,t2=t*t,t3=t2*t;
+      return (2*t3-3*t2+1)*knotsU[i]
+        +(t3-2*t2+t)*h*slopes[i]
+        +(-2*t3+3*t2)*knotsU[i+1]
+        +(t3-t2)*h*slopes[i+1];
     };
+    const waveY=mins=>midY-amplitude*Math.cos(Math.PI*phaseAt(mins));
     return {waveY,sunriseY:horizonY,horizonY,sunriseMins,sunsetMins};
-  }  // The full-day curve and elapsed overlay use one shared clock-aligned function.
+  }
+  // The full-day curve and elapsed overlay use one shared clock-aligned function.
   function drawFullSunCycle(){
     if(!solar||solar.polar)return;
     const startX=16,endX=324,width=endX-startX;
