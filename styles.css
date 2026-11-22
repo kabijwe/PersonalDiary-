@@ -837,3 +837,29 @@ body .book-page.page-turn-prev{animation:pageTurnPrev .28s cubic-bezier(.35,.7,.
  #page-home .sun-detail-grid b{font-size:10px!important}
  #page-home .sun-detail-grid small{font-size:8px!important}
 }
+
+
+/* Solar cycle refinement: full sunrise-to-sunset span and clearer typography */
+#page-home .sun-card-heading .eyebrow{font-size:12px!important}
+#page-home .sun-card-heading h2{font-size:clamp(19px,2.8vw,23px)!important}
+#page-home .sun-card-live{font-size:14px!important}
+#page-home .sun-card-live i{width:7px;height:7px}
+#page-home .sun-times{margin-bottom:0!important}
+#page-home .sun-times b{font-size:clamp(25px,4.2vw,30px)!important}
+#page-home .sun-times small{font-size:14px!important}
+#page-home .sun-graph{width:100%;height:150px!important}
+#page-home .sun-reference-caption{font-size:13px!important}
+#page-home .sun-reference-caption b{font-size:15px!important}
+#page-home .sun-detail-grid span{font-size:12px!important}
+#page-home .sun-detail-grid b{font-size:16px!important}
+#page-home .sun-detail-grid small{font-size:11px!important}
+@media(max-width:650px){
+  #page-home .sun-card-heading h2{font-size:18px!important}
+  #page-home .sun-card-live{font-size:12px!important}
+  #page-home .sun-times b{font-size:25px!important}
+  #page-home .sun-times small{font-size:13px!important}
+  #page-home .sun-graph{height:122px!important}
+  #page-home .sun-detail-grid span{font-size:11px!important}
+  #page-home .sun-detail-grid b{font-size:14px!important}
+  #page-home .sun-detail-grid small{font-size:10px!important}
+}
