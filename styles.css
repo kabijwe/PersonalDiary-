@@ -1002,3 +1002,19 @@ body .book-page.page-turn-prev{animation:pageTurnPrev .28s cubic-bezier(.35,.7,.
   #page-home .sun-intersection-time{font-size:26px!important;}
   #page-home .sun-intersection-label{font-size:14px!important;}
 }
+
+
+/* Solar intersection typography: extra-large display */
+#page-home .sun-intersection-time{
+  font-size:44px!important;
+  font-weight:850!important;
+  letter-spacing:.35px!important;
+}
+#page-home .sun-intersection-label{
+  font-size:19px!important;
+  font-weight:750!important;
+}
+@media(max-width:650px){
+  #page-home .sun-intersection-time{font-size:36px!important;}
+  #page-home .sun-intersection-label{font-size:16px!important;}
+}
