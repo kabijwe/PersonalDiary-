@@ -322,23 +322,28 @@
   function renderPanchangSummary(){
     const el=$("#panchangSummaryText");if(!el||!pan)return;
     const t=pan.tithi,n=pan.nakshatra,y=pan.yoga,k=pan.karana,lm=pan.lunarMonth;
-    const parts=[
-      $("#panchangStatus")?.textContent?.trim()||"गणना उपलब्ध (अफलाइन इन्जिन)",
-      $("#timeWeekday")?.textContent?.trim(),
-      t?.paksha,
-      t?.name? t.name+" (समाप्ति "+fmtEnd(t.endMs,Date.now())+")":"",
-      n?.name? n.name+" · पाद "+nepaliNumber(n.pada)+" (समाप्ति "+fmtEnd(n.endMs,Date.now())+")":"",
-      y?.name? y.name+" योग (समाप्ति "+fmtEnd(y.endMs,Date.now())+")":"",
-      k?.name? k.name+" करण (समाप्ति "+fmtEnd(k.endMs,Date.now())+")":"",
-      pan.moonRashi?.name?"चन्द्र राशि "+pan.moonRashi.name:"",
-      pan.sunRashi?.name?"सूर्य राशि "+pan.sunRashi.name:"",
-      (t?.shukla?lm?.amanta:lm?.purnimanta)?"चन्द्रमास "+(t.shukla?lm.amanta:lm.purnimanta):"",
-      t?.shukla?"अमान्त = पूर्णिमान्त":(lm?.amanta?"पूर्णिमान्त · अमान्त "+lm.amanta:""),
-      pan.ayana,
-      $("#pGhadiPala")?.textContent?.trim(),
-      $("#pGhadiNote")?.textContent?.trim()
-    ].filter(Boolean);
-    el.textContent=parts.join(" · ");
+    const rows=[
+      ["बार",$("#timeWeekday")?.textContent?.trim()],
+      ["पक्ष",t?.paksha],
+      ["तिथि",t?.name? t.name+" · समाप्ति "+fmtEnd(t.endMs,Date.now()):""],
+      ["नक्षत्र",n?.name? n.name+" · पाद "+nepaliNumber(n.pada)+" · समाप्ति "+fmtEnd(n.endMs,Date.now()):""],
+      ["योग",y?.name? y.name+" · समाप्ति "+fmtEnd(y.endMs,Date.now()):""],
+      ["करण",k?.name? k.name+" · समाप्ति "+fmtEnd(k.endMs,Date.now()):""],
+      ["चन्द्र राशि",pan.moonRashi?.name],
+      ["सूर्य राशि",pan.sunRashi?.name],
+      ["चन्द्रमास",(t?.shukla?lm?.amanta:lm?.purnimanta)],
+      ["मास पद्धति",t?.shukla?"अमान्त = पूर्णिमान्त":(lm?.amanta?"पूर्णिमान्त · अमान्त "+lm.amanta:"")],
+      ["अयन",pan.ayana],
+      ["घडी · पला",$("#pGhadiPala")?.textContent?.trim()],
+      ["सूर्योदयदेखि",$("#pGhadiNote")?.textContent?.trim()]
+    ].filter(([,value])=>value);
+    el.replaceChildren();
+    rows.forEach(([label,value])=>{
+      const row=document.createElement("span");row.className="panchang-row";
+      const key=document.createElement("span");key.className="panchang-label";key.textContent=label;
+      const detail=document.createElement("span");detail.className="panchang-value";detail.textContent=value;
+      row.append(key,detail);el.append(row);
+    });
   }
 
   /* ---------- Live day/night solar cycle ---------- */
