@@ -3086,21 +3086,22 @@ body .book-page.page-turn-prev{animation:pageTurnPrev .28s cubic-bezier(.35,.7,.
 }
 
 
-/* Use the unused space at the top of the time card for the weather/date stack. */
-#page-home .time-overview-main{position:relative!important}
+
+/* Anchor the weather/date stack to the actual top-right corner of the time card. */
+#page-home .time-card{position:relative!important}
+#page-home .time-overview-main{position:static!important}
 #page-home .time-date-side{
   position:absolute!important;
-  top:0!important;
-  right:0!important;
+  top:8px!important;
+  right:12px!important;
   margin:0!important;
   padding:0!important;
   transform:none!important;
-  z-index:2!important;
+  z-index:5!important;
 }
 @media(max-width:650px){
   #page-home .time-date-side{
-    top:0!important;
-    right:0!important;
-    transform:none!important;
+    top:7px!important;
+    right:10px!important;
   }
 }
