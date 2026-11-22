@@ -2557,7 +2557,7 @@ body .book-page.page-turn-prev{animation:pageTurnPrev .28s cubic-bezier(.35,.7,.
 /* Weather details: plain aligned information, matching the Panchang text hierarchy. */
 #page-home .time-card .time-weather .weather-extra{
   display:grid!important;
-  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
   align-items:baseline!important;
   column-gap:18px!important;
   row-gap:3px!important;
@@ -2626,10 +2626,11 @@ body .book-page.page-turn-prev{animation:pageTurnPrev .28s cubic-bezier(.35,.7,.
 }
 @media(max-width:520px){
   #page-home .time-card .time-weather .weather-extra{
-    column-gap:12px!important;
-    row-gap:2px!important;
-    font-size:10.5px!important;
-    line-height:1.6!important;
+    grid-template-columns:repeat(4,minmax(0,1fr))!important;
+    column-gap:7px!important;
+    row-gap:3px!important;
+    font-size:9.5px!important;
+    line-height:1.5!important;
   }
   #page-home .time-card .time-weather .weather-suggestion,
   #page-home .time-card .weather-suggestion-label,
