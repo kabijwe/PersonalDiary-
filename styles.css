@@ -803,3 +803,5 @@ body .book-page.page-turn-prev{animation:pageTurnPrev .28s cubic-bezier(.35,.7,.
  #page-home .sun-detail-grid b{font-size:12px!important}
  #page-home .sun-detail-grid small{font-size:9px!important}
 }
+
+#page-home .sun-sim-toggle{font-family:inherit;font-size:12px}
