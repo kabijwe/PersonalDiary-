@@ -1299,3 +1299,124 @@ body .book-page.page-turn-prev{animation:pageTurnPrev .28s cubic-bezier(.35,.7,.
   #page-home .time-weather .weather-extra{font-size:11px!important}
   #page-home .time-weather .location-coordinates{gap:4px 10px!important}
 }
+
+
+/* Integrated time, place and weather information — one continuous section */
+#page-home .time-overview-grid{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr)!important;
+  gap:0!important;
+}
+#page-home .time-overview-main{min-width:0!important;width:100%!important}
+#page-home .time-weather{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr)!important;
+  gap:9px!important;
+  width:100%!important;
+  min-width:0!important;
+  margin:17px 0 0!important;
+  padding:13px 0 0!important;
+  background:transparent!important;
+  border:0!important;
+  border-top:1px solid #ffffff28!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+  color:inherit!important;
+  text-align:left!important;
+  align-items:start!important;
+}
+#page-home .weather-panel-heading{
+  margin:0!important;
+  padding:0!important;
+  color:#e6edf5!important;
+  background:transparent!important;
+  border:0!important;
+  font-size:12px!important;
+  font-weight:700!important;
+  text-align:left!important;
+}
+#page-home .weather-summary{min-width:0!important}
+#page-home .time-weather .place-line{
+  justify-content:flex-start!important;
+  text-align:left!important;
+  gap:8px!important;
+  color:#e5edf5!important;
+}
+#page-home .time-weather #placeName{color:#fff!important;font-size:15px!important;font-weight:650!important}
+#page-home .time-weather .place-pin{color:#ff6259!important}
+#page-home .time-weather .mode-badge{
+  color:#cbd6e2!important;
+  background:transparent!important;
+  border:1px solid #657487!important;
+  border-radius:20px!important;
+  font-size:10px!important;
+}
+#page-home .time-weather .weather-main{
+  display:flex!important;
+  align-items:baseline!important;
+  justify-content:flex-start!important;
+  gap:10px!important;
+  margin:5px 0 2px!important;
+}
+#page-home .time-weather .weather-main b{
+  color:#fff!important;
+  font-size:clamp(26px,3vw,34px)!important;
+  line-height:1.1!important;
+}
+#page-home .time-weather .weather-main span{color:#e1eaf3!important;font-size:13px!important}
+#page-home .time-weather .weather-extra{
+  color:#c7d3df!important;
+  font-size:11px!important;
+  line-height:1.7!important;
+  text-align:left!important;
+}
+#page-home .time-weather .weather-updated{
+  margin-top:2px!important;
+  color:#9fb0c2!important;
+  font-size:10px!important;
+  text-align:left!important;
+}
+#page-home .time-weather .location-coordinates{
+  display:flex!important;
+  flex-wrap:wrap!important;
+  justify-content:flex-start!important;
+  gap:5px 16px!important;
+  margin:0!important;
+  padding:0!important;
+  background:transparent!important;
+  border:0!important;
+  text-align:left!important;
+}
+#page-home .time-weather .location-coordinates span,
+#page-home .time-weather .location-coordinates strong{
+  padding:0!important;
+  color:#d2dce7!important;
+  background:transparent!important;
+  border:0!important;
+  font-size:10.5px!important;
+  font-weight:500!important;
+}
+#page-home .time-weather .location-coordinates strong{color:#e8edf4!important}
+#page-home .weather-location-controls{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  flex-wrap:wrap!important;
+  gap:8px 14px!important;
+  margin:2px 0 0!important;
+}
+#page-home .weather-location-controls .location-button{min-height:34px!important;padding:7px 11px!important}
+#page-home .weather-location-controls .manual-place{display:flex!important;align-items:center!important;gap:7px!important;flex-wrap:wrap!important}
+#page-home .weather-location-controls .manual-place>span{font-size:10px!important;color:#aebdcb!important}
+@media(max-width:760px){
+  #page-home .time-weather{margin-top:13px!important;padding-top:11px!important;gap:8px!important}
+  #page-home .time-weather .place-line{gap:6px!important}
+  #page-home .time-weather #placeName{font-size:14px!important}
+  #page-home .time-weather .weather-main b{font-size:29px!important}
+  #page-home .time-weather .weather-extra{font-size:10.5px!important;line-height:1.65!important}
+  #page-home .time-weather .location-coordinates{gap:5px 12px!important}
+  #page-home .weather-location-controls{align-items:stretch!important}
+  #page-home .weather-location-controls .location-button{width:100%!important;justify-content:center!important}
+  #page-home .weather-location-controls .manual-place{width:100%!important;justify-content:space-between!important}
+  #page-home .weather-location-controls .manual-place select{max-width:65%!important}
+}
