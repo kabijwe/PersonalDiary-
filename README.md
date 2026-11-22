@@ -109,7 +109,7 @@ Snapshot मा नेपाल समय, AD/BS मिति, बार/हप�
 - **Bikram Sambat + तिथि**: [Trisambat](https://trisambat.com) (`/api/v1/ad/{year}/{month}.json`) — attribution आवश्यक, beta feed।
 - **विस्तृत पञ्चाङ्ग** (तिथि, नक्षत्र, योग, करण, राशि): `panchang.js` को स्थानीय खगोलीय गणना।
 - **मौसम**: Open-Meteo
-- **स्थान नाम**: OpenStreetMap Nominatim
+- **स्थान नाम**: BigDataCloud free client-side reverse geocoding (only for a fresh GPS fix after the user presses the GPS button; no API key).
 - **सूर्योदय/सूर्यास्त**: `panchang.js` (छानिएको स्थानको निर्देशाङ्कबाट)।
 
 Production मा API licensing जाँच गर्नुहोस्।
