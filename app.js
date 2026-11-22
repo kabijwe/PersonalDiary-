@@ -46,7 +46,7 @@
       ["योग",ctx.yoga],["करण",ctx.karana],["चन्द्र राशि",ctx.moonRashi],["सूर्य राशि",ctx.sunRashi],["चन्द्रमास",ctx.lunarMonth],["अयन",ctx.ayana],
       ["घडी / पला",ctx.ghadiPala],["सूर्योदय / सूर्यास्त",[ctx.sunrise,ctx.sunset].filter(Boolean).map(x=>String(x).includes("T")?nepaliNumber(String(x).slice(11,16)):x).join(" / ")],["ऋतु",[ctx.season,ctx.seasonDescription].filter(Boolean).join(" · ")],
       ["स्थान",ctx.place],["स्थानको स्रोत",ctx.locationMode],["अक्षांश / देशान्तर",ctx.latitude!=null&&ctx.longitude!=null?nepaliNumber(ctx.latitude.toFixed(6))+", "+nepaliNumber(ctx.longitude.toFixed(6)):""],
-      ["समुद्री सतहबाट उचाइ",ctx.altitudeM!=null?nepaliNumber(Math.round(ctx.altitudeM))+" मिटर":"उपलब्ध भएन"],["GPS शुद्धता",ctx.accuracyM!=null?nepaliNumber(Math.round(ctx.accuracyM))+" मिटर":""],["गति",ctx.speedKmh!=null?nepaliNumber(ctx.speedKmh.toFixed(1))+" km/h":""],["समय क्षेत्र",ctx.timezone],
+      ["उचाइ",ctx.altitudeM!=null?nepaliNumber(Math.round(ctx.altitudeM))+" मिटर":"उपलब्ध भएन"],["GPS शुद्धता",ctx.accuracyM!=null?nepaliNumber(Math.round(ctx.accuracyM))+" मिटर":""],["गति",ctx.speedKmh!=null?nepaliNumber(ctx.speedKmh.toFixed(1))+" km/h":""],["समय क्षेत्र",ctx.timezone],
       ["न्यूनतम / अधिकतम तापक्रम",[ctx.tempMin,ctx.tempMax].every(Number.isFinite)?nepaliNumber(Math.round(ctx.tempMin))+"° / "+nepaliNumber(Math.round(ctx.tempMax))+"°":""],
       ["वर्षा सम्भावना",ctx.rainProbability!=null?nepaliNumber(Math.round(ctx.rainProbability))+"%":""],["हावाको दिशा / झोक्का",[ctx.windDirection!=null?nepaliNumber(Math.round(ctx.windDirection))+"°":"",ctx.windGustKmh!=null?nepaliNumber(Math.round(ctx.windGustKmh))+" km/h":""].filter(Boolean).join(" · ")],
       ["चाप",ctx.pressureHpa!=null?nepaliNumber(Math.round(ctx.pressureHpa))+" hPa":""],["शीत बिन्दु",ctx.dewPointC!=null?nepaliNumber(Math.round(ctx.dewPointC))+"°":""],
@@ -608,7 +608,7 @@
     setText("placeName",loc.name||"स्थान उपलब्ध छैन");
     setText("locationMode",modeLabel());
     const altitude=Number.isFinite(loc.elevation)?loc.elevation:loc.altitude;
-    const alt=$("#locationAltitude");if(alt){alt.textContent=Number.isFinite(altitude)?"▲ उचाइ "+nepaliNumber(Math.round(altitude))+" मिटर":"▲ उचाइ: उपलब्ध छैन";alt.classList.toggle("altitude-known",Number.isFinite(altitude));}
+    const alt=$("#locationAltitude");if(alt){alt.textContent=Number.isFinite(loc.elevation)?"▲ उचाइ: "+nepaliNumber(Math.round(loc.elevation))+" मिटर":Number.isFinite(loc.altitude)?"▲ GPS उचाइ: "+nepaliNumber(Math.round(loc.altitude))+" मिटर":"▲ उचाइ: उपलब्ध छैन";alt.classList.toggle("altitude-known",Number.isFinite(altitude));}
     const coords=Number.isFinite(loc.lat)&&Number.isFinite(loc.lon)?"निर्देशाङ्क "+nepaliNumber(loc.lat.toFixed(6))+", "+nepaliNumber(loc.lon.toFixed(6)):"निर्देशाङ्क: उपलब्ध छैन";
     const accuracy=Number.isFinite(loc.accuracy)?"सटीकता ±"+nepaliNumber(Math.round(loc.accuracy))+" मिटर":"";
     const speed=Number.isFinite(loc.speed)?"गति "+nepaliNumber((loc.speed*3.6).toFixed(1))+" km/h":"";
