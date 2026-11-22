@@ -362,14 +362,14 @@
   }
   function drawFullSunCycle(){
     if(!solar||solar.polar)return;
-    const startX=20,endX=780,width=endX-startX;
+    const startX=8,endX=792,width=endX-startX;
     const {waveY,horizonY,sunriseMins,sunsetMins}=solarWaveGeometry();
     // Reference geometry: the whole 24-hour cycle spans the graph width.
     const xAt=m=>startX+(Math.max(0,Math.min(1440,m))/1440)*width;
     const horizon=$("#sun-horizon-line");
-    if(horizon){horizon.setAttribute("y1",horizonY.toFixed(2));horizon.setAttribute("y2",horizonY.toFixed(2));}
+    if(horizon){horizon.setAttribute("x1",startX);horizon.setAttribute("x2",endX);horizon.setAttribute("y1",horizonY.toFixed(2));horizon.setAttribute("y2",horizonY.toFixed(2));}
     const night=$("#sun-night-bg");
-    if(night){night.setAttribute("x",20);night.setAttribute("width",760);night.setAttribute("y",horizonY.toFixed(2));night.setAttribute("height",(238-horizonY).toFixed(2));}
+    if(night){night.setAttribute("x",startX);night.setAttribute("width",width);night.setAttribute("y",horizonY.toFixed(2));night.setAttribute("height",(238-horizonY).toFixed(2));}
     const clip=$("#sun-above-horizon-rect");
     if(clip){clip.setAttribute("x",0);clip.setAttribute("width",800);clip.setAttribute("height",horizonY.toFixed(2));}
 
@@ -412,8 +412,8 @@
         el.setAttribute("x",textX.toFixed(2));
         el.setAttribute("text-anchor",anchor);
       });
-      if(time)time.setAttribute("y",(horizonY-25).toFixed(2));
-      if(label)label.setAttribute("y",(horizonY-9).toFixed(2));
+      if(time)time.setAttribute("y",(horizonY-31).toFixed(2));
+      if(label)label.setAttribute("y",(horizonY-10).toFixed(2));
     };
     placeIntersectionLabel("sunrise",xAt(sunriseMins),"left");
     placeIntersectionLabel("sunset",xAt(sunsetMins),"right");
@@ -425,7 +425,7 @@
   function updateSolarPosition(){
     if(!solar||solar.polar)return;
     const p=nptP(Date.now()),nowMins=p.hh*60+p.mm+p.ss/60;
-    const startX=20,endX=780,width=endX-startX;
+    const startX=8,endX=792,width=endX-startX;
     const {waveY,sunriseMins,sunsetMins}=solarWaveGeometry();
     const visibleMins=Math.max(0,Math.min(1440,nowMins));
     const sunX=startX+(visibleMins/1440)*width,sunY=waveY(visibleMins);
