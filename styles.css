@@ -753,3 +753,11 @@ body .book-page.page-turn-prev{animation:pageTurnPrev .28s cubic-bezier(.35,.7,.
 #page-home #sunPath .sun-horizon,
 #page-home #sunPath #sun-single-curve{transform:none!important;}
 #page-home #sunPath{width:100%!important;margin-left:0!important;}
+
+
+/* Solar cycle v43: 24-hour wave with elapsed white path and live red marker */
+#page-home #sunPath{width:100%!important;height:auto!important;max-height:none!important;overflow:visible!important;margin:8px 0 4px!important;}
+#page-home #sun-horizon-line{stroke:#52525b!important;stroke-width:1.5!important;stroke-dasharray:3 4!important;opacity:1!important;}
+#page-home #full-sun-path{fill:none!important;stroke:#3f3f46!important;stroke-width:2.5!important;stroke-linecap:round!important;stroke-linejoin:round!important;}
+#page-home #elapsed-sun-path{fill:none!important;stroke:#ffffff!important;stroke-width:2.5!important;stroke-linecap:round!important;stroke-linejoin:round!important;}
+#page-home #sun-marker{fill:#FF2D20!important;stroke:none!important;filter:none!important;}
