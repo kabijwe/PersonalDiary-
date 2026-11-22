@@ -361,7 +361,7 @@
   }
   function drawFullSunCycle(){
     if(!solar||solar.polar)return;
-    const startX=40,endX=760,width=endX-startX;
+    const startX=20,endX=780,width=endX-startX;
     const {waveY,horizonY,sunriseMins,sunsetMins}=solarWaveGeometry();
     const xAt=m=>startX+((m-sunriseMins)/(sunsetMins-sunriseMins))*width;
     const horizon=$("#sun-horizon-line");
@@ -393,14 +393,14 @@
   function updateSolarPosition(){
     if(!solar||solar.polar)return;
     const p=nptP(Date.now()),nowMins=p.hh*60+p.mm+p.ss/60;
-    const startX=40,endX=760,width=endX-startX;
+    const startX=20,endX=780,width=endX-startX;
     const {waveY,sunriseMins,sunsetMins}=solarWaveGeometry();
     const visibleMins=Math.max(sunriseMins,Math.min(sunsetMins,nowMins));
     const sunX=startX+((visibleMins-sunriseMins)/(sunsetMins-sunriseMins))*width,sunY=waveY(visibleMins);
     const fullPath=$("#full-sun-path")?.getAttribute("d")||"";
     $("#elapsed-sun-path")?.setAttribute("d",fullPath);
     const progress=$("#sun-progress-rect");
-    if(progress)progress.setAttribute("width",Math.max(0,Math.min(width,sunX-startX)).toFixed(2));
+    if(progress){progress.setAttribute("x",startX);progress.setAttribute("width",Math.max(0,Math.min(width,sunX-startX)).toFixed(2));}
     const marker=$("#sun-marker");
     if(marker){marker.setAttribute("transform",`translate(${sunX.toFixed(2)} ${sunY.toFixed(2)})`);marker.setAttribute("visibility","visible");}
     const daytime=nowMins>=sunriseMins&&nowMins<=sunsetMins;
