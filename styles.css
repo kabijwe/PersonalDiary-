@@ -2816,3 +2816,34 @@ body .book-page.page-turn-prev{animation:pageTurnPrev .28s cubic-bezier(.35,.7,.
   #page-home .time-card .time-weather .weather-label{font-size:11px!important}
   #page-home .time-card .time-weather .weather-value{font-size:12px!important}
 }
+
+
+/* Weather metric cards: retain four columns on wide screens and use three on phones. */
+#page-home .time-card .time-weather .weather-extra{
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+}
+@media(max-width:650px){
+  #page-home .time-card .time-weather .weather-extra{
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+    column-gap:6px!important;
+    row-gap:7px!important;
+  }
+  #page-home .time-card .time-weather .weather-metric[data-label="US AQI"]{
+    grid-column:span 3!important;
+  }
+  #page-home .time-card .time-weather .weather-metric{
+    min-height:62px!important;
+    padding:6px 7px!important;
+  }
+  #page-home .time-card .time-weather .weather-label{font-size:11px!important}
+  #page-home .time-card .time-weather .weather-value{font-size:12px!important}
+}
+@media(max-width:360px){
+  #page-home .time-card .time-weather .weather-extra{
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+    column-gap:4px!important;
+  }
+  #page-home .time-card .time-weather .weather-metric{padding:5px!important}
+  #page-home .time-card .time-weather .weather-label{font-size:10px!important}
+  #page-home .time-card .time-weather .weather-value{font-size:11px!important}
+}
