@@ -30,6 +30,10 @@ def authorized(header):
 class Handler(SimpleHTTPRequestHandler):
  server_version="KabijweLAN/1.0"
  def __init__(self,*args,**kwargs): super().__init__(*args,directory=str(ROOT),**kwargs)
+ def translate_path(self,path):
+  parts=Path(urlparse(path).path).parts
+  if any(part.startswith(".") for part in parts): return str(ROOT/"__not_found__")
+  return super().translate_path(path)
  def log_message(self,fmt,*args): print("%s - request"%self.client_address[0])
  def end_headers(self):
   self.send_header("X-Content-Type-Options","nosniff"); self.send_header("Referrer-Policy","no-referrer")
