@@ -5,3 +5,4 @@ dist/
 !.env.example
 .DS_Store
 *.log
+\n# Local HTTPS certificates and private keys\n.certs/\n
