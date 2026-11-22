@@ -1063,3 +1063,58 @@ body .book-page.page-turn-prev{animation:pageTurnPrev .28s cubic-bezier(.35,.7,.
   #page-home .time-weather{padding:14px!important}
   #page-home .weather-main b{font-size:38px!important}
 }
+
+
+/* Weather details: plain right-aligned information beside the live clock */
+#page-home .time-overview-grid{
+  grid-template-columns:minmax(0,1.45fr) minmax(260px,.85fr)!important;
+  align-items:center!important;
+  gap:28px!important;
+}
+#page-home .time-weather{
+  align-self:stretch!important;
+  justify-content:center!important;
+  margin:0!important;
+  padding:4px 0 4px 24px!important;
+  background:transparent!important;
+  border:0!important;
+  border-left:1px solid #ffffff30!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+}
+#page-home .weather-panel-heading{
+  margin:0 0 10px!important;
+  padding:0!important;
+  border:0!important;
+  background:transparent!important;
+  color:#ff8a82!important;
+  font-size:12px!important;
+  font-weight:700!important;
+  letter-spacing:.02em!important;
+}
+#page-home .time-weather .place-line{margin:0!important}
+#page-home .time-weather .weather-main{margin:10px 0 4px!important;gap:10px!important}
+#page-home .time-weather .weather-main b{font-size:clamp(32px,3.5vw,43px)!important}
+#page-home .time-weather .weather-main span{font-size:14px!important}
+#page-home .time-weather .weather-extra{font-size:11px!important;line-height:1.7!important}
+#page-home .time-weather .weather-updated{font-size:10px!important;margin-top:4px!important}
+#page-home .time-weather .location-coordinates{
+  display:flex!important;flex-wrap:wrap!important;gap:4px 12px!important;
+  margin:9px 0 0!important;padding:0!important;
+  background:transparent!important;border:0!important;border-radius:0!important;
+}
+#page-home .time-weather .location-coordinates span,
+#page-home .time-weather .location-coordinates strong{
+  padding:0!important;background:transparent!important;border:0!important;
+  font-size:10px!important;font-weight:500!important;color:#c7d2de!important;
+}
+#page-home .time-weather .location-coordinates strong{color:#e5b2ad!important}
+#page-home .time-weather::before{display:none!important;content:none!important}
+@media(max-width:760px){
+  #page-home .time-overview-grid{grid-template-columns:minmax(0,1fr)!important;gap:16px!important}
+  #page-home .time-weather{
+    padding:14px 0 0!important;
+    border-left:0!important;border-top:1px solid #ffffff30!important;
+  }
+  #page-home .time-weather .weather-main b{font-size:34px!important}
+}
