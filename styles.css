@@ -949,3 +949,12 @@ body .book-page.page-turn-prev{animation:pageTurnPrev .28s cubic-bezier(.35,.7,.
   #page-home .sun-intersection-time{font-size:12px}
   #page-home .sun-intersection-label{font-size:9px}
 }
+
+
+/* Solar cycle reference refinement: compact labels above exact horizon crossings */
+#page-home .sun-intersection-time{font-size:12px!important;font-weight:650!important;}
+#page-home .sun-intersection-label{font-size:9px!important;}
+@media(max-width:650px){
+  #page-home .sun-intersection-time{font-size:11px!important;}
+  #page-home .sun-intersection-label{font-size:8px!important;}
+}
