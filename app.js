@@ -537,7 +537,7 @@
     const status=(message,state="info")=>setServiceState("gpsServiceStatus",message,state);
     if(btn.disabled)return;
     if(!navigator.geolocation){status("यो browser मा GPS सुविधा उपलब्ध छैन","error");toast("Browser ले स्थान सेवा उपलब्ध गराएन।");return;}
-    if(!window.isSecureContext){status("HTTPS वा localhost बाट खोल्नुहोस्","error");toast("GPS का लागि HTTPS वा http://127.0.0.1 आवश्यक छ।");return;}
+    if(!window.isSecureContext){status("GPS रोकिएको · मोबाइलमा HTTPS चाहिन्छ (HTTP LAN सुरक्षित होइन)","error");toast("मोबाइलमा GPS चलाउन HTTPS आवश्यक छ। http://10.x.x.x बाट GPS चल्दैन; localhost भने अपवाद हो।");return;}
     btn.disabled=true;if(label)label.textContent="GPS खोजिँदैछ…";
     status("GPS अनुरोध सुरु भयो · फोनको Location खुला राख्नुहोस्","loading");
     let attemptId=null,completed=false;
@@ -546,10 +546,11 @@
     const fail=(err)=>{
       if(completed)return;completed=true;finishButton();
       const code=err?.code,denied=code===1,timeout=code===3;
-      const message=denied?"स्थान अनुमति अस्वीकृत":timeout?"GPS संकेत आउन समय लाग्यो":"फोनको स्थान उपलब्ध भएन";
+      const unavailable=code===2;
+      const message=denied?"स्थान अनुमति अस्वीकृत":timeout?"GPS संकेत आउन समय लाग्यो":unavailable?"फोन/Browser ले स्थान पत्ता लगाउन सकेन":"फोनको स्थान उपलब्ध भएन";
       try{if(attemptId)finishLocationAttempt(attemptId,{status:denied?"denied":"failed",note:message,code:code||null});}catch(e){console.warn("GPS history update:",e);}
-      status(denied?"अनुमति अस्वीकृत · Browser र Android मा Location Allow गर्नुहोस्":timeout?"समय सकियो · Location खोल्नुहोस् र खुला ठाउँमा पुनः प्रयास गर्नुहोस्":"GPS उपलब्ध भएन · Location setting जाँच्नुहोस्","error");
-      toast(denied?"Browser Site settings र Android App permissions मा Location Allow गर्नुहोस्।":timeout?"GPS संकेत कमजोर छ। फोनको Location खोल्नुहोस् र खुला ठाउँमा प्रयास गर्नुहोस्।":"फोनको Location सेवा जाँचेर फेरि प्रयास गर्नुहोस्।");
+      status(denied?"अनुमति अस्वीकृत · Browser Site settings मा Location Allow गर्नुहोस्":timeout?"समय सकियो · Location खोल्नुहोस् र खुला ठाउँमा पुनः प्रयास गर्नुहोस्":unavailable?"स्थान उपलब्ध भएन · GPS/Location सेवा र नेटवर्क जाँच्नुहोस्":"GPS उपलब्ध भएन · Location setting जाँच्नुहोस्","error");
+      toast(denied?"Browser Site settings र Android App permissions मा Location Allow गर्नुहोस्।":timeout?"GPS संकेत कमजोर छ। फोनको Location खोल्नुहोस् र खुला ठाउँमा प्रयास गर्नुहोस्।":unavailable?"फोनको Location/GPS खोल्नुहोस्, इन्टरनेट जडान जाँच्नुहोस् र फेरि प्रयास गर्नुहोस्।":"फोनको Location सेवा जाँचेर फेरि प्रयास गर्नुहोस्।");
     };
     const success=(position)=>{
       if(completed)return;
