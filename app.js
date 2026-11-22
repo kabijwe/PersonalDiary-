@@ -340,7 +340,7 @@
     const sunriseParts=nptP(solar.sunriseMs),sunsetParts=nptP(solar.sunsetMs);
     const sunriseMins=sunriseParts.hh*60+sunriseParts.mm;
     const sunsetMins=sunsetParts.hh*60+sunsetParts.mm;
-    const solarNoon=(sunriseMins+sunsetMins)/2;
+    const solarNoon=720; // Match the reference: curve peak at exactly 12:00 local time.
     const horizonY=midY-amplitude*Math.cos(Math.PI*horizonPhase);
     const knotsT=[0,sunriseMins,solarNoon,sunsetMins,1440];
     const knotsU=[-1,-horizonPhase,0,horizonPhase,1];
