@@ -7,4 +7,4 @@ dist/
 *.log
 
 # Local HTTPS certificates and private keys
-.certs/\n
+.certs/
