@@ -341,9 +341,9 @@
     const solarNoon=(sunriseMins+sunsetMins)/2;
     const waveY=mins=>{
       const angle=((mins-solarNoon)/1440)*2*Math.PI;
-      return midY-amplitude*Math.cos(angle);
+      return midY-amplitude*Math.cos(angle)-7;
     };
-    const horizonY=waveY(sunriseMins)-5;
+    const horizonY=waveY(sunriseMins)+10;
     const horizon=$("#sun-horizon-line");
     if(horizon){horizon.setAttribute("y1",horizonY.toFixed(2));horizon.setAttribute("y2",horizonY.toFixed(2));}
     let d="";
@@ -365,7 +365,7 @@
     const solarNoon=(sunriseMins+sunsetMins)/2;
     const waveY=mins=>{
       const angle=((mins-solarNoon)/1440)*2*Math.PI;
-      return midY-amplitude*Math.cos(angle);
+      return midY-amplitude*Math.cos(angle)-7;
     };
     const clampedNow=Math.max(0,Math.min(1440,nowMins));
     let elapsed="";
