@@ -40,29 +40,55 @@
         <article class="sun-card" aria-labelledby="sunCardTitle">
           <div class="sun-card-heading">
             <div><span class="eyebrow">आजको सूर्यचक्र</span><h2 id="sunCardTitle">सूर्योदयदेखि सूर्यास्तसम्म</h2></div>
-            <span class="sun-card-live"><i></i> स्थानीय समय</span>
+            <span class="sun-card-live"><i id="sunCardLiveDot"></i> <span id="sunCardLiveText">स्थानीय समय</span></span>
           </div>
           <div class="sun-visual sun-visual-wide">
             <div class="sun-times"><span><b id="sunriseTime">--:--</b><small>सूर्योदय</small></span><span><b id="sunsetTime">--:--</b><small>सूर्यास्त</small></span></div>
             <svg id="sunPath" class="sun-graph" viewBox="0 0 800 245" role="img" aria-label="२४ घण्टाको सूर्यचक्र र हालको स्थानीय समय">
               <defs>
-                <linearGradient id="sun-curve-gradient" gradientUnits="userSpaceOnUse" x1="40" y1="0" x2="760" y2="0">
-                  <stop offset="0" stop-color="#ffffff" stop-opacity="0.95"/>
-                  <stop offset="0.65" stop-color="#ffffff" stop-opacity="0.62"/>
-                  <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+                <linearGradient id="sun-daylight-fill" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#ffffff" stop-opacity=".14"/>
+                  <stop offset="85%" stop-color="#ffffff" stop-opacity=".02"/>
+                  <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
                 </linearGradient>
+                <linearGradient id="sun-night-fill" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#0b0c0e" stop-opacity=".95"/>
+                  <stop offset="100%" stop-color="#060608" stop-opacity=".4"/>
+                </linearGradient>
+                <radialGradient id="sun-red-glow">
+                  <stop offset="0%" stop-color="#ff2e1f" stop-opacity=".9"/>
+                  <stop offset="50%" stop-color="#ff2e1f" stop-opacity=".32"/>
+                  <stop offset="100%" stop-color="#ff2e1f" stop-opacity="0"/>
+                </radialGradient>
+                <clipPath id="sun-above-horizon-clip"><rect id="sun-above-horizon-rect" x="0" y="0" width="800" height="189"/></clipPath>
+                <clipPath id="sun-progress-clip"><rect id="sun-progress-rect" x="0" y="0" width="0" height="245"/></clipPath>
               </defs>
-              <line id="sun-horizon-line" x1="20" y1="141" x2="780" y2="141" class="sun-horizon" stroke-dasharray="3 4"/>
-              <path id="full-sun-path" fill="none" stroke="url(#sun-curve-gradient)" stroke-width="5" stroke-linecap="round"/>
-              <path id="elapsed-sun-path" fill="none" stroke="url(#sun-curve-gradient)" stroke-width="5.5" stroke-linecap="round"/>
-              <circle id="sun-marker" cx="0" cy="0" r="11" fill="#FF2D20"/>
+              <rect id="sun-night-bg" x="20" y="189" width="760" height="49" rx="10" fill="url(#sun-night-fill)"/>
+              <path id="sun-day-area" fill="url(#sun-daylight-fill)" clip-path="url(#sun-above-horizon-clip)"/>
+              <line id="sun-horizon-line" x1="20" y1="189" x2="780" y2="189" class="sun-horizon"/>
+              <path id="full-sun-path" fill="none" stroke="#36383f" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path id="elapsed-sun-path" fill="none" stroke="#ffffff" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" clip-path="url(#sun-progress-clip)"/>
+              <g id="sunrise-marker"><line id="sunrise-tick" x1="0" y1="183" x2="0" y2="195" stroke="#71717a" stroke-width="1.5"/><circle id="sunrise-dot" cx="0" cy="189" r="5" fill="#000" stroke="#fff" stroke-width="2.5"/></g>
+              <g id="sunset-marker"><line id="sunset-tick" x1="0" y1="183" x2="0" y2="195" stroke="#71717a" stroke-width="1.5"/><circle id="sunset-dot" cx="0" cy="189" r="5" fill="#000" stroke="#9ca3af" stroke-width="2.5"/></g>
+              <g id="sun-marker" transform="translate(40 220)">
+                <circle class="sun-glow" cx="0" cy="0" r="28" fill="url(#sun-red-glow)"/>
+                <circle id="sun-marker-core" cx="0" cy="0" r="11" fill="#ff2e1f"/>
+              </g>
             </svg>
+            <div class="sun-reference-caption"><span id="sunStatus">अहिले दिनको समय</span><b id="sunLiveClock">--:--</b></div>
             <div class="sun-status sun-status-bottom" id="sunStatus">सूर्यचक्र गणना हुँदैछ…</div>
           </div>
           <div class="sun-detail-grid">
             <div><span>सूर्योदय</span><b id="sunriseDetail">--</b><small>पूर्वी क्षितिज</small></div>
             <div><span>सूर्यास्त</span><b id="sunsetDetail">--</b><small>पश्चिमी क्षितिज</small></div>
             <div><span>घडी · पला</span><b id="sunGhadiDetail">गणना हुँदैछ…</b><small>सूर्योदयदेखि बितेको समय</small></div>
+          </div>
+          <div class="sun-sim-bar">
+            <button type="button" id="sunSimToggle" class="sun-sim-toggle">समय परीक्षण गर्नुहोस् (२४ घण्टा)</button>
+            <div id="sunSimControls" class="sun-sim-controls">
+              <input id="sunSimSlider" type="range" min="0" max="1440" step="1" value="720" aria-label="सूर्यचक्र समय परीक्षण"/>
+              <button type="button" id="sunSimLive" class="sun-sim-live">प्रत्यक्ष समय</button>
+            </div>
           </div>
         </article>
             <div class="time-card-head">
