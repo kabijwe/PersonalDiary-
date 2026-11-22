@@ -2366,3 +2366,22 @@ body .book-page.page-turn-prev{animation:pageTurnPrev .28s cubic-bezier(.35,.7,.
  #page-home .panchang-summary .panchang-label{font-size:9px!important;line-height:1.25!important}
  #page-home .panchang-summary .panchang-value{font-size:9.5px!important;line-height:1.3!important}
 }
+
+
+/* Panchang summary: red bold labels, clear white values, slightly larger type. */
+#page-home .panchang-summary .panchang-label{
+  color:#C40014!important;
+  font-weight:800!important;
+  font-size:11.5px!important;
+  line-height:1.4!important;
+}
+#page-home .panchang-summary .panchang-value{
+  color:#fff!important;
+  font-size:12px!important;
+  font-weight:500!important;
+  line-height:1.45!important;
+}
+@media(max-width:650px){
+  #page-home .panchang-summary .panchang-label{font-size:10.5px!important}
+  #page-home .panchang-summary .panchang-value{font-size:11px!important}
+}
