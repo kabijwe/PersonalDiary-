@@ -805,3 +805,35 @@ body .book-page.page-turn-prev{animation:pageTurnPrev .28s cubic-bezier(.35,.7,.
 }
 
 #page-home .sun-sim-toggle{font-family:inherit;font-size:12px}
+
+
+/* Compact solar card */
+#page-home .sun-card{padding:15px 20px 13px!important;border-radius:14px!important;box-shadow:0 10px 28px #0007!important}
+#page-home .sun-card-heading{margin-bottom:7px!important;gap:8px!important;align-items:center!important}
+#page-home .sun-card-heading .eyebrow{font-size:10px!important;margin-bottom:1px!important}
+#page-home .sun-card-heading h2{font-size:15px!important;line-height:1.25!important}
+#page-home .sun-card-live{font-size:9px!important;padding:3px 8px!important;gap:5px!important}
+#page-home .sun-card-live i{width:6px!important;height:6px!important}
+#page-home .sun-times{margin:0!important}
+#page-home .sun-times b{font-size:21px!important;line-height:1.1!important}
+#page-home .sun-times small{font-size:10px!important;margin-top:2px!important}
+#page-home .sun-visual-wide{margin:0!important}
+#page-home #sunPath{max-height:165px!important}
+#page-home .sun-reference-caption{font-size:10px!important;margin:0 0 8px!important;gap:5px!important}
+#page-home .sun-detail-grid{padding-top:9px!important}
+#page-home .sun-detail-grid>div{padding-right:8px!important}
+#page-home .sun-detail-grid>div+div{padding-left:10px!important}
+#page-home .sun-detail-grid span{font-size:9px!important;margin-bottom:2px!important}
+#page-home .sun-detail-grid b{font-size:12px!important;line-height:1.25!important;margin-bottom:1px!important}
+#page-home .sun-detail-grid small{font-size:9px!important;line-height:1.25!important}
+@media(max-width:650px){
+ #page-home .sun-card{padding:12px 13px 11px!important}
+ #page-home .sun-card-heading h2{font-size:13px!important}
+ #page-home .sun-card-live{font-size:8px!important;padding:3px 6px!important}
+ #page-home .sun-times b{font-size:18px!important}
+ #page-home .sun-times small{font-size:9px!important}
+ #page-home #sunPath{max-height:140px!important}
+ #page-home .sun-detail-grid>div+div{padding-left:7px!important}
+ #page-home .sun-detail-grid b{font-size:10px!important}
+ #page-home .sun-detail-grid small{font-size:8px!important}
+}
