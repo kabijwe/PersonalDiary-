@@ -330,34 +330,35 @@
     drawFullSunCycle();
     updateSolarPosition();
   }
-  // Solar curve uses the Panchang engine's apparent solar altitude, not a time-only cosine.
-  // Keep the approved graph geometry/horizon offset; map the day's true solar maximum to the curve peak.
+  // Clock-aligned solar curve: the marker follows Nepal wall-clock time horizontally,
+  // while the daylight arc rises smoothly to the exact midpoint between sunrise and sunset.
   function solarWaveGeometry(){
     const peakY=18,troughY=96,midY=(peakY+troughY)/2,amplitude=(troughY-peakY)/2;
     const sunriseParts=nptP(solar.sunriseMs),sunsetParts=nptP(solar.sunsetMs);
     const sunriseMins=sunriseParts.hh*60+sunriseParts.mm;
     const sunsetMins=sunsetParts.hh*60+sunsetParts.mm;
     const legacyNoon=(sunriseMins+sunsetMins)/2;
-    const legacySunriseY=midY-amplitude*Math.cos(((sunriseMins-legacyNoon)/1440)*2*Math.PI)-7;
-    const altitude=PX._internals&&PX._internals.sunAltitude;
-    if(typeof altitude!=="function")return {waveY:mins=>midY-amplitude*Math.cos(((mins-legacyNoon)/1440)*2*Math.PI)-7,sunriseY:legacySunriseY,sunriseMins,sunsetMins};
-    const parts=nptP(solar.sunriseMs),dayStart=PX.nptMidnightMs(parts.y,parts.m,parts.d);
-    const sunriseAlt=altitude(solar.sunriseMs,loc.lat,loc.lon);
-    let maxAlt=-90;
-    for(let t=solar.sunriseMs;t<=solar.sunsetMs;t+=5*60000)maxAlt=Math.max(maxAlt,altitude(t,loc.lat,loc.lon));
-    maxAlt=Math.max(maxAlt,altitude(solar.sunsetMs,loc.lat,loc.lon));
-    const scale=(legacySunriseY-peakY)/Math.max(1,maxAlt-sunriseAlt);
+    const sunriseY=midY-amplitude*Math.cos(((sunriseMins-legacyNoon)/1440)*2*Math.PI)-7;
+    const dayLength=Math.max(1,sunsetMins-sunriseMins);
     const waveY=mins=>{
-      const elevation=altitude(dayStart+mins*60000,loc.lat,loc.lon);
-      return Math.max(8,Math.min(106,legacySunriseY-(elevation-sunriseAlt)*scale));
+      if(mins<sunriseMins){
+        const p=Math.max(0,Math.min(1,(mins+1440-sunsetMins)/(1440-dayLength)));
+        return troughY+(sunriseY-troughY)*(0.5-0.5*Math.cos(Math.PI*p));
+      }
+      if(mins<=sunsetMins){
+        const progress=(mins-sunriseMins)/dayLength;
+        return sunriseY-(sunriseY-peakY)*Math.sin(Math.PI*progress);
+      }
+      const p=Math.max(0,Math.min(1,(mins-sunsetMins)/(1440-dayLength)));
+      return sunriseY+(troughY-sunriseY)*(0.5-0.5*Math.cos(Math.PI*p));
     };
-    return {waveY,sunriseY:legacySunriseY,sunriseMins,sunsetMins};
+    return {waveY,sunriseY,sunriseMins,sunsetMins};
   }
-  // Full 24-hour path and live marker share the exact same solar-elevation calculation.
+  // The full-day curve and elapsed overlay use one shared clock-aligned function.
   function drawFullSunCycle(){
     if(!solar||solar.polar)return;
     const startX=16,endX=324,width=endX-startX;
-    const {waveY,sunriseY,sunsetMins,sunriseMins}=solarWaveGeometry();
+    const {waveY,sunriseY,sunsetMins}=solarWaveGeometry();
     const sunsetX=16+(sunsetMins/1440)*308;
     const fade=$("#sun-curve-gradient");if(fade)fade.setAttribute("x2",sunsetX.toFixed(2));
     const horizonY=sunriseY+30;
