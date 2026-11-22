@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Private LAN server for Kabijwe Diary. HTTPS is mandatory."""
-import argparse,base64,hashlib,hmac,json,os,sqlite3,ssl,time
+import argparse,base64,hashlib,hmac,json,os,sqlite3,ssl,time,socket
+from contextlib import closing
 from http.server import SimpleHTTPRequestHandler,ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import urlparse
@@ -50,7 +51,7 @@ class Handler(SimpleHTTPRequestHandler):
   if path=="/api/health": return self.send_json(200,{"ok":True,"service":"kabijwe-lan","https":True})
   if path=="/api/state":
    if not self.require_auth(): return
-   with db_conn() as con: row=con.execute("SELECT revision,payload,updated_at FROM diary_state WHERE id=1").fetchone()
+   with closing(db_conn()) as con: row=con.execute("SELECT revision,payload,updated_at FROM diary_state WHERE id=1").fetchone()
    if row is None: return self.send_json(200,{"initialized":False,"revision":0,"state":None})
    return self.send_json(200,{"initialized":True,"revision":row[0],"state":json.loads(row[1]),"updatedAt":row[2]})
   return super().do_GET()
@@ -67,7 +68,7 @@ class Handler(SimpleHTTPRequestHandler):
    for key in ("entries","events","memories","templates","locationHistory","reminders"): state.setdefault(key,[])
    state.setdefault("settings",{})
    payload=json.dumps(state,ensure_ascii=False,separators=(",",":")); stamp=time.strftime("%Y-%m-%dT%H:%M:%SZ",time.gmtime())
-   with db_conn() as con:
+   with closing(db_conn()) as con:
     con.execute("BEGIN IMMEDIATE"); row=con.execute("SELECT revision FROM diary_state WHERE id=1").fetchone()
     current=row[0] if row else 0
     if revision!=current:
@@ -80,8 +81,14 @@ class Handler(SimpleHTTPRequestHandler):
   except Exception: return self.send_error(500,"Storage error")
  def do_POST(self): return self.send_error(405,"Method not allowed")
 def main():
- p=argparse.ArgumentParser(); p.add_argument("--host",default="0.0.0.0"); p.add_argument("--port",type=int,default=8443)
+ p=argparse.ArgumentParser(); p.add_argument("--host",default=None,help="Defaults to the active LAN IPv4 address"); p.add_argument("--port",type=int,default=8443)
  p.add_argument("--cert",default=str(DATA/"server.crt")); p.add_argument("--key",default=str(DATA/"server.key")); a=p.parse_args()
+ 
+ if a.host is None:
+  probe=socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
+  try: probe.connect(("1.1.1.1",80)); a.host=probe.getsockname()[0]
+  except OSError: raise SystemExit("Could not detect active LAN address. Connect to Wi-Fi/Ethernet.")
+  finally: probe.close()
  cert,key=Path(a.cert),Path(a.key)
  if not cert.is_file() or not key.is_file(): raise SystemExit("TLS certificate missing. Run: bash setup_tls.sh")
  if not AUTH.is_file(): raise SystemExit("Login not configured. Run: python3 setup_auth.py")
