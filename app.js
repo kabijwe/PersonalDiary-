@@ -593,7 +593,7 @@
       const parts=[ward?.name,locality,city,province].filter((x,i,a)=>x&&a.indexOf(x)===i);
       const name=parts.join(", ")||g.locality||g.city||"GPS स्थान";
       if(seq===locSeq&&name){
-        loc.name=name;lsSet(LS_LOC,{mode:"gps",lat:loc.lat,lon:loc.lon,name:loc.name,altitude:loc.altitude,accuracy:loc.accuracy,speed:loc.speed,updatedAt:Date.now()});
+        loc.name=name;lsSet(LS_LOC,{mode:"gps",lat:loc.lat,lon:loc.lon,name:loc.name,altitude:loc.altitude,accuracy:loc.accuracy,speed:loc.speed,elevation:loc.elevation,updatedAt:Date.now()});
         const h=state.locationHistory.find(x=>x.id===loc.historyId);if(h){h.place=name;h.context={...(h.context||{}),place:name,locationMode:"GPS बाट"};persist();renderLocationHistory();}
         renderLocation();refreshPanchang();setServiceState("placeServiceStatus",ward?"ठेगाना र वडा पहिचान सफल":"स्थान र प्रदेश पहिचान सफल · वडा उपलब्ध नभएमा","success");updateCurrentContextFromUI();
       }else if(seq===locSeq)setServiceState("placeServiceStatus","निर्देशाङ्क प्राप्त भयो · ठेगाना उपलब्ध भएन","warning");
