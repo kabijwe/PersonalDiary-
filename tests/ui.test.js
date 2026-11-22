@@ -13,8 +13,9 @@ async function setup(browser,{online=true,geo=null,time="2026-11-21T12:13:00Z"}=
   const page=await ctx.newPage();page_=page;const errors=[];page.on("pageerror",e=>errors.push(e.message));page.on("console",m=>{if(m.type()==="error"&&!/Failed to load resource/.test(m.text()))errors.push(m.text())});
   const reqs=[];
   await page.route("**/trisambat.com/**",r=>{reqs.push(r.request().url());if(!online)return r.abort();const u=r.request().url().match(/ad\/(\d+)\/(\d+)\.json/);r.fulfill({json:mockMonth(+u[1],+u[2])})});
-  await page.route("**/api.open-meteo.com/**",r=>{reqs.push(r.request().url());if(!online)return r.abort();r.fulfill({json:{current:{time:"2026-11-21T17:45",temperature_2m:14.3,relative_humidity_2m:62,apparent_temperature:13,weather_code:2,wind_speed_10m:7.4}}})});
-  await page.route("**/nominatim.openstreetmap.org/**",r=>{if(!online)return r.abort();r.fulfill({json:{address:{town:"काठमाडौँ",state:"बागमती"}}})});
+  await page.route("**/api.open-meteo.com/**",r=>{reqs.push(r.request().url());if(!online)return r.abort();r.fulfill({json:{elevation:1301,timezone:"Asia/Kathmandu",current:{time:"2026-11-21T17:45",temperature_2m:14.3,relative_humidity_2m:62,apparent_temperature:13,weather_code:2,wind_speed_10m:7.4,wind_direction_10m:270,wind_gusts_10m:12,surface_pressure:1016,dew_point_2m:9,visibility:10000},daily:{temperature_2m_min:[8],temperature_2m_max:[19],precipitation_probability_max:[10],sunrise:["2026-11-21T06:32"],sunset:["2026-11-21T17:10"],uv_index_max:[5]}}})});
+  await page.route("**/air-quality-api.open-meteo.com/**",r=>{if(!online)return r.abort();r.fulfill({json:{current:{us_aqi:42,pm2_5:12},hourly:{time:["2026-11-21T17:00"],uv_index:[3.2]}}})});
+  await page.route("**/api.bigdatacloud.net/**",r=>{if(!online)return r.abort();r.fulfill({json:{locality:"लाजिम्पाट",city:"काठमाडौँ",principalSubdivision:"बागमती प्रदेश",localityInfo:{administrative:[]}}})});
   return {ctx,page,errors,reqs};
 }
 const go=n=>page_.evaluate(n=>document.querySelector(`.nav-item[data-page="${n}"]`).click(),n);
@@ -30,7 +31,7 @@ let page_;
   console.log(JSON.stringify(v,null,1));
   ok("clock shows Nepal 5:58 साँझ (Nepali digits)",/५:५८/.test(v.clock)&&/साँझ/.test(v.clock),v.clock);
   ok("weekday शनिबार (2026-11-21 is Saturday)",v.timeCardTitle==="शनिबार");
-  ok("Gregorian date 21 Nov 2026",v.timeAdDate==="21 Nov 2026");
+  ok("Gregorian date 21 Nov 2026",v.timeAdDate==="२१ Nov २०२६");
   ok("BS date rendered from validated API fixture",/५ मंसिर २०८३/.test(v.timeBsDate),v.timeBsDate);
   ok("tithi द्वादशी + शुक्ल पक्ष",v.pTithi==="द्वादशी"&&v.pPaksha==="शुक्ल पक्ष");
   ok("nakshatra रेवती पाद २",v.pNakshatra==="रेवती"&&/२/.test(v.pNakshatraPada));
@@ -41,7 +42,7 @@ let page_;
   ok("sunrise/sunset shown",/\d|[०-९]/.test(v.sunriseTime)&&/\d|[०-९]/.test(v.sunsetTime),v.sunriseTime+" / "+v.sunsetTime);
   ok("ghadi-pala shown",/घडी/.test(v.pGhadiPala),v.pGhadiPala);
   ok("location labelled default, not GPS",/पूर्वनिर्धारित/.test(v.locationMode));
-  ok("weather with timestamp",v.weatherTemp==="14°"&&/अद्यावधिक/.test(v.weatherUpdated),v.weatherTemp+" "+v.weatherUpdated);
+  ok("weather with timestamp",v.weatherTemp==="१४°C"&&/अद्यावधिक/.test(v.weatherUpdated),v.weatherTemp+" "+v.weatherUpdated);
   ok("no tantragurukul request any more",!reqs.some(u=>/tantragurukul/.test(u)));
   ok("no JS errors",errors.length===0,errors.join(" | "));
   // ghadi-pala numeric check against engine for the page's own sunrise
@@ -86,7 +87,7 @@ let page_;
   await page.goto(BASE);await page.waitForTimeout(1500);
   const sw=await page.evaluate(async()=>{const k=await caches.keys();const c=await caches.open(k[0]);const keys=(await c.keys()).map(r=>r.url);return {k,keys}});
   ok("SW cache is v8 and has panchang.js",sw.k.includes("kabijwe-shell-v8")&&sw.keys.some(u=>/panchang\.js/.test(u)),sw.k.join());
-  ok("SW never caches cross-origin API responses",!sw.keys.some(u=>/trisambat|open-meteo|nominatim/.test(u)));
+  ok("SW never caches cross-origin API responses",!sw.keys.some(u=>/trisambat|open-meteo|bigdatacloud/.test(u)));
   await ctx.close();
 
   // ---------- B: GPS denied → panchang still there; then GPS granted ----------
@@ -120,7 +121,7 @@ let page_;
   const before=await t("timeAdDate");
   await page.clock.fastForward(20000);await page.waitForTimeout(1500);
   const after=await t("timeAdDate"),bsA=await t("timeBsDate");
-  ok("rollover at Nepal midnight: 21 Nov → 22 Nov",before==="21 Nov 2026"&&after==="22 Nov 2026",before+" → "+after+" | BS "+bsA);
+  ok("rollover at Nepal midnight: २१ Nov → २२ Nov",before==="२१ Nov २०२६"&&after==="२२ Nov २०२६",before+" → "+after+" | BS "+bsA);
   ok("rollover: weekday becomes आइतबार",(await t("timeCardTitle"))==="आइतबार");
   ok("rollover 00:00:10 NPT: ghadi counts from yesterday's sunrise 06:29 (17h31m ≈ 43 घडी)",/^४३ घडी/.test(await t("pGhadiPala"))&&/हिजोको/.test(await t("pGhadiNote")),await t("pGhadiPala")+" | "+await t("pGhadiNote"));
   await go("diary");await page.click("#newDiary");
