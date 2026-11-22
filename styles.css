@@ -3134,3 +3134,25 @@ body .book-page.page-turn-prev{animation:pageTurnPrev .28s cubic-bezier(.35,.7,.
   #page-home .time-date{margin-top:0!important}
   #page-home .time-date #clock{margin-top:-2px!important}
 }
+
+
+/* Match the top-right temperature to the weekday heading's size and top alignment. */
+#page-home .time-date-side{
+  top:13px!important;
+  right:18px!important;
+}
+#page-home .time-date-side .date-side-weather b#weatherTemp{
+  font-size:23px!important;
+  line-height:1.1!important;
+  font-weight:700!important;
+}
+@media(max-width:650px){
+  #page-home .time-date-side{
+    top:6px!important;
+    right:12px!important;
+  }
+  #page-home .time-date-side .date-side-weather b#weatherTemp{
+    font-size:21px!important;
+    line-height:1.1!important;
+  }
+}
