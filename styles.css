@@ -3352,16 +3352,20 @@ body .book-page.page-turn-prev{animation:pageTurnPrev .28s cubic-bezier(.35,.7,.
 }
 
 
-/* Final compact header: separate temperature/date stack; Panchang immediately below at full width. */
+/* Restore the original time-card hierarchy with one full-width Panchang block. */
 #page-home .time-overview-grid{
   display:block!important;
   width:100%!important;
+  margin:0!important;
+  padding:0!important;
 }
 #page-home .time-overview-main{
   display:grid!important;
   grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;
+  grid-template-rows:auto auto auto!important;
   align-items:start!important;
-  gap:0 12px!important;
+  column-gap:14px!important;
+  row-gap:0!important;
   width:100%!important;
 }
 #page-home .time-overview-left{
@@ -3370,30 +3374,31 @@ body .book-page.page-turn-prev{animation:pageTurnPrev .28s cubic-bezier(.35,.7,.
   min-width:0!important;
 }
 #page-home .time-date-side{
+  position:static!important;
+  inset:auto!important;
   grid-column:2!important;
   grid-row:1!important;
   display:flex!important;
   flex-direction:column!important;
   align-items:flex-end!important;
   justify-content:flex-start!important;
-  justify-self:stretch!important;
+  justify-self:end!important;
   width:100%!important;
-  max-width:none!important;
+  max-width:100%!important;
   min-width:0!important;
   margin:0!important;
   padding:0!important;
-  gap:0!important;
+  gap:1px!important;
   text-align:right!important;
+  transform:none!important;
 }
 #page-home .time-date-side .date-side-weather{
   display:flex!important;
   flex-direction:column!important;
   align-items:flex-end!important;
-  justify-content:flex-start!important;
-  gap:1px!important;
+  gap:0!important;
   margin:0 0 2px!important;
   padding:0!important;
-  line-height:1.2!important;
 }
 #page-home .time-date-side .date-side-weather b#weatherTemp{
   display:block!important;
@@ -3412,15 +3417,16 @@ body .book-page.page-turn-prev{animation:pageTurnPrev .28s cubic-bezier(.35,.7,.
 }
 #page-home #panchangPanel{
   display:block!important;
+  grid-column:1/-1!important;
+  grid-row:2!important;
   width:100%!important;
   max-width:none!important;
   min-width:0!important;
   margin:0!important;
-  padding:8px 0 0!important;
-  grid-column:1/-1!important;
+  padding:0!important;
   align-self:stretch!important;
 }
-#page-home #panchangPanel .panchang-heading{margin:0 0 7px!important}
+#page-home #panchangPanel .panchang-heading{margin:5px 0 6px!important;padding:0!important}
 #page-home #panchangPanel .panchang-grid{
   display:grid!important;
   width:100%!important;
@@ -3431,20 +3437,15 @@ body .book-page.page-turn-prev{animation:pageTurnPrev .28s cubic-bezier(.35,.7,.
 #page-home #panchangPanel .panchang-extra{display:flex!important;min-width:0!important;max-width:none!important}
 #page-home #panchangPanel .panchang-more{display:none!important}
 #page-home .time-weather{
-  display:flex!important;
+  grid-column:1/-1!important;
+  grid-row:3!important;
   width:100%!important;
   margin:10px 0 0!important;
 }
 @media(max-width:650px){
-  #page-home .time-overview-main{grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;gap:0 8px!important}
+  #page-home .time-overview-main{column-gap:8px!important;grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important}
   #page-home .time-date-side .date-side-weather b#weatherTemp{font-size:21px!important}
   #page-home .time-date-side .date-side-weather span#weatherCondition{font-size:10px!important}
-  #page-home #panchangPanel{padding-top:6px!important}
   #page-home #panchangPanel .panchang-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:6px!important}
+  #page-home #panchangPanel .panchang-heading{margin-top:4px!important}
 }
-
-/* Remove the dead space between the temperature/date header and full-width Panchang. */
-#page-home .time-overview-grid{margin:0!important;padding:0!important}
-#page-home .time-date-side .date-side-weather{margin-bottom:0!important}
-#page-home #panchangPanel{margin:0!important;padding:0!important;border-top:0!important}
-#page-home #panchangPanel .panchang-heading{margin:0 0 6px!important;padding:0!important}
