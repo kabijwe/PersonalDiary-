@@ -747,3 +747,9 @@ body .book-page.page-turn-prev{animation:pageTurnPrev .28s cubic-bezier(.35,.7,.
 #page-home #day-sun-icon g{stroke:#FF2D20!important;stroke-width:2.2!important;}
 #page-home .sun-horizon{stroke:#FFFFFF!important;stroke-width:2.4!important;opacity:1!important;}
 @media(max-width:650px){#page-home #sunPath{height:72px!important;}}
+
+
+/* Solar graph v42: widen only horizon/curve geometry; keep sun marker on the exact curve */
+#page-home #sunPath .sun-horizon,
+#page-home #sunPath #sun-single-curve{transform:none!important;}
+#page-home #sunPath{width:100%!important;margin-left:0!important;}
