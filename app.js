@@ -287,7 +287,6 @@
     const now=Date.now();
     if(!pan){
       setServiceState("panchangServiceStatus","पञ्चाङ्ग गणना असफल","error");setText("panchangStatus","गणना असफल");
-      setText("panchangFoot","पञ्चाङ्ग विवरण अहिले उपलब्ध छैन। पछि स्वतः अद्यावधिक हुनेछ।");
       return;
     }
     const t=pan.tithi,n=pan.nakshatra,y=pan.yoga,k=pan.karana;
@@ -308,11 +307,6 @@
     setText("pAyana",pan.ayana);
     setText("panchangStatus","गणना उपलब्ध (अफलाइन इन्जिन)");
     setServiceState("panchangServiceStatus","पञ्चाङ्ग अफलाइन गणना सफल","success");
-    let bsNote="";
-    if(bs&&bs.source==="estimate")bsNote=" वि.सं. मिति सेवा नपाइएकाले अनुमानित हो (±१ दिन फरक पर्न सक्छ)।";
-    else if(bs&&bs.source==="cache")bsNote=" वि.सं. मिति सुरक्षित प्रतिबाट देखाइएको छ।";
-    else if(!bs&&bsFailed)bsNote=" वि.सं. मिति उपलब्ध भएन।";
-    $("#panchangFoot").innerHTML=`पञ्चाङ्ग: Kabijwe को आफ्नै खगोलीय गणना (Meeus सूत्र, लाहिरी अयनांश), अफलाइन चल्छ · स्थान: ${esc(loc.name)} — ${esc(modeLabel())}। वि.सं. मिति: <a href="https://trisambat.com/developers?lang=ne" target="_blank" rel="noopener">Trisambat</a> (beta)।${bsNote} यो आधिकारिक पात्रो होइन।`;
     renderPanchangSummary();
     // Retry control was removed; report BS availability in the status and date fields.
     updateCurrentContextFromUI();
