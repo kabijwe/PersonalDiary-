@@ -509,7 +509,7 @@
     if(Number.isFinite(w.dewPoint))lines.push("शीत बिन्दु "+nepaliNumber(Math.round(w.dewPoint))+"°");
     if(Number.isFinite(w.visibility))lines.push("दृश्यता "+nepaliNumber((w.visibility/1000).toFixed(1))+" km");
     if(Number.isFinite(w.aqi))lines.push("US AQI "+nepaliNumber(Math.round(w.aqi))+" ("+aqiCategory(w.aqi)+")");
-    if(Number.isFinite(w.pm25))lines.push("PM2.5 "+nepaliNumber(Math.round(w.pm25))+" µg/m³");
+    if(Number.isFinite(w.pm25))lines.push("PM२.५ "+nepaliNumber(Math.round(w.pm25))+" µg/m³");
     if(Number.isFinite(w.uv))lines.push("UV "+nepaliNumber(w.uv.toFixed(1)));
     if(w.sunrise&&w.sunset){
       const mins=(new Date(w.sunset).getTime()-new Date(w.sunrise).getTime())/60000;
