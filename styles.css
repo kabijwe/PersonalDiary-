@@ -2523,3 +2523,32 @@ body .book-page.page-turn-prev{animation:pageTurnPrev .28s cubic-bezier(.35,.7,.
  .season-details-list p{font-size:13.5px;line-height:1.75}
  .season-details-list .season-advice{font-size:12.5px}
 }
+
+/* Weather details: structured black + red layout, with a distinct daily tip. */
+#page-home .time-card .time-weather .weather-extra{
+  display:grid!important;
+  grid-template-columns:repeat(auto-fit,minmax(min(100%,190px),1fr))!important;
+  gap:7px!important;margin-top:9px!important;padding:0!important;
+  color:#f04452!important;font-family:"Mukta","Noto Sans Devanagari",sans-serif!important;
+  font-size:12px!important;line-height:1.55!important;overflow:visible!important;
+}
+#page-home .time-card .weather-metric{
+  display:flex!important;align-items:center!important;min-width:0!important;min-height:35px!important;
+  padding:6px 9px!important;border:1px solid #8f1520!important;border-radius:8px!important;
+  background:#050505!important;color:#ff5a65!important;overflow-wrap:anywhere!important;word-break:normal!important;
+}
+#page-home .time-card .weather-suggestion{
+  display:flex;flex-direction:column;gap:3px;margin-top:10px;padding:10px 12px;
+  border:1px solid #ff2638;border-left:4px solid #ff2638;border-radius:9px;
+  background:#210609;color:#ff6873;box-shadow:0 0 14px #c4001426;
+}
+#page-home .time-card .weather-suggestion[hidden]{display:none!important}
+#page-home .time-card .weather-suggestion-label{color:#ff3447;font-size:11px;font-weight:800;letter-spacing:.02em}
+#page-home .time-card .weather-suggestion-text{color:#fff0f1;font-size:13px;line-height:1.65;font-weight:600;overflow-wrap:anywhere}
+#page-home .time-card .weather-updated{display:block!important;margin-top:8px!important;color:#b9a0a2!important;font-size:10px!important;text-align:right}
+@media(max-width:650px){
+  #page-home .time-card .time-weather .weather-extra{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:5px!important;margin-top:7px!important;font-size:10.5px!important}
+  #page-home .time-card .weather-metric{min-height:32px!important;padding:5px 7px!important;border-radius:7px!important;line-height:1.4!important}
+  #page-home .time-card .weather-suggestion{margin-top:8px;padding:9px 10px}
+  #page-home .time-card .weather-suggestion-text{font-size:12px;line-height:1.55}
+}
