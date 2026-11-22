@@ -386,6 +386,23 @@
       $("#"+prefix+"-marker")?.setAttribute("visibility","visible");
     };
     setMarker("sunrise",sunriseMins);setMarker("sunset",sunsetMins);
+
+    // Keep the compact sunrise/sunset labels attached to the exact horizon crossings.
+    const placeIntersectionLabel=(prefix,x)=>{
+      const time=$("#"+prefix+"-graph-time"),label=$("#"+prefix+"-graph-label");
+      const isSunrise=prefix==="sunrise";
+      const textX=isSunrise?Math.min(endX-8,x+10):Math.max(startX+8,x-10);
+      const anchor=isSunrise?"start":"end";
+      [time,label].forEach(el=>{
+        if(!el)return;
+        el.setAttribute("x",textX.toFixed(2));
+        el.setAttribute("text-anchor",anchor);
+      });
+      if(time)time.setAttribute("y",(horizonY-25).toFixed(2));
+      if(label)label.setAttribute("y",(horizonY-9).toFixed(2));
+    };
+    placeIntersectionLabel("sunrise",xAt(sunriseMins));
+    placeIntersectionLabel("sunset",xAt(sunsetMins));
   }
   function solarMinuteLabel(mins){
     const h=Math.floor(mins/60)%24,m=Math.floor(mins%60),h12=h%12||12;
