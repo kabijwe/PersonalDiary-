@@ -364,22 +364,37 @@
     if(!solar||solar.polar)return;
     const startX=20,endX=780,width=endX-startX;
     const {waveY,horizonY,sunriseMins,sunsetMins}=solarWaveGeometry();
-    const xAt=m=>startX+((m-sunriseMins)/(sunsetMins-sunriseMins))*width;
+    // Reference geometry: the whole 24-hour cycle spans the graph width.
+    const xAt=m=>startX+(Math.max(0,Math.min(1440,m))/1440)*width;
     const horizon=$("#sun-horizon-line");
     if(horizon){horizon.setAttribute("y1",horizonY.toFixed(2));horizon.setAttribute("y2",horizonY.toFixed(2));}
     const night=$("#sun-night-bg");
     if(night){night.setAttribute("x",20);night.setAttribute("width",760);night.setAttribute("y",horizonY.toFixed(2));night.setAttribute("height",(238-horizonY).toFixed(2));}
     const clip=$("#sun-above-horizon-rect");
     if(clip){clip.setAttribute("x",0);clip.setAttribute("width",800);clip.setAttribute("height",horizonY.toFixed(2));}
-    let d="";
+
+    // Full-day wave (midnight to midnight), plus a separate daylight fill.
+    let fullD="",dayD="";
     for(let i=0;i<=720;i++){
-      const m=sunriseMins+(i/720)*(sunsetMins-sunriseMins),x=xAt(m),y=waveY(m);
-      d+=(i===0?"M ":" L ")+x.toFixed(2)+","+y.toFixed(2);
+      const mins=(i/720)*1440,x=xAt(mins),y=waveY(mins);
+      fullD+=(i===0?"M ":" L ")+x.toFixed(2)+","+y.toFixed(2);
+      if(i<=720*(sunsetMins-sunriseMins)/1440){
+        const dayM=sunriseMins+(i/720)*(sunsetMins-sunriseMins);
+        const dayX=xAt(dayM),dayY=waveY(dayM);
+        dayD+=(i===0?"M ":" L ")+dayX.toFixed(2)+","+dayY.toFixed(2);
+      }
     }
-    $("#full-sun-path")?.setAttribute("d",d);
-    $("#sun-day-area")?.setAttribute("d",d+" L "+endX+" "+horizonY.toFixed(2)+" L "+startX+" "+horizonY.toFixed(2)+" Z");
-    const setMarker=(prefix,m)=>{
-      const x=xAt(m);
+    // Re-sample the daylight arc independently so both intersections are exact.
+    dayD="";
+    for(let i=0;i<=360;i++){
+      const mins=sunriseMins+(i/360)*(sunsetMins-sunriseMins),x=xAt(mins),y=waveY(mins);
+      dayD+=(i===0?"M ":" L ")+x.toFixed(2)+","+y.toFixed(2);
+    }
+    $("#full-sun-path")?.setAttribute("d",fullD);
+    $("#sun-day-area")?.setAttribute("d",dayD+" L "+xAt(sunsetMins).toFixed(2)+" "+horizonY.toFixed(2)+" L "+xAt(sunriseMins).toFixed(2)+" "+horizonY.toFixed(2)+" Z");
+
+    const setMarker=(prefix,mins)=>{
+      const x=xAt(mins);
       const dot=$("#"+prefix+"-dot"),tick=$("#"+prefix+"-tick");
       if(dot){dot.setAttribute("cx",x.toFixed(2));dot.setAttribute("cy",horizonY.toFixed(2));}
       if(tick){tick.setAttribute("x1",x.toFixed(2));tick.setAttribute("x2",x.toFixed(2));tick.setAttribute("y1",(horizonY-6).toFixed(2));tick.setAttribute("y2",(horizonY+6).toFixed(2));}
@@ -387,12 +402,11 @@
     };
     setMarker("sunrise",sunriseMins);setMarker("sunset",sunsetMins);
 
-    // Keep the compact sunrise/sunset labels attached to the exact horizon crossings.
-    const placeIntersectionLabel=(prefix,x)=>{
+    // Sunrise text sits to the left; sunset text sits to the right of each exact crossing.
+    const placeIntersectionLabel=(prefix,x,side)=>{
       const time=$("#"+prefix+"-graph-time"),label=$("#"+prefix+"-graph-label");
-      const isSunrise=prefix==="sunrise";
-      const textX=isSunrise?Math.min(endX-8,x+10):Math.max(startX+8,x-10);
-      const anchor=isSunrise?"start":"end";
+      const textX=side==="left"?Math.max(8,x-16):Math.min(792,x+16);
+      const anchor=side==="left"?"end":"start";
       [time,label].forEach(el=>{
         if(!el)return;
         el.setAttribute("x",textX.toFixed(2));
@@ -401,8 +415,8 @@
       if(time)time.setAttribute("y",(horizonY-25).toFixed(2));
       if(label)label.setAttribute("y",(horizonY-9).toFixed(2));
     };
-    placeIntersectionLabel("sunrise",xAt(sunriseMins));
-    placeIntersectionLabel("sunset",xAt(sunsetMins));
+    placeIntersectionLabel("sunrise",xAt(sunriseMins),"left");
+    placeIntersectionLabel("sunset",xAt(sunsetMins),"right");
   }
   function solarMinuteLabel(mins){
     const h=Math.floor(mins/60)%24,m=Math.floor(mins%60),h12=h%12||12;
@@ -413,8 +427,8 @@
     const p=nptP(Date.now()),nowMins=p.hh*60+p.mm+p.ss/60;
     const startX=20,endX=780,width=endX-startX;
     const {waveY,sunriseMins,sunsetMins}=solarWaveGeometry();
-    const visibleMins=Math.max(sunriseMins,Math.min(sunsetMins,nowMins));
-    const sunX=startX+((visibleMins-sunriseMins)/(sunsetMins-sunriseMins))*width,sunY=waveY(visibleMins);
+    const visibleMins=Math.max(0,Math.min(1440,nowMins));
+    const sunX=startX+(visibleMins/1440)*width,sunY=waveY(visibleMins);
     const fullPath=$("#full-sun-path")?.getAttribute("d")||"";
     $("#elapsed-sun-path")?.setAttribute("d",fullPath);
     const progress=$("#sun-progress-rect");
