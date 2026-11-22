@@ -81,15 +81,6 @@
                   <strong id="locationAltitude">▲ उचाइ: उपलब्ध छैन</strong>
                   <span id="locationAccuracy"></span>
                 </div>
-                <div class="loc-controls weather-location-controls">
-                  <button class="location-button" id="timeLocationBtn" type="button">
-                    <span class="loc-icon" aria-hidden="true">◎</span>
-                    <span class="loc-text">मेरो GPS स्थान प्रयोग गर्नुहोस्</span>
-                  </button>
-                  <label class="manual-place"><span>वा हातले स्थान छान्नुहोस्</span>
-                    <select id="manualPlace" aria-label="हातले स्थान छान्नुहोस्"></select>
-                  </label>
-                </div>
               </div>
             </div>
         <article class="sun-card" aria-labelledby="sunCardTitle">
@@ -139,6 +130,15 @@
             <div><span>घडी · पला</span><b id="sunGhadiDetail">गणना हुँदैछ…</b><small>सूर्योदयदेखि बितेको समय</small></div>
           </div>
         </article>
+            <div class="loc-controls weather-location-controls sun-location-controls">
+              <button class="location-button" id="timeLocationBtn" type="button">
+                <span class="loc-icon" aria-hidden="true">◎</span>
+                <span class="loc-text">मेरो GPS स्थान प्रयोग गर्नुहोस्</span>
+              </button>
+              <label class="manual-place"><span>वा हातले स्थान छान्नुहोस्</span>
+                <select id="manualPlace" aria-label="हातले स्थान छान्नुहोस्"></select>
+              </label>
+            </div>
             <section class="panchang-panel" id="panchangPanel" aria-label="आजको पञ्चाङ्ग">
               <div class="panchang-heading">
                 <div>
