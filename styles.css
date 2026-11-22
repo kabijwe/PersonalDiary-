@@ -3731,3 +3731,25 @@ body .book-page.page-turn-prev{animation:pageTurnPrev .28s cubic-bezier(.35,.7,.
     font-size:10.5px!important;
   }
 }
+
+/* Single-line season and unified Panchang/weather data styling. */
+#page-home .season-line{display:flex!important;flex-wrap:nowrap!important;align-items:baseline!important;gap:7px!important;width:100%!important;min-width:0!important;margin:5px 0 2px!important;padding:0!important;white-space:nowrap!important;overflow:hidden!important;font-family:"Mukta","Noto Sans Devanagari",sans-serif!important;font-size:12px!important;line-height:1.45!important}
+#page-home .season-line #seasonName,#page-home .season-line #seasonDesc{display:inline!important;flex:0 0 auto!important;margin:0!important;padding:0!important;font-family:"Mukta","Noto Sans Devanagari",sans-serif!important;font-size:12px!important;line-height:1.45!important;font-weight:500!important;white-space:nowrap!important}
+#page-home .season-line #seasonName{color:#ff4655!important}
+#page-home .season-line #seasonDesc{color:#cbd3dc!important;overflow:visible!important}
+#page-home #panchangPanel .panchang-grid,#page-home .time-card .time-weather .weather-extra{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;align-items:stretch!important;gap:8px!important;width:100%!important}
+#page-home #panchangPanel .panchang-item,#page-home #panchangPanel .panchang-extra,#page-home .time-card .time-weather .weather-metric{display:flex!important;flex-direction:column!important;align-items:flex-start!important;justify-content:flex-start!important;min-width:0!important;min-height:0!important;margin:0!important;padding:8px!important;gap:3px!important;border:1px solid #8f1520!important;border-left:3px solid #e21e2b!important;border-radius:0 8px 8px 0!important;background:#050505!important;box-shadow:none!important;line-height:1.4!important}
+#page-home #panchangPanel .panchang-item small,#page-home .time-card .time-weather .weather-label{display:block!important;margin:0!important;padding:0!important;color:#e21e2b!important;-webkit-text-fill-color:#e21e2b!important;font-family:"Mukta","Noto Sans Devanagari",sans-serif!important;font-size:12px!important;line-height:1.4!important;font-weight:800!important}
+#page-home #panchangPanel .panchang-item b,#page-home #panchangPanel .panchang-item span,#page-home .time-card .time-weather .weather-value{display:block!important;margin:0!important;padding:0!important;color:#fff!important;-webkit-text-fill-color:#fff!important;font-family:"Mukta","Noto Sans Devanagari",sans-serif!important;font-size:12px!important;line-height:1.4!important;font-weight:500!important;overflow-wrap:anywhere!important}
+#page-home #panchangPanel .panchang-more,#page-home #panchangPanel .panchang-foot{display:none!important}
+#page-home .time-card .time-weather .weather-suggestion{display:block!important;margin:9px 0 0!important;padding:0!important;border:0!important;background:transparent!important;box-shadow:none!important;color:#cbd3dc!important;font-family:"Mukta","Noto Sans Devanagari",sans-serif!important;font-size:12px!important;line-height:1.6!important}
+#page-home .time-card .time-weather .weather-suggestion[hidden]{display:none!important}
+#page-home .time-card .time-weather .weather-suggestion-label{display:block!important;margin:0 0 2px!important;padding:0!important;color:#ff3447!important;-webkit-text-fill-color:#ff3447!important;font-size:12px!important;line-height:1.4!important;font-weight:900!important}
+#page-home .time-card .time-weather .weather-suggestion-text{color:#cbd3dc!important;-webkit-text-fill-color:#cbd3dc!important;font-size:12px!important;line-height:1.6!important;font-weight:400!important}
+@media(max-width:650px){
+#page-home .season-line,#page-home .season-line #seasonName,#page-home .season-line #seasonDesc{font-size:10.5px!important;line-height:1.4!important}
+#page-home #panchangPanel .panchang-grid,#page-home .time-card .time-weather .weather-extra{gap:5px!important}
+#page-home #panchangPanel .panchang-item,#page-home #panchangPanel .panchang-extra,#page-home .time-card .time-weather .weather-metric{padding:6px 5px!important;gap:2px!important;border-left-width:2px!important;border-radius:0 6px 6px 0!important}
+#page-home #panchangPanel .panchang-item small,#page-home #panchangPanel .panchang-item b,#page-home #panchangPanel .panchang-item span,#page-home .time-card .time-weather .weather-label,#page-home .time-card .time-weather .weather-value{font-size:10px!important;line-height:1.35!important}
+#page-home .time-card .time-weather .weather-suggestion,#page-home .time-card .time-weather .weather-suggestion-label,#page-home .time-card .time-weather .weather-suggestion-text{font-size:10.5px!important}
+}
