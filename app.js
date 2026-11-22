@@ -345,7 +345,7 @@
       const angle=((mins-solarNoon)/1440)*2*Math.PI;
       return midY-amplitude*Math.cos(angle)-7;
     };
-    const horizonY=waveY(sunriseMins)+25;
+    const horizonY=waveY(sunriseMins)+30;
     const horizon=$("#sun-horizon-line");
     if(horizon){horizon.setAttribute("y1",horizonY.toFixed(2));horizon.setAttribute("y2",horizonY.toFixed(2));}
     let d="";
