@@ -3449,3 +3449,132 @@ body .book-page.page-turn-prev{animation:pageTurnPrev .28s cubic-bezier(.35,.7,.
   #page-home #panchangPanel .panchang-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:6px!important}
   #page-home #panchangPanel .panchang-heading{margin-top:4px!important}
 }
+
+
+/* Final compact four-column layout: complete Panchang + weather metrics. */
+#page-home #panchangPanel .panchang-grid{
+  display:grid!important;
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  align-items:stretch!important;
+  gap:8px!important;
+}
+#page-home #panchangPanel .panchang-item,
+#page-home #panchangPanel .panchang-extra{
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:flex-start!important;
+  min-width:0!important;
+  max-width:none!important;
+  min-height:0!important;
+  padding:8px 9px!important;
+  gap:3px!important;
+  border:1px solid #8f1520!important;
+  border-radius:8px!important;
+  background:#050505!important;
+}
+#page-home #panchangPanel .panchang-item small{
+  color:#e21e2b!important;
+  font-size:12px!important;
+  line-height:1.35!important;
+  font-weight:800!important;
+}
+#page-home #panchangPanel .panchang-item b{
+  color:#fff!important;
+  font-size:15px!important;
+  line-height:1.4!important;
+  font-weight:600!important;
+}
+#page-home #panchangPanel .panchang-item span{
+  color:#fff!important;
+  font-size:12px!important;
+  line-height:1.4!important;
+}
+#page-home #panchangPanel .panchang-primary b{color:#fff!important;font-size:15px!important}
+#page-home #panchangPanel .panchang-wide{grid-column:auto!important}
+#page-home #panchangPanel .panchang-more{display:none!important}
+#page-home #panchangPanel .panchang-foot{
+  max-height:none!important;
+  overflow:visible!important;
+  color:#cbd3dc!important;
+  font-size:11px!important;
+}
+
+/* Weather: four equal columns (12 readings = three rows), red labels / white values. */
+#page-home .time-card .time-weather .weather-extra{
+  display:grid!important;
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  align-items:stretch!important;
+  gap:8px!important;
+  width:100%!important;
+  margin:10px 0 0!important;
+}
+#page-home .time-card .time-weather .weather-metric{
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:flex-start!important;
+  justify-content:flex-start!important;
+  min-width:0!important;
+  min-height:0!important;
+  padding:7px 8px!important;
+  gap:3px!important;
+  border:1px solid #8f1520!important;
+  border-left:3px solid #e21e2b!important;
+  border-radius:0 8px 8px 0!important;
+  background:#050505!important;
+  line-height:1.4!important;
+}
+#page-home .time-card .time-weather .weather-label{
+  display:block!important;
+  color:#e21e2b!important;
+  -webkit-text-fill-color:#e21e2b!important;
+  font-size:12px!important;
+  line-height:1.35!important;
+  font-weight:800!important;
+}
+#page-home .time-card .time-weather .weather-value{
+  display:block!important;
+  color:#fff!important;
+  -webkit-text-fill-color:#fff!important;
+  font-size:13px!important;
+  line-height:1.4!important;
+  font-weight:600!important;
+  overflow-wrap:anywhere!important;
+}
+@media(max-width:650px){
+  #page-home #panchangPanel .panchang-grid,
+  #page-home .time-card .time-weather .weather-extra{
+    grid-template-columns:repeat(4,minmax(0,1fr))!important;
+    gap:5px!important;
+  }
+  #page-home #panchangPanel .panchang-item,
+  #page-home #panchangPanel .panchang-extra{
+    padding:6px 5px!important;
+    border-radius:6px!important;
+    gap:2px!important;
+  }
+  #page-home #panchangPanel .panchang-item small,
+  #page-home .time-card .time-weather .weather-label{
+    font-size:9.5px!important;
+    line-height:1.3!important;
+  }
+  #page-home #panchangPanel .panchang-item b,
+  #page-home #panchangPanel .panchang-primary b{
+    font-size:11px!important;
+    line-height:1.35!important;
+  }
+  #page-home #panchangPanel .panchang-item span{
+    font-size:9px!important;
+    line-height:1.3!important;
+  }
+  #page-home .time-card .time-weather .weather-metric{
+    padding:6px 5px!important;
+    gap:2px!important;
+    border-left-width:2px!important;
+    border-radius:0 6px 6px 0!important;
+  }
+  #page-home .time-card .time-weather .weather-value{
+    font-size:10px!important;
+    line-height:1.35!important;
+  }
+  #page-home #panchangPanel .panchang-foot{font-size:9px!important;line-height:1.4!important}
+}
