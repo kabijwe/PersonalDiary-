@@ -304,6 +304,7 @@
     else if(bs&&bs.source==="cache")bsNote=" वि.सं. मिति सुरक्षित प्रतिबाट देखाइएको छ।";
     else if(!bs&&bsFailed)bsNote=" वि.सं. मिति उपलब्ध भएन।";
     $("#panchangFoot").innerHTML=`पञ्चाङ्ग: Kabijwe को आफ्नै खगोलीय गणना (Meeus सूत्र, लाहिरी अयनांश), अफलाइन चल्छ · स्थान: ${esc(loc.name)} — ${esc(modeLabel())}। वि.सं. मिति: <a href="https://trisambat.com/developers?lang=ne" target="_blank" rel="noopener">Trisambat</a> (beta)।${bsNote} यो आधिकारिक पात्रो होइन।`;
+    renderPanchangSummary();
     // Retry control was removed; report BS availability in the status and date fields.
     updateCurrentContextFromUI();
   }
@@ -315,6 +316,30 @@
     const ghadiText=`${nepaliNumber(g.ghadi)} घडी · ${nepaliNumber(g.pala)} पला`;
     el.textContent=ghadiText;setText("sunGhadiDetail",ghadiText);
     setText("pGhadiNote",`${g.which==="yesterday"?"हिजोको":"आजको"} सूर्योदय ${fmtClock(g.sunriseMs)} देखि · १ घडी = २४ मिनेट, १ पला = २४ सेकेन्ड`);
+    renderPanchangSummary();
+  }
+
+  function renderPanchangSummary(){
+    const el=$("#panchangSummary");if(!el||!pan)return;
+    const t=pan.tithi,n=pan.nakshatra,y=pan.yoga,k=pan.karana,lm=pan.lunarMonth;
+    const parts=[
+      "आजको पञ्चाङ्ग",
+      $("#panchangStatus")?.textContent?.trim(),
+      $("#timeWeekday")?.textContent?.trim(),
+      t?.paksha,
+      t?.name? t.name+" (समाप्ति "+fmtEnd(t.endMs,Date.now())+")":"",
+      n?.name? n.name+" · पाद "+nepaliNumber(n.pada)+" (समाप्ति "+fmtEnd(n.endMs,Date.now())+")":"",
+      y?.name? y.name+" योग (समाप्ति "+fmtEnd(y.endMs,Date.now())+")":"",
+      k?.name? k.name+" करण (समाप्ति "+fmtEnd(k.endMs,Date.now())+")":"",
+      pan.moonRashi?.name?"चन्द्र राशि "+pan.moonRashi.name:"",
+      pan.sunRashi?.name?"सूर्य राशि "+pan.sunRashi.name:"",
+      (t?.shukla?lm?.amanta:lm?.purnimanta)?"चन्द्रमास "+(t.shukla?lm.amanta:lm.purnimanta):"",
+      t?.shukla?"अमान्त = पूर्णिमान्त":(lm?.amanta?"पूर्णिमान्त · अमान्त "+lm.amanta:""),
+      pan.ayana,
+      $("#pGhadiPala")?.textContent?.trim(),
+      $("#pGhadiNote")?.textContent?.trim()
+    ].filter(Boolean);
+    el.textContent=parts.join(" · ");
   }
 
   /* ---------- Live day/night solar cycle ---------- */
