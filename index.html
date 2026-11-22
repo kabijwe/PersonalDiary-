@@ -39,10 +39,30 @@
           <article class="season-card time-card" id="timeCard" aria-labelledby="timeCardTitle">
             <div class="time-overview-grid">
               <div class="time-overview-main">
-            <div class="time-overview-left">
-              <div class="time-card-head">
-                <span class="eyebrow light time-weekday-heading" id="timeCardTitle">आइतबार</span>
+                <div class="time-overview-left">
+                  <div class="time-card-head">
+                    <span class="eyebrow light time-weekday-heading" id="timeCardTitle">आइतबार</span>
+                  </div>
+                  <div class="time-date">
+                    <div>
+                      <div id="clock" class="nepali-clock" aria-live="off">--:--</div>
+                      <div id="timeTithi" class="time-tithi">तिथि गणना हुँदैछ…</div>
+                    </div>
+                  </div>
+                  <p id="panchangSummary" class="panchang-summary" aria-label="आजको पञ्चाङ्ग सारांश"><span id="panchangSummaryText">गणना हुँदैछ…</span></p>
+                  <div class="season-line">
+                    <span id="seasonName">ऋतु</span>
+                    <span id="seasonDesc">नेपाली मिति पर्खँदै…</span>
+                  </div>
+                </div>
+                <div class="time-date-side">
+                  <div class="date-side-weather weather-main"><b id="weatherTemp">--°C</b><span id="weatherCondition">मौसम लोड हुँदैछ…</span></div>
+                  <b id="timeAdDate">--</b>
+                  <span id="timeBsDate">नेपाली मिति लोड हुँदै…</span>
+                  <span id="timeWeekNumber">हप्ता —</span>
+                </div>
               </div>
+            </div>
             <section class="panchang-panel" id="panchangPanel" aria-label="आजको पञ्चाङ्ग">
               <div class="panchang-heading">
                 <div>
@@ -66,47 +86,26 @@
               <p class="panchang-foot" id="panchangFoot">गणना हुँदैछ…</p>
             </section>
             <div class="time-weather" aria-label="हालको स्थान र मौसम">
-                <div class="weather-panel-heading">स्थान तथा मौसम</div>
-                <div class="weather-summary">
-                  <div class="place-line">
-                    <span class="place-pin" aria-hidden="true">⌖</span>
-                    <span id="placeName">काठमाडौँ</span>
-                    <span id="locationMode" class="mode-badge">पूर्वनिर्धारित</span>
-                  </div>
-
-                  <div class="location-coordinates" aria-live="polite">
-                    <span id="locationCoordinates">निर्देशाङ्क: उपलब्ध छैन</span>
-                    <strong id="locationAltitude">▲ उचाइ: उपलब्ध छैन</strong>
-                    <span id="locationAccuracy"></span>
-                  </div>
-                  <div id="weatherExtra" class="weather-extra" aria-label="मौसमका विस्तृत विवरण"></div>
-                  <div id="weatherSuggestion" class="weather-suggestion" hidden></div>
-                  <div id="weatherUpdated" class="weather-updated"></div>
+              <div class="weather-panel-heading">स्थान तथा मौसम</div>
+              <div class="weather-summary">
+                <div class="place-line">
+                  <span class="place-pin" aria-hidden="true">⌖</span>
+                  <span id="placeName">काठमाडौँ</span>
+                  <span id="locationMode" class="mode-badge">पूर्वनिर्धारित</span>
                 </div>
-              </div>
-
-              <div class="time-date">
-                <div>
-                  <div id="clock" class="nepali-clock" aria-live="off">--:--</div>
-                  <div id="timeTithi" class="time-tithi">तिथि गणना हुँदैछ…</div>
+                <div class="location-coordinates" aria-live="polite">
+                  <span id="locationCoordinates">निर्देशाङ्क: उपलब्ध छैन</span>
+                  <strong id="locationAltitude">▲ उचाइ: उपलब्ध छैन</strong>
+                  <span id="locationAccuracy"></span>
                 </div>
-              </div>
-              <p id="panchangSummary" class="panchang-summary" aria-label="आजको पञ्चाङ्ग सारांश"><span id="panchangSummaryText">गणना हुँदैछ…</span></p>
-              <div class="season-line">
-                <span id="seasonName">ऋतु</span>
-                <span id="seasonDesc">नेपाली मिति पर्खँदै…</span>
+                <div id="weatherExtra" class="weather-extra" aria-label="मौसमका विस्तृत विवरण"></div>
+                <div id="weatherSuggestion" class="weather-suggestion" hidden></div>
+                <div id="weatherUpdated" class="weather-updated"></div>
               </div>
             </div>
-            <div class="time-date-side">
-              <div class="date-side-weather weather-main"><b id="weatherTemp">--°C</b><span id="weatherCondition">मौसम लोड हुँदैछ…</span></div>
-              <b id="timeAdDate">--</b>
-              <span id="timeBsDate">नेपाली मिति लोड हुँदै…</span>
-              <span id="timeWeekNumber">हप्ता —</span>
-            </div>
+          </article>
 
-            </div>
-
-        <article class="sun-card" aria-labelledby="sunCardTitle">
+<article class="sun-card" aria-labelledby="sunCardTitle">
           <div class="sun-card-heading">
             <div><span class="eyebrow">आजको सूर्यचक्र</span><h2 id="sunCardTitle">सूर्योदयदेखि सूर्यास्तसम्म</h2></div>
             <span class="sun-card-live"><i id="sunCardLiveDot"></i> <span id="sunCardLiveText">स्थानीय समय</span></span>
