@@ -3201,3 +3201,89 @@ body .book-page.page-turn-prev{animation:pageTurnPrev .28s cubic-bezier(.35,.7,.
   #page-home .time-card-head{padding:11px 10px 0 0!important;gap:8px!important}
   #page-home .time-card-head .time-date-side{max-width:55%!important}
 }
+
+
+/* Two independent top-aligned columns: weekday/clock on the left, weather/date on the right. */
+#page-home .time-overview-main{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;
+  grid-template-rows:auto auto!important;
+  align-items:start!important;
+  column-gap:14px!important;
+  row-gap:0!important;
+  width:100%!important;
+}
+#page-home .time-overview-left{
+  grid-column:1!important;
+  grid-row:1!important;
+  min-width:0!important;
+  align-self:start!important;
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:flex-start!important;
+  align-items:flex-start!important;
+}
+#page-home .time-overview-left .time-card-head{
+  display:block!important;
+  width:100%!important;
+  min-height:0!important;
+  margin:0!important;
+  padding:0!important;
+  text-align:left!important;
+}
+#page-home .time-overview-left .time-date{
+  display:block!important;
+  width:100%!important;
+  margin:0!important;
+  padding:0!important;
+}
+#page-home .time-overview-left .time-date>div:first-child{
+  margin:0!important;
+  padding:0!important;
+}
+#page-home .time-overview-left #clock{
+  margin:0!important;
+  padding:0!important;
+  line-height:1.08!important;
+}
+#page-home .time-overview-left #timeTithi{margin:1px 0 0!important}
+#page-home .time-overview-left .panchang-summary,
+#page-home .time-overview-left .season-line{grid-column:1!important}
+#page-home .time-date-side{
+  position:static!important;
+  inset:auto!important;
+  grid-column:2!important;
+  grid-row:1!important;
+  justify-self:end!important;
+  align-self:start!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:flex-end!important;
+  justify-content:flex-start!important;
+  width:100%!important;
+  max-width:100%!important;
+  min-width:0!important;
+  margin:0!important;
+  padding:0!important;
+  transform:none!important;
+  text-align:right!important;
+  gap:0!important;
+}
+#page-home .time-date-side .date-side-weather{align-items:flex-end!important;margin:0 0 3px!important}
+#page-home .time-weather{
+  grid-column:1 / -1!important;
+  grid-row:2!important;
+  width:100%!important;
+}
+@media(max-width:650px){
+  #page-home .time-overview-main{column-gap:9px!important;grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important}
+  #page-home .time-date-side{max-width:100%!important}
+  #page-home .time-overview-left .time-card-head #timeCardTitle{font-size:21px!important}
+  #page-home .time-overview-left #clock{font-size:24px!important}
+  #page-home .time-overview-left #timeTithi{font-size:12px!important;line-height:1.3!important}
+  #page-home .time-date-side .date-side-weather b#weatherTemp{font-size:21px!important;line-height:1.1!important}
+  #page-home .time-date-side .date-side-weather span,
+  #page-home .time-date-side #timeAdDate,
+  #page-home .time-date-side #timeBsDate,
+  #page-home .time-date-side #timeWeekNumber{font-size:11px!important;line-height:1.3!important}
+}
