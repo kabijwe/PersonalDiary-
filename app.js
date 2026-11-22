@@ -56,6 +56,7 @@
   function dateText(d){return new Date(d+"T12:00:00").toLocaleDateString("ne-NP",{year:"numeric",month:"long",day:"numeric"})}
   function toast(msg){const el=$("#toast");el.textContent=msg;el.classList.add("show");setTimeout(()=>el.classList.remove("show"),2400)}
   window.addEventListener("kabijwe:sync",e=>{const el=$("#serverSyncStatus");if(el){el.textContent=e.detail.message;el.dataset.state=e.detail.status;}if(e.detail.status==="conflict")toast("Sync conflict: पहिले Reload गर्नुहोस्।");});
+  const initialSync=window.KabijweSync?.getStatus();if(initialSync){const el=$("#serverSyncStatus");if(el){el.textContent=initialSync.message;el.dataset.state=initialSync.status;}}
   function showPage(name){
     if(name==="diary")name="poetry";
     const target=$("#page-"+name);
