@@ -761,3 +761,45 @@ body .book-page.page-turn-prev{animation:pageTurnPrev .28s cubic-bezier(.35,.7,.
 #page-home #full-sun-path{fill:none!important;stroke:#3f3f46!important;stroke-width:5!important;stroke-linecap:round!important;stroke-linejoin:round!important;}
 #page-home #elapsed-sun-path{fill:none!important;stroke:#ffffff!important;stroke-width:5.5!important;stroke-linecap:round!important;stroke-linejoin:round!important;}
 #page-home #sun-marker{fill:#FF2D20!important;stroke:none!important;filter:none!important;}
+
+
+/* Solar cycle — reference-matched black card, white progress, muted future arc and red sun */
+#page-home .sun-card{background:#000!important;color:#fff!important;border:1px solid #18191c!important;border-radius:18px!important;box-shadow:0 18px 48px #0009!important;padding:24px 28px 20px!important}
+#page-home .sun-card-heading{align-items:flex-start;margin-bottom:14px!important}
+#page-home .sun-card-heading .eyebrow{font-size:12px!important;color:#8a8d93!important;letter-spacing:0!important}
+#page-home .sun-card-heading h2{font-size:20px!important;font-weight:600!important;color:#f4f4f6!important}
+#page-home .sun-card-live{background:#0d0e11;border:1px solid #1c1e24;border-radius:999px;padding:5px 11px;color:#9ea1a8!important;font-size:11px!important}
+#page-home .sun-card-live i{width:7px;height:7px;background:#ff2e1f!important;box-shadow:0 0 8px #ff2e1f!important}
+#page-home .sun-card-live i.simulating{background:#f59e0b!important;box-shadow:0 0 8px #f59e0b!important}
+#page-home .sun-visual-wide{margin-top:0!important}
+#page-home .sun-times{margin-bottom:0!important;align-items:flex-start!important}
+#page-home .sun-times b{font-size:clamp(24px,4vw,32px)!important;font-weight:700!important;color:#fff!important}
+#page-home .sun-times small{font-size:12px!important;color:#7c7f86!important}
+#page-home #sunPath{width:100%!important;height:auto!important;display:block;overflow:visible!important;margin:0!important}
+#page-home #sun-horizon-line{stroke:#4a4a52!important;stroke-width:1.5!important;stroke-dasharray:5 7!important;stroke-linecap:round!important}
+#page-home #full-sun-path{stroke:#36383f!important;stroke-width:5!important;stroke-linecap:round!important;stroke-linejoin:round!important;fill:none!important}
+#page-home #elapsed-sun-path{stroke:#fff!important;stroke-width:5.5!important;stroke-linecap:round!important;stroke-linejoin:round!important;fill:none!important}
+#page-home .sun-glow{animation:sunPulse 3.2s ease-in-out infinite}
+@keyframes sunPulse{0%,100%{opacity:.45}50%{opacity:.85}}
+#page-home .sun-reference-caption{display:flex;justify-content:center;align-items:center;gap:7px;margin:3px 0 15px;color:#7c7f86;font-size:12px}
+#page-home .sun-reference-caption b{font-weight:500;color:#d0d3d9}
+#page-home .sun-detail-grid{margin-top:0!important;padding-top:16px!important;border-top:1px solid #17181c!important;gap:0!important}
+#page-home .sun-detail-grid>div+div{border-left:1px solid #17181c!important;padding-left:20px!important}
+#page-home .sun-detail-grid span{font-size:11px!important;color:#777a82!important}
+#page-home .sun-detail-grid b{font-size:15px!important;font-weight:600!important;color:#f0f0f2!important}
+#page-home .sun-detail-grid small{font-size:11px!important;color:#63666e!important}
+#page-home .sun-sim-bar{display:flex;flex-direction:column;align-items:center;gap:9px;margin-top:13px}
+#page-home .sun-sim-toggle{background:transparent;border:1px solid #1e2026;color:#7c7f86;font:12px inherit;padding:6px 14px;border-radius:999px;cursor:pointer}
+#page-home .sun-sim-toggle:hover{color:#fff;border-color:#363842}
+#page-home .sun-sim-controls{display:none;width:100%;align-items:center;gap:12px;padding:11px 14px;background:#0d0e11;border:1px solid #1a1c22;border-radius:12px}
+#page-home .sun-sim-controls.active{display:flex}
+#page-home .sun-sim-controls input{flex:1;min-width:0;accent-color:#ff2e1f}
+#page-home .sun-sim-live{white-space:nowrap;background:#181a20;color:#d4d6dc;border:1px solid #2a2d37;border-radius:8px;padding:6px 11px;font-size:11px}
+@media(max-width:650px){
+ #page-home .sun-card{padding:20px 16px 16px!important}
+ #page-home .sun-card-heading h2{font-size:16px!important}
+ #page-home .sun-times b{font-size:24px!important}
+ #page-home .sun-detail-grid>div+div{padding-left:9px!important}
+ #page-home .sun-detail-grid b{font-size:12px!important}
+ #page-home .sun-detail-grid small{font-size:9px!important}
+}
