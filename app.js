@@ -332,7 +332,6 @@
       ["करण",k?.name? k.name+" · समाप्ति "+fmtEnd(k.endMs,Date.now()):""],
       ["चन्द्र राशि",pan.moonRashi?.name],
       ["सूर्य राशि",pan.sunRashi?.name],
-      ["चन्द्रमास",(t?.shukla?lm?.amanta:lm?.purnimanta)],
       ["मास पद्धति",t?.shukla?"अमान्त = पूर्णिमान्त":(lm?.amanta?"पूर्णिमान्त · अमान्त "+lm.amanta:"")],
       ["अयन",pan.ayana],
       ["घडी · पला",$("#pGhadiPala")?.textContent?.trim()],
