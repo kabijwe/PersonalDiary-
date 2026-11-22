@@ -320,11 +320,10 @@
   }
 
   function renderPanchangSummary(){
-    const el=$("#panchangSummary");if(!el||!pan)return;
+    const el=$("#panchangSummaryText");if(!el||!pan)return;
     const t=pan.tithi,n=pan.nakshatra,y=pan.yoga,k=pan.karana,lm=pan.lunarMonth;
     const parts=[
-      "आजको पञ्चाङ्ग",
-      $("#panchangStatus")?.textContent?.trim(),
+      $("#panchangStatus")?.textContent?.trim()||"गणना उपलब्ध (अफलाइन इन्जिन)",
       $("#timeWeekday")?.textContent?.trim(),
       t?.paksha,
       t?.name? t.name+" (समाप्ति "+fmtEnd(t.endMs,Date.now())+")":"",
