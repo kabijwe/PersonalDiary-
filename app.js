@@ -354,7 +354,7 @@
     const horizon=$("#sun-horizon-line");
     if(horizon){horizon.setAttribute("y1",horizonY.toFixed(2));horizon.setAttribute("y2",horizonY.toFixed(2));}
     let d="";
-    for(let m=0;m<=1440;m+=5){
+    for(let m=0;m<=1440;m+=1){
       const x=startX+(m/1440)*width,y=waveY(m);
       d+=(m===0?"M ":" L ")+x.toFixed(2)+","+y.toFixed(2);
     }
@@ -369,7 +369,7 @@
     const fade=$("#sun-curve-gradient");if(fade)fade.setAttribute("x2",sunsetX.toFixed(2));
     const clampedNow=Math.max(0,Math.min(1440,nowMins));
     let elapsed="";
-    for(let m=0;m<=clampedNow;m+=5){
+    for(let m=0;m<=clampedNow;m+=1){
       const x=startX+(m/1440)*width,y=waveY(m);
       elapsed+=(m===0?"M ":" L ")+x.toFixed(2)+","+y.toFixed(2);
     }
