@@ -516,8 +516,13 @@
       const duration=Number.isFinite(mins)&&mins>0?Math.floor(mins):null;
       lines.push("सूर्योदय "+nepaliNumber(w.sunrise.slice(11,16))+" · सूर्यास्त "+nepaliNumber(w.sunset.slice(11,16))+(duration!=null?" · दिन "+nepaliNumber(Math.floor(duration/60))+" घण्टा "+nepaliNumber(duration%60)+" मिनेट":""));
     }
-    if(w.suggestion)lines.push("आजको सुझाव: "+w.suggestion);
-    setText("weatherExtra",lines.join(" · "));
+    const extra=$("#weatherExtra");
+    if(extra)extra.innerHTML=lines.map((line,i)=>`<span class="weather-metric" data-index="${i}">${esc(line)}</span>`).join("");
+    const suggestion=$("#weatherSuggestion");
+    if(suggestion){
+      suggestion.hidden=!w.suggestion;
+      suggestion.innerHTML=w.suggestion?`<span class="weather-suggestion-label">आजको सुझाव</span><span class="weather-suggestion-text">${esc(w.suggestion)}</span>`:"";
+    }
     const when=w.time?nepaliNumber(w.time.slice(11,16)):fmtClock(w.fetched);
     setText("weatherUpdated",stale?"⚠ पुरानो मौसम · "+when+" को (इन्टरनेट/सेवा समस्या)":"अद्यावधिक "+when);
   }
