@@ -112,3 +112,19 @@ Snapshot मा नेपाल समय, AD/BS मिति, बार/हप�
 - **सूर्योदय/सूर्यास्त**: `panchang.js` (छानिएको स्थानको निर्देशाङ्कबाट)।
 
 Production मा API licensing जाँच गर्नुहोस्।
+
+
+## Local HTTPS for phone GPS (LAN only)
+
+The repository includes `https-local.sh` and `https_server.py`. On Kali/Linux, install `mkcert` and `libnss3-tools` first, then run:
+
+```bash
+cd ~/Projects/PersonalDiary
+bash https-local.sh
+```
+
+The helper detects the current LAN IPv4 address, creates a trusted local certificate for localhost and that LAN IP, and serves the diary on `https://<LAN-IP>:8443`. Certificates and private keys are kept in the ignored `.certs/` folder and must never be committed or shared.
+
+For phone GPS, the phone must trust the local mkcert root certificate. Find it with `mkcert -CAROOT` (file `rootCA.pem`), transfer that public root certificate to the phone over USB, then install it as a CA certificate (Android: Settings → Security → Encryption & credentials → Install a certificate → CA certificate; iOS: install the downloaded profile and enable full trust under Certificate Trust Settings). Browser menus differ by device. If the LAN IP changes, stop the server and rerun the helper to regenerate the certificate. Keep the server on a trusted private Wi-Fi network.
+
+This HTTPS helper is for local LAN use; it does not publish the diary or expose a cloud backend. A self-signed certificate that the phone does not trust will still cause browser warnings and may block geolocation.
