@@ -915,3 +915,17 @@ body .book-page.page-turn-prev{animation:pageTurnPrev .28s cubic-bezier(.35,.7,.
  #page-home .time-weather .location-coordinates{font-size:12px!important}
  #page-home .time-weather .location-coordinates strong{font-size:12px!important}
 }
+
+
+/* Align all time context as one left-anchored block above sunrise */
+#page-home .time-date{justify-content:flex-start!important;gap:22px!important}
+#page-home .time-date-side{margin-left:0!important;text-align:left!important;align-items:flex-start!important}
+#page-home .time-weather::before{
+ content:"स्थान तथा मौसम";
+ display:block;margin:0 0 12px;padding-bottom:9px;
+ border-bottom:1px solid #542522;color:#ff5148;
+ font-size:15px;font-weight:700;letter-spacing:.01em;
+}
+@media(max-width:650px){
+ #page-home .time-date{gap:12px!important;flex-wrap:wrap!important}
+}
