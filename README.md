@@ -82,7 +82,7 @@ Open the hosted HTTPS URL on your phone, then use the browser menu's **Add to Ho
 | Seasons | Traditional Nepali reckoning by BS month: वसन्त चैत–बैशाख, ग्रीष्म जेठ–असार, वर्षा साउन–भदौ, शरद असोज–कात्तिक, हेमन्त मंसिर–पुष, शिशिर माघ–फागुन | |
 | Weather | Open-Meteo Forecast API | Current conditions, daily minimum/maximum, rain probability, wind direction/gusts, pressure, dew point, visibility and sunrise/sunset. |
 | Air quality / UV | Open-Meteo Air Quality API | US AQI, PM2.5 and hourly UV; shown when the service provides data. |
-| Place name (GPS only) | BigDataCloud reverse geocoding | Locality, city and province; ward is shown only when the source supplies it. |
+| Place name (GPS only) | BigDataCloud free client-side reverse geocoding | No key; called only for the live GPS fix requested by the user. Locality, city and province; ward only if returned. |
 
 **Location & privacy**: GPS is requested only when the user presses the GPS button. No background tracking. If denied, the previous location stays and a manual list of Nepali towns is available; the card always says whether the place is GPS, manual, or the Kathmandu default. The latest successful GPS fix or manual choice is remembered locally (`kabijwe.location`); there is no background tracking.
 
