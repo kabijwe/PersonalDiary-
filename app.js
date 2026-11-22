@@ -316,12 +316,14 @@
   }
 
   /* ---------- Live day/night solar cycle ---------- */
+  let solarSimulation=null;
   function drawSun(){
     if(!solar||solar.polar){
       setText("sunriseTime","--:--");setText("sunsetTime","--:--");setText("sunriseDetail","उपलब्ध छैन");setText("sunsetDetail","उपलब्ध छैन");
       setText("sunStatus",solar&&solar.polar?(solar.polar==="day"?"सूर्य अस्त हुँदैन":"सूर्य उदाउँदैन"):"गणना हुँदैछ…");
-      ["full-sun-path","elapsed-sun-path"].forEach(id=>$("#"+id)?.setAttribute("d",""));
+      ["full-sun-path","elapsed-sun-path","sun-day-area"].forEach(id=>$("#"+id)?.setAttribute("d",""));
       $("#sun-marker")?.setAttribute("visibility","hidden");
+      ["sunrise-marker","sunset-marker"].forEach(id=>$("#"+id)?.setAttribute("visibility","hidden"));
       return;
     }
     const sunrise=fmtClock(solar.sunriseMs),sunset=fmtClock(solar.sunsetMs);
@@ -330,20 +332,16 @@
     drawFullSunCycle();
     updateSolarPosition();
   }
-  // Clock-aligned solar curve: the marker follows Nepal wall-clock time horizontally,
-  // while the daylight arc rises smoothly to the exact midpoint between sunrise and sunset.
+  // The live sun follows the Nepal local clock; sunrise/sunset are exact horizon intersections.
   function solarWaveGeometry(){
-    // Smooth phase spline: the curve crosses the horizon exactly at the real
-    // sunrise and sunset times, while keeping a broad daytime arc and a deeper night trough.
     const peakY=44,troughY=220,midY=(peakY+troughY)/2,amplitude=(troughY-peakY)/2;
     const horizonPhase=0.725;
     const sunriseParts=nptP(solar.sunriseMs),sunsetParts=nptP(solar.sunsetMs);
     const sunriseMins=sunriseParts.hh*60+sunriseParts.mm;
     const sunsetMins=sunsetParts.hh*60+sunsetParts.mm;
-    const solarNoon=720; // Match the reference: curve peak at exactly 12:00 local time.
+    const solarNoon=720;
     const horizonY=midY-amplitude*Math.cos(Math.PI*horizonPhase);
-    const knotsT=[0,sunriseMins,solarNoon,sunsetMins,1440];
-    const knotsU=[-1,-horizonPhase,0,horizonPhase,1];
+    const knotsT=[0,sunriseMins,solarNoon,sunsetMins,1440],knotsU=[-1,-horizonPhase,0,horizonPhase,1];
     const slopes=[
       (knotsU[1]-knotsU[0])/(knotsT[1]-knotsT[0]),
       (knotsU[2]-knotsU[0])/(knotsT[2]-knotsT[0]),
@@ -352,57 +350,76 @@
       (knotsU[4]-knotsU[3])/(knotsT[4]-knotsT[3])
     ];
     const phaseAt=mins=>{
-      const m=Math.max(0,Math.min(1440,mins));
-      let i=0;
+      const m=Math.max(0,Math.min(1440,mins));let i=0;
       while(i<knotsT.length-2&&m>knotsT[i+1])i++;
-      const h=knotsT[i+1]-knotsT[i];
-      const t=(m-knotsT[i])/h,t2=t*t,t3=t2*t;
-      return (2*t3-3*t2+1)*knotsU[i]
-        +(t3-2*t2+t)*h*slopes[i]
-        +(-2*t3+3*t2)*knotsU[i+1]
-        +(t3-t2)*h*slopes[i+1];
+      const h=knotsT[i+1]-knotsT[i],t=(m-knotsT[i])/h,t2=t*t,t3=t2*t;
+      return (2*t3-3*t2+1)*knotsU[i]+(t3-2*t2+t)*h*slopes[i]
+        +(-2*t3+3*t2)*knotsU[i+1]+(t3-t2)*h*slopes[i+1];
     };
     const waveY=mins=>midY-amplitude*Math.cos(Math.PI*phaseAt(mins));
-    return {waveY,sunriseY:horizonY,horizonY,sunriseMins,sunsetMins};
+    return {waveY,horizonY,sunriseMins,sunsetMins};
   }
-  // The full-day curve and elapsed overlay use one shared clock-aligned function.
   function drawFullSunCycle(){
     if(!solar||solar.polar)return;
     const startX=40,endX=760,width=endX-startX;
-    const {waveY,sunriseY,sunsetMins}=solarWaveGeometry();
-    const sunsetX=startX+(sunsetMins/1440)*width;
-    const fade=$("#sun-curve-gradient");if(fade)fade.setAttribute("x2",sunsetX.toFixed(2));
-    const horizonY=sunriseY; // Intersects the restored full-day cosine at sunrise and sunset.
+    const {waveY,horizonY,sunriseMins,sunsetMins}=solarWaveGeometry();
+    const xAt=m=>startX+(m/1440)*width;
     const horizon=$("#sun-horizon-line");
     if(horizon){horizon.setAttribute("y1",horizonY.toFixed(2));horizon.setAttribute("y2",horizonY.toFixed(2));}
+    const night=$("#sun-night-bg");if(night){night.setAttribute("y",horizonY.toFixed(2));night.setAttribute("height",(238-horizonY).toFixed(2));}
+    const clip=$("#sun-above-horizon-rect");if(clip)clip.setAttribute("height",horizonY.toFixed(2));
     let d="";
-    for(let m=0;m<=1440;m+=1){
-      const x=startX+(m/1440)*width,y=waveY(m);
-      d+=(m===0?"M ":" L ")+x.toFixed(2)+","+y.toFixed(2);
-    }
+    for(let m=0;m<=1440;m+=1){const x=xAt(m),y=waveY(m);d+=(m===0?"M ":" L ")+x.toFixed(2)+","+y.toFixed(2);}
     $("#full-sun-path")?.setAttribute("d",d);
+    $("#sun-day-area")?.setAttribute("d",d+" L "+endX+" "+horizonY.toFixed(2)+" L "+startX+" "+horizonY.toFixed(2)+" Z");
+    const setMarker=(prefix,m)=>{
+      const x=xAt(m);
+      const dot=$("#"+prefix+"-dot"),tick=$("#"+prefix+"-tick");
+      if(dot){dot.setAttribute("cx",x.toFixed(2));dot.setAttribute("cy",horizonY.toFixed(2));}
+      if(tick){tick.setAttribute("x1",x.toFixed(2));tick.setAttribute("x2",x.toFixed(2));tick.setAttribute("y1",(horizonY-6).toFixed(2));tick.setAttribute("y2",(horizonY+6).toFixed(2));}
+      $("#"+prefix+"-marker")?.setAttribute("visibility","visible");
+    };
+    setMarker("sunrise",sunriseMins);setMarker("sunset",sunsetMins);
   }
-  function updateSolarPosition(){
+  function solarMinuteLabel(mins){
+    const h=Math.floor(mins/60)%24,m=Math.floor(mins%60),h12=h%12||12;
+    return nepaliNumber(h12)+":"+nepaliNumber(String(m).padStart(2,"0"))+" "+periodWord(h);
+  }
+  function updateSolarPosition(overrideMinutes=null){
     if(!solar||solar.polar)return;
-    const p=nptP(Date.now()),nowMins=p.hh*60+p.mm+p.ss/60;
+    const p=nptP(Date.now()),liveMins=p.hh*60+p.mm+p.ss/60;
+    const nowMins=overrideMinutes==null?liveMins:overrideMinutes;
     const startX=40,endX=760,width=endX-startX;
     const {waveY,sunriseMins,sunsetMins}=solarWaveGeometry();
-    const sunsetX=startX+(sunsetMins/1440)*width;
-    const fade=$("#sun-curve-gradient");if(fade)fade.setAttribute("x2",sunsetX.toFixed(2));
     const clampedNow=Math.max(0,Math.min(1440,nowMins));
-    let elapsed="";
-    for(let m=0;m<=clampedNow;m+=1){
-      const x=startX+(m/1440)*width,y=waveY(m);
-      elapsed+=(m===0?"M ":" L ")+x.toFixed(2)+","+y.toFixed(2);
-    }
     const sunX=startX+(clampedNow/1440)*width,sunY=waveY(clampedNow);
+    let elapsed="";
+    for(let m=0;m<=clampedNow;m+=1){const x=startX+(m/1440)*width,y=waveY(m);elapsed+=(m===0?"M ":" L ")+x.toFixed(2)+","+y.toFixed(2);}
     elapsed+=" L "+sunX.toFixed(2)+","+sunY.toFixed(2);
     $("#elapsed-sun-path")?.setAttribute("d",elapsed);
+    const progress=$("#sun-progress-rect");if(progress)progress.setAttribute("width",sunX.toFixed(2));
     const marker=$("#sun-marker");
-    if(marker){marker.setAttribute("cx",sunX.toFixed(2));marker.setAttribute("cy",sunY.toFixed(2));marker.setAttribute("visibility","visible");}
+    if(marker){marker.setAttribute("transform",`translate(${sunX.toFixed(2)} ${sunY.toFixed(2)})`);marker.setAttribute("visibility","visible");}
     const daytime=nowMins>=sunriseMins&&nowMins<=sunsetMins;
-    setText("sunStatus",daytime?"अहिले दिनको समय":nowMins<sunriseMins?"सूर्योदयअघि":"सूर्यास्तपछि");
+    setText("sunStatus",daytime?"अहिले दिनको समय":nowMins<sunriseMins?"सूर्योदय हुन बाँकी":"सूर्यास्त भइसकेको");
+    setText("sunLiveClock",solarMinuteLabel(clampedNow));
+    const badge=$("#sunCardLiveText");if(badge)badge.textContent=solarMinuteLabel(clampedNow);
+    const simSlider=$("#sunSimSlider");if(simSlider&&solarSimulation===null)simSlider.value=String(Math.round(liveMins));
   }
+  function setSolarSimulation(value){
+    solarSimulation=value;
+    const dot=$("#sunCardLiveDot");
+    if(dot){dot.classList.toggle("simulating",value!==null);}
+    const slider=$("#sunSimSlider");if(slider&&value!==null)slider.value=String(Math.round(value));
+    updateSolarPosition(value);
+  }
+  $("#sunSimToggle")?.addEventListener("click",()=>$("#sunSimControls")?.classList.toggle("active"));
+  $("#sunSimSlider")?.addEventListener("input",e=>setSolarSimulation(Number(e.target.value)));
+  $("#sunSimLive")?.addEventListener("click",()=>{
+    solarSimulation=null;
+    $("#sunCardLiveDot")?.classList.remove("simulating");
+    updateSolarPosition();
+  });
   /* ---------- Weather (Open-Meteo) ---------- */
   const WX_TEXT={0:"सफा आकाश",1:"मुख्यतः सफा",2:"आंशिक बादल",3:"बादल लागेको",45:"कुहिरो",48:"बाक्लो कुहिरो",51:"हल्का झरी",53:"झरी",55:"घना झरी",56:"चिसो झरी",57:"चिसो झरी",61:"हल्का वर्षा",63:"वर्षा",65:"भारी वर्षा",66:"चिसो वर्षा",67:"चिसो वर्षा",71:"हल्का हिमपात",73:"हिमपात",75:"भारी हिमपात",77:"हिउँका कण",80:"छिटफुट वर्षा",81:"वर्षा",82:"भारी वर्षा",85:"हिउँ वर्षा",86:"भारी हिउँ वर्षा",95:"मेघगर्जन",96:"असिनासहित मेघगर्जन",99:"असिनासहित मेघगर्जन"};
   let wxSeq=0;
