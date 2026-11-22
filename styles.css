@@ -2978,3 +2978,26 @@ body .book-page.page-turn-prev{animation:pageTurnPrev .28s cubic-bezier(.35,.7,.
   }
   #page-home .time-card .time-weather .weather-summary .location-coordinates strong{font-size:10px!important}
 }
+
+
+/* Compact current weather placed above the date, matching the weekday heading typography. */
+#page-home .time-date-side .date-side-weather{
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:flex-end!important;
+  gap:0!important;
+  margin:0 0 5px!important;
+  text-align:right!important;
+}
+#page-home .time-date-side .date-side-weather b,
+#page-home .time-date-side .date-side-weather span{
+  color:#fff!important;
+  font-family:inherit!important;
+  font-size:inherit!important;
+  font-weight:700!important;
+  line-height:1.35!important;
+}
+#page-home .time-date-side .date-side-weather b{font-size:inherit!important}
+@media(max-width:650px){
+ #page-home .time-date-side .date-side-weather{margin-bottom:4px!important}
+}
