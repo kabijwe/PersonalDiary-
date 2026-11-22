@@ -2229,3 +2229,53 @@ body .book-page.page-turn-prev{animation:pageTurnPrev .28s cubic-bezier(.35,.7,.
 /* Plain-text Panchang summary above the season line: no nested card. */
 #page-home .time-card .panchang-summary{display:block;margin:5px 0 6px;padding:0;border:0;border-radius:0;background:transparent;box-shadow:none;color:#C40014;font:inherit;font-size:11.5px;line-height:1.65;font-weight:500;overflow-wrap:anywhere}
 @media(max-width:650px){#page-home .time-card .panchang-summary{font-size:10.5px;line-height:1.55;margin:4px 0 5px}}
+
+/* Compact Panchang heading + white live details; hide the redundant lower panel. */
+#page-home .panchang-summary{margin:3px 0 4px!important;padding:0!important;border:0!important;background:transparent!important;box-shadow:none!important;color:#fff!important;font:400 11px/1.5 "Noto Serif Devanagari",serif!important;overflow-wrap:anywhere}
+#page-home .panchang-summary .panchang-summary-heading{color:#C40014!important;font-family:"Noto Serif Devanagari",serif!important;font-size:12.5px!important;font-weight:750!important}
+#page-home .panchang-summary #panchangSummaryText{color:#f2f2f2!important;font:400 11px/1.5 "Noto Serif Devanagari",serif!important}
+#page-home #panchangPanel{display:none!important}
+@media(max-width:650px){
+ #page-home .time-card{padding:7px 10px 8px!important}
+ #page-home .time-card-head{padding-top:6px!important;margin-bottom:0!important}
+ #page-home .nepali-clock{font-size:24px!important;line-height:1.05!important}
+ #page-home .time-weekday{font-size:10px!important;margin-top:1px!important}
+ #page-home .time-tithi{font-size:9.5px!important;margin-top:1px!important;line-height:1.25!important}
+ #page-home .time-date-side{gap:0!important;padding:0!important}
+ #page-home .time-date-side b,#page-home .time-date-side span{font-size:10px!important;line-height:1.25!important}
+ #page-home .time-date-side span#timeWeekNumber{font-size:9px!important}
+ #page-home .panchang-summary{font-size:9.5px!important;line-height:1.35!important;margin:3px 0!important}
+ #page-home .panchang-summary .panchang-summary-heading{font-size:11px!important}
+ #page-home .panchang-summary #panchangSummaryText{font-size:9.5px!important;line-height:1.35!important}
+ #page-home .season-line{margin:2px 0 0!important;gap:3px 6px!important;line-height:1.3!important}
+ #page-home .season-line #seasonName{font-size:11px!important}
+ #page-home .season-line #seasonDesc{font-size:9.5px!important;line-height:1.3!important}
+ #page-home .time-weather{margin-top:4px!important;padding-top:4px!important;gap:3px!important}
+ #page-home .time-weather .place-line{font-size:11px!important;line-height:1.3!important;gap:5px!important}
+ #page-home .time-weather #placeName{font-size:12px!important}
+ #page-home .time-weather .weather-main{margin:3px 0 1px!important;gap:6px!important}
+ #page-home .time-weather .weather-main b{font-size:21px!important;line-height:1.1!important}
+ #page-home .time-weather .weather-main span{font-size:10px!important}
+ #page-home .time-weather .weather-extra,#page-home .time-weather .weather-updated{font-size:9px!important;line-height:1.35!important;margin-top:1px!important}
+ #page-home .time-weather .location-coordinates{margin-top:3px!important;padding:0!important;gap:2px 7px!important;font-size:9px!important;line-height:1.3!important}
+ #page-home .time-weather .location-coordinates span,#page-home .time-weather .location-coordinates strong{font-size:9px!important;line-height:1.3!important}
+ #page-home .sun-card{padding:8px 10px 7px!important;margin:5px 0 3px!important;border-radius:10px!important}
+ #page-home .sun-card-heading{margin-bottom:2px!important;gap:5px!important}
+ #page-home .sun-card-heading h2{font-size:13px!important;line-height:1.15!important}
+ #page-home .sun-card-heading .eyebrow{font-size:8px!important}
+ #page-home .sun-card-live{font-size:8px!important;padding:2px 5px!important}
+ #page-home .sun-visual-wide{margin:0!important;padding:0!important}
+ #page-home #sunPath{max-height:108px!important}
+ #page-home .sun-reference-caption{font-size:8px!important;margin:0 0 3px!important;line-height:1.2!important}
+ #page-home .sun-detail-grid{margin:0!important;padding-top:4px!important;gap:0!important}
+ #page-home .sun-detail-grid>div{gap:1px!important;padding-right:4px!important}
+ #page-home .sun-detail-grid>div+div{padding-left:6px!important}
+ #page-home .sun-detail-grid span{font-size:8px!important}
+ #page-home .sun-detail-grid b{font-size:10px!important;line-height:1.2!important}
+ #page-home .sun-detail-grid small{font-size:7px!important;line-height:1.1!important}
+ #page-home .sun-location-controls{margin:3px 0 0!important;padding:0!important;gap:4px!important;display:flex!important;flex-direction:column!important}
+ #page-home .sun-location-controls .location-button{min-height:30px!important;padding:5px 8px!important;font-size:10px!important;border-radius:7px!important}
+ #page-home .sun-location-controls .manual-place{font-size:9px!important;gap:5px!important}
+ #page-home .sun-location-controls .manual-place select{font-size:9px!important;min-height:26px!important;padding:3px 6px!important}
+ #page-home .time-service-status,#page-home .gps-help,#page-home .time-privacy{display:none!important}
+}
