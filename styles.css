@@ -3086,8 +3086,8 @@ body .book-page.page-turn-prev{animation:pageTurnPrev .28s cubic-bezier(.35,.7,.
 }
 
 
-/* Nudge the complete top-right date/weather stack slightly upward. */
-#page-home .time-date-side{transform:translateY(-5px)!important}
+/* Align the top-right weather/date stack with the weekday heading (आइतबार). */
+#page-home .time-date-side{transform:translateY(-18px)!important}
 @media(max-width:650px){
-  #page-home .time-date-side{transform:translateY(-4px)!important}
+  #page-home .time-date-side{transform:translateY(-16px)!important}
 }
