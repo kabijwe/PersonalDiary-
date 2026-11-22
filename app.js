@@ -338,12 +338,14 @@
     const sunriseParts=nptP(solar.sunriseMs),sunsetParts=nptP(solar.sunsetMs);
     const sunriseMins=sunriseParts.hh*60+sunriseParts.mm;
     const sunsetMins=sunsetParts.hh*60+sunsetParts.mm;
+    const sunsetX=16+(sunsetMins/1440)*308;
+    const fade=$("#sun-curve-gradient");if(fade)fade.setAttribute("x2",sunsetX.toFixed(2));
     const solarNoon=(sunriseMins+sunsetMins)/2;
     const waveY=mins=>{
       const angle=((mins-solarNoon)/1440)*2*Math.PI;
       return midY-amplitude*Math.cos(angle)-7;
     };
-    const horizonY=waveY(sunriseMins)+10;
+    const horizonY=waveY(sunriseMins)+17;
     const horizon=$("#sun-horizon-line");
     if(horizon){horizon.setAttribute("y1",horizonY.toFixed(2));horizon.setAttribute("y2",horizonY.toFixed(2));}
     let d="";
@@ -362,6 +364,8 @@
     const sunriseParts=nptP(solar.sunriseMs),sunsetParts=nptP(solar.sunsetMs);
     const sunriseMins=sunriseParts.hh*60+sunriseParts.mm;
     const sunsetMins=sunsetParts.hh*60+sunsetParts.mm;
+    const sunsetX=16+(sunsetMins/1440)*308;
+    const fade=$("#sun-curve-gradient");if(fade)fade.setAttribute("x2",sunsetX.toFixed(2));
     const solarNoon=(sunriseMins+sunsetMins)/2;
     const waveY=mins=>{
       const angle=((mins-solarNoon)/1440)*2*Math.PI;
