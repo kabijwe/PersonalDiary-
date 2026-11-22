@@ -3762,3 +3762,15 @@ body .book-page.page-turn-prev{animation:pageTurnPrev .28s cubic-bezier(.35,.7,.
 #page-home #panchangPanel .panchang-item .weather-label{display:block!important;margin:0!important;padding:0!important;color:#e21e2b!important;-webkit-text-fill-color:#e21e2b!important;font-family:"Mukta","Noto Sans Devanagari",sans-serif!important;font-size:12px!important;line-height:1.4!important;font-weight:800!important}
 #page-home #panchangPanel .panchang-item .weather-value{display:block!important;margin:0!important;padding:0!important;color:#fff!important;-webkit-text-fill-color:#fff!important;font-family:"Mukta","Noto Sans Devanagari",sans-serif!important;font-size:12px!important;line-height:1.4!important;font-weight:500!important;overflow-wrap:anywhere!important}
 @media(max-width:650px){#page-home #panchangPanel{margin-top:8px!important}#page-home #panchangPanel .panchang-grid{gap:5px!important}#page-home #panchangPanel .panchang-item{padding:6px 5px!important;gap:2px!important;border-left-width:2px!important;border-radius:0 6px 6px 0!important}#page-home #panchangPanel .panchang-item .weather-label,#page-home #panchangPanel .panchang-item .weather-value{font-size:10px!important;line-height:1.35!important}}
+
+
+/* More compact Panchang tiles while preserving the weather-card design. */
+#page-home #panchangPanel .panchang-grid{gap:5px!important}
+#page-home #panchangPanel .panchang-item{padding:5px 6px!important;gap:1px!important;border-left-width:2px!important;border-radius:0 6px 6px 0!important}
+#page-home #panchangPanel .panchang-item .weather-label{font-size:10.5px!important;line-height:1.25!important}
+#page-home #panchangPanel .panchang-item .weather-value{font-size:10.5px!important;line-height:1.25!important}
+@media(max-width:650px){
+#page-home #panchangPanel .panchang-grid{gap:4px!important}
+#page-home #panchangPanel .panchang-item{padding:4px 4px!important;gap:1px!important}
+#page-home #panchangPanel .panchang-item .weather-label,#page-home #panchangPanel .panchang-item .weather-value{font-size:9px!important;line-height:1.2!important}
+}
