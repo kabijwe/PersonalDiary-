@@ -56,7 +56,6 @@
               </div>
             </div>
             <div class="time-date-side">
-              <div class="date-side-weather weather-main"><b id="weatherTemp">--°</b><span id="weatherCondition">मौसम लोड हुँदैछ…</span></div>
               <b id="timeAdDate">--</b>
               <span id="timeBsDate">नेपाली मिति लोड हुँदै…</span>
               <span id="timeWeekNumber">हप्ता —</span>
@@ -81,6 +80,28 @@
                 </div>
               </div>
             </div>
+            <section class="panchang-panel" id="panchangPanel" aria-label="आजको पञ्चाङ्ग">
+              <div class="panchang-heading">
+                <div>
+                  <span class="panchang-kicker">आजको आकाशीय गणना</span>
+                  <h3>पञ्चाङ्ग</h3>
+                </div>
+                <span id="panchangStatus" class="panchang-status" role="status">गणना हुँदैछ…</span>
+              </div>
+              <div class="panchang-grid">
+                <div class="panchang-item panchang-primary"><small>तिथि · पक्ष</small><b id="pTithi">—</b><span id="pPaksha"></span><span id="pTithiEnd"></span></div>
+                <div class="panchang-item panchang-primary"><small>नक्षत्र · पाद</small><b id="pNakshatra">—</b><span id="pNakshatraPada"></span><span id="pNakshatraEnd"></span></div>
+                <div class="panchang-item"><small>योग</small><b id="pYoga">—</b><span id="pYogaEnd"></span></div>
+                <div class="panchang-item panchang-extra"><small>करण</small><b id="pKarana">—</b><span id="pKaranaEnd"></span></div>
+                <div class="panchang-item panchang-extra"><small>चन्द्र राशि</small><b id="pMoonRashi">—</b></div>
+                <div class="panchang-item panchang-extra"><small>सूर्य राशि</small><b id="pSunRashi">—</b></div>
+                <div class="panchang-item panchang-extra"><small>चन्द्रमास</small><b id="pLunarMonth">—</b><span id="pLunarNote"></span></div>
+                <div class="panchang-item panchang-extra"><small>अयन</small><b id="pAyana">—</b></div>
+                <div class="panchang-item panchang-extra panchang-wide"><small>घडी · पला (सूर्योदयदेखि)</small><b id="pGhadiPala">—</b><span id="pGhadiNote"></span></div>
+              </div>
+              <button type="button" class="panchang-more" id="panchangMore" aria-expanded="false">थप विवरण देखाउनुहोस् ↓</button>
+              <p class="panchang-foot" id="panchangFoot">गणना हुँदैछ…</p>
+            </section>
         <article class="sun-card" aria-labelledby="sunCardTitle">
           <div class="sun-card-heading">
             <div><span class="eyebrow">आजको सूर्यचक्र</span><h2 id="sunCardTitle">सूर्योदयदेखि सूर्यास्तसम्म</h2></div>
@@ -137,28 +158,7 @@
                 <select id="manualPlace" aria-label="हातले स्थान छान्नुहोस्"></select>
               </label>
             </div>
-            <section class="panchang-panel" id="panchangPanel" aria-label="आजको पञ्चाङ्ग">
-              <div class="panchang-heading">
-                <div>
-                  <span class="panchang-kicker">आजको आकाशीय गणना</span>
-                  <h3>पञ्चाङ्ग</h3>
-                </div>
-                <span id="panchangStatus" class="panchang-status" role="status">गणना हुँदैछ…</span>
-              </div>
-              <div class="panchang-grid">
-                <div class="panchang-item panchang-primary"><small>तिथि · पक्ष</small><b id="pTithi">—</b><span id="pPaksha"></span><span id="pTithiEnd"></span></div>
-                <div class="panchang-item panchang-primary"><small>नक्षत्र · पाद</small><b id="pNakshatra">—</b><span id="pNakshatraPada"></span><span id="pNakshatraEnd"></span></div>
-                <div class="panchang-item"><small>योग</small><b id="pYoga">—</b><span id="pYogaEnd"></span></div>
-                <div class="panchang-item panchang-extra"><small>करण</small><b id="pKarana">—</b><span id="pKaranaEnd"></span></div>
-                <div class="panchang-item panchang-extra"><small>चन्द्र राशि</small><b id="pMoonRashi">—</b></div>
-                <div class="panchang-item panchang-extra"><small>सूर्य राशि</small><b id="pSunRashi">—</b></div>
-                <div class="panchang-item panchang-extra"><small>चन्द्रमास</small><b id="pLunarMonth">—</b><span id="pLunarNote"></span></div>
-                <div class="panchang-item panchang-extra"><small>अयन</small><b id="pAyana">—</b></div>
-                <div class="panchang-item panchang-extra panchang-wide"><small>घडी · पला (सूर्योदयदेखि)</small><b id="pGhadiPala">—</b><span id="pGhadiNote"></span></div>
-              </div>
-              <button type="button" class="panchang-more" id="panchangMore" aria-expanded="false">थप विवरण देखाउनुहोस् ↓</button>
-              <p class="panchang-foot" id="panchangFoot">गणना हुँदैछ…</p>
-            </section>
+
             <div class="time-service-status" aria-live="polite" aria-label="डाटा सेवाको अवस्था">
               <span id="gpsServiceStatus" data-state="info">GPS: बटन थिचेपछि मात्र</span>
               <span id="placeServiceStatus" data-state="info">स्थानको नाम: पर्खँदै</span>
