@@ -37,6 +37,28 @@
       <section class="page active" id="page-home">
         <div class="hero-grid">
           <article class="season-card time-card" id="timeCard" aria-labelledby="timeCardTitle">
+            <div class="time-card-head">
+              <span class="eyebrow light" id="timeCardTitle">समयको अनुभूति</span>
+              <span class="live-dot" aria-label="Live"></span>
+            </div>
+
+            <div class="time-date">
+              <div>
+                <div id="clock" class="nepali-clock" aria-live="off">--:--</div>
+                <div id="timeWeekday" class="time-weekday">आजको दिन</div>
+                <div id="timeTithi" class="time-tithi">तिथि गणना हुँदैछ…</div>
+              </div>
+              <div class="time-date-side">
+                <b id="timeAdDate">--</b>
+                <span id="timeBsDate">नेपाली मिति लोड हुँदै…</span>
+                <span id="timeWeekNumber">हप्ता —</span>
+              </div>
+            </div>
+
+            <div class="season-line">
+              <span id="seasonName">ऋतु</span>
+              <span id="seasonDesc">नेपाली मिति पर्खँदै…</span>
+            </div>
         <article class="sun-card" aria-labelledby="sunCardTitle">
           <div class="sun-card-heading">
             <div><span class="eyebrow">आजको सूर्यचक्र</span><h2 id="sunCardTitle">सूर्योदयदेखि सूर्यास्तसम्म</h2></div>
@@ -83,48 +105,6 @@
             <div><span>घडी · पला</span><b id="sunGhadiDetail">गणना हुँदैछ…</b><small>सूर्योदयदेखि बितेको समय</small></div>
           </div>
         </article>
-            <div class="time-card-head">
-              <span class="eyebrow light" id="timeCardTitle">समयको अनुभूति</span>
-              <span class="live-dot" aria-label="Live"></span>
-            </div>
-
-            <div class="time-date">
-              <div>
-                <div id="clock" class="nepali-clock" aria-live="off">--:--</div>
-                <div id="timeWeekday" class="time-weekday">आजको दिन</div>
-                <div id="timeTithi" class="time-tithi">तिथि गणना हुँदैछ…</div>
-              </div>
-              <div class="time-date-side">
-                <b id="timeAdDate">--</b>
-                <span id="timeBsDate">नेपाली मिति लोड हुँदै…</span>
-                <span id="timeWeekNumber">हप्ता —</span>
-              </div>
-            </div>
-
-            <div class="season-line">
-              <span id="seasonName">ऋतु</span>
-              <span id="seasonDesc">नेपाली मिति पर्खँदै…</span>
-            </div>
-
-            <div class="time-weather">
-              <div class="place-line">
-                <span class="place-pin" aria-hidden="true">⌖</span>
-                <span id="placeName">काठमाडौँ</span>
-                <span id="locationMode" class="mode-badge">पूर्वनिर्धारित</span>
-              </div>
-              <div class="weather-line">
-                <b id="weatherTemp">--°</b>
-                <span id="weatherCondition">मौसम लोड हुँदैछ…</span>
-                <span id="weatherExtra"></span>
-                <span id="weatherUpdated" class="weather-updated"></span>
-              </div>
-              <div class="location-coordinates" aria-live="polite">
-                <span id="locationCoordinates">निर्देशाङ्क: उपलब्ध छैन</span>
-                <strong id="locationAltitude">▲ उचाइ: उपलब्ध छैन</strong>
-                <span id="locationAccuracy"></span>
-              </div>
-            </div>
-
             <section class="panchang-panel" id="panchangPanel" aria-label="आजको पञ्चाङ्ग">
               <div class="panchang-heading">
                 <div>
@@ -147,6 +127,24 @@
               <button type="button" class="panchang-more" id="panchangMore" aria-expanded="false">थप विवरण देखाउनुहोस् ↓</button>
               <p class="panchang-foot" id="panchangFoot">गणना हुँदैछ…</p>
             </section>
+            <div class="time-weather">
+              <div class="place-line">
+                <span class="place-pin" aria-hidden="true">⌖</span>
+                <span id="placeName">काठमाडौँ</span>
+                <span id="locationMode" class="mode-badge">पूर्वनिर्धारित</span>
+              </div>
+              <div class="weather-line">
+                <b id="weatherTemp">--°</b>
+                <span id="weatherCondition">मौसम लोड हुँदैछ…</span>
+                <span id="weatherExtra"></span>
+                <span id="weatherUpdated" class="weather-updated"></span>
+              </div>
+              <div class="location-coordinates" aria-live="polite">
+                <span id="locationCoordinates">निर्देशाङ्क: उपलब्ध छैन</span>
+                <strong id="locationAltitude">▲ उचाइ: उपलब्ध छैन</strong>
+                <span id="locationAccuracy"></span>
+              </div>
+            </div>
 
             <div class="loc-controls">
               <button class="location-button" id="timeLocationBtn" type="button">
