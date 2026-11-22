@@ -3442,3 +3442,9 @@ body .book-page.page-turn-prev{animation:pageTurnPrev .28s cubic-bezier(.35,.7,.
   #page-home #panchangPanel{padding-top:6px!important}
   #page-home #panchangPanel .panchang-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:6px!important}
 }
+
+/* Remove the dead space between the temperature/date header and full-width Panchang. */
+#page-home .time-overview-grid{margin:0!important;padding:0!important}
+#page-home .time-date-side .date-side-weather{margin-bottom:0!important}
+#page-home #panchangPanel{margin:0!important;padding:0!important;border-top:0!important}
+#page-home #panchangPanel .panchang-heading{margin:0 0 6px!important;padding:0!important}
