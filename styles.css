@@ -734,12 +734,11 @@ body .book-page.page-turn-prev{animation:pageTurnPrev .28s cubic-bezier(.35,.7,.
 #page-home .sun-endpoint{fill:#FFFFFF!important;}
 @media(max-width:650px){#page-home #sunPath{height:72px!important;}}
 
-
-/* Solar graph v39: longer white solar arc with a red sun marker */
-#page-home .sun-visual-wide{width:112%!important;margin-left:-6%!important;}
-#page-home #sunPath{width:100%!important;height:88px!important;overflow:visible!important;}
+/* Solar graph v40: widen only the SVG; keep sunrise/sunset labels and timing fixed */
+#page-home .sun-visual-wide{width:100%!important;margin-left:0!important;}
+#page-home #sunPath{width:106%!important;margin-left:-3%!important;height:84px!important;overflow:visible!important;}
 #page-home #sun-single-curve{stroke:#FFFFFF!important;stroke-width:3.8!important;stroke-linecap:round!important;stroke-linejoin:round!important;fill:none!important;filter:none!important;}
 #page-home #day-sun-icon circle{fill:#FF2D20!important;stroke:#FF2D20!important;stroke-width:1.2!important;}
 #page-home #day-sun-icon g{stroke:#FF2D20!important;stroke-width:2.2!important;}
 #page-home .sun-horizon{stroke:#FFFFFF!important;stroke-width:2.4!important;opacity:1!important;}
-@media(max-width:650px){#page-home .sun-visual-wide{width:108%!important;margin-left:-4%!important;}#page-home #sunPath{height:82px!important;}}
+@media(max-width:650px){#page-home #sunPath{width:104%!important;margin-left:-2%!important;height:78px!important;}}
