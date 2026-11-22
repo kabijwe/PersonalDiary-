@@ -330,22 +330,37 @@
     drawFullSunCycle();
     updateSolarPosition();
   }
-  // Full 24-hour solar wave: dim future path, white elapsed path, red live marker.
-  function drawFullSunCycle(){
-    if(!solar||solar.polar)return;
-    const startX=16,endX=324,width=endX-startX,peakY=18,troughY=96;
-    const midY=(peakY+troughY)/2,amplitude=(troughY-peakY)/2;
+  // Solar curve uses the Panchang engine's apparent solar altitude, not a time-only cosine.
+  // Keep the approved graph geometry/horizon offset; map the day's true solar maximum to the curve peak.
+  function solarWaveGeometry(){
+    const peakY=18,troughY=96,midY=(peakY+troughY)/2,amplitude=(troughY-peakY)/2;
     const sunriseParts=nptP(solar.sunriseMs),sunsetParts=nptP(solar.sunsetMs);
     const sunriseMins=sunriseParts.hh*60+sunriseParts.mm;
     const sunsetMins=sunsetParts.hh*60+sunsetParts.mm;
+    const legacyNoon=(sunriseMins+sunsetMins)/2;
+    const legacySunriseY=midY-amplitude*Math.cos(((sunriseMins-legacyNoon)/1440)*2*Math.PI)-7;
+    const altitude=PX._internals&&PX._internals.sunAltitude;
+    if(typeof altitude!=="function")return {waveY:mins=>midY-amplitude*Math.cos(((mins-legacyNoon)/1440)*2*Math.PI)-7,sunriseY:legacySunriseY,sunriseMins,sunsetMins};
+    const parts=nptP(solar.sunriseMs),dayStart=PX.nptMidnightMs(parts.y,parts.m,parts.d);
+    const sunriseAlt=altitude(solar.sunriseMs,loc.lat,loc.lon);
+    let maxAlt=-90;
+    for(let t=solar.sunriseMs;t<=solar.sunsetMs;t+=5*60000)maxAlt=Math.max(maxAlt,altitude(t,loc.lat,loc.lon));
+    maxAlt=Math.max(maxAlt,altitude(solar.sunsetMs,loc.lat,loc.lon));
+    const scale=(legacySunriseY-peakY)/Math.max(1,maxAlt-sunriseAlt);
+    const waveY=mins=>{
+      const elevation=altitude(dayStart+mins*60000,loc.lat,loc.lon);
+      return Math.max(8,Math.min(106,legacySunriseY-(elevation-sunriseAlt)*scale));
+    };
+    return {waveY,sunriseY:legacySunriseY,sunriseMins,sunsetMins};
+  }
+  // Full 24-hour path and live marker share the exact same solar-elevation calculation.
+  function drawFullSunCycle(){
+    if(!solar||solar.polar)return;
+    const startX=16,endX=324,width=endX-startX;
+    const {waveY,sunriseY,sunsetMins,sunriseMins}=solarWaveGeometry();
     const sunsetX=16+(sunsetMins/1440)*308;
     const fade=$("#sun-curve-gradient");if(fade)fade.setAttribute("x2",sunsetX.toFixed(2));
-    const solarNoon=(sunriseMins+sunsetMins)/2;
-    const waveY=mins=>{
-      const angle=((mins-solarNoon)/1440)*2*Math.PI;
-      return midY-amplitude*Math.cos(angle)-7;
-    };
-    const horizonY=waveY(sunriseMins)+30;
+    const horizonY=sunriseY+30;
     const horizon=$("#sun-horizon-line");
     if(horizon){horizon.setAttribute("y1",horizonY.toFixed(2));horizon.setAttribute("y2",horizonY.toFixed(2));}
     let d="";
@@ -357,20 +372,11 @@
   }
   function updateSolarPosition(){
     if(!solar||solar.polar)return;
-    const p=nptP(Date.now());
-    const nowMins=p.hh*60+p.mm+p.ss/60;
-    const startX=16,endX=324,width=endX-startX,peakY=18,troughY=96;
-    const midY=(peakY+troughY)/2,amplitude=(troughY-peakY)/2;
-    const sunriseParts=nptP(solar.sunriseMs),sunsetParts=nptP(solar.sunsetMs);
-    const sunriseMins=sunriseParts.hh*60+sunriseParts.mm;
-    const sunsetMins=sunsetParts.hh*60+sunsetParts.mm;
+    const p=nptP(Date.now()),nowMins=p.hh*60+p.mm+p.ss/60;
+    const startX=16,endX=324,width=endX-startX;
+    const {waveY,sunriseMins,sunsetMins}=solarWaveGeometry();
     const sunsetX=16+(sunsetMins/1440)*308;
     const fade=$("#sun-curve-gradient");if(fade)fade.setAttribute("x2",sunsetX.toFixed(2));
-    const solarNoon=(sunriseMins+sunsetMins)/2;
-    const waveY=mins=>{
-      const angle=((mins-solarNoon)/1440)*2*Math.PI;
-      return midY-amplitude*Math.cos(angle)-7;
-    };
     const clampedNow=Math.max(0,Math.min(1440,nowMins));
     let elapsed="";
     for(let m=0;m<=clampedNow;m+=5){
