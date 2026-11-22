@@ -49,7 +49,6 @@
                       <div id="timeTithi" class="time-tithi">तिथि गणना हुँदैछ…</div>
                     </div>
                   </div>
-                  <p id="panchangSummary" class="panchang-summary" aria-label="आजको पञ्चाङ्ग सारांश"><span id="panchangSummaryText">गणना हुँदैछ…</span></p>
                   <div class="season-line">
                     <span id="seasonName">ऋतु</span>
                     <span id="seasonDesc">नेपाली मिति पर्खँदै…</span>
@@ -61,46 +60,46 @@
                   <span id="timeBsDate">नेपाली मिति लोड हुँदै…</span>
                   <span id="timeWeekNumber">हप्ता —</span>
                 </div>
-              </div>
-            </div>
-            <section class="panchang-panel" id="panchangPanel" aria-label="आजको पञ्चाङ्ग">
-              <div class="panchang-heading">
-                <div>
-                  <span class="panchang-kicker">आजको आकाशीय गणना</span>
-                  <h3>पञ्चाङ्ग</h3>
+                <section class="panchang-panel" id="panchangPanel" aria-label="आजको पञ्चाङ्ग">
+                  <div class="panchang-heading">
+                    <div>
+                      <span class="panchang-kicker">आजको आकाशीय गणना</span>
+                      <h3>पञ्चाङ्ग</h3>
+                    </div>
+                    <span id="panchangStatus" class="panchang-status" role="status">गणना हुँदैछ…</span>
+                  </div>
+                  <div class="panchang-grid">
+                    <div class="panchang-item panchang-primary"><small>तिथि · पक्ष</small><b id="pTithi">—</b><span id="pPaksha"></span><span id="pTithiEnd"></span></div>
+                    <div class="panchang-item panchang-primary"><small>नक्षत्र · पाद</small><b id="pNakshatra">—</b><span id="pNakshatraPada"></span><span id="pNakshatraEnd"></span></div>
+                    <div class="panchang-item"><small>योग</small><b id="pYoga">—</b><span id="pYogaEnd"></span></div>
+                    <div class="panchang-item panchang-extra"><small>करण</small><b id="pKarana">—</b><span id="pKaranaEnd"></span></div>
+                    <div class="panchang-item panchang-extra"><small>चन्द्र राशि</small><b id="pMoonRashi">—</b></div>
+                    <div class="panchang-item panchang-extra"><small>सूर्य राशि</small><b id="pSunRashi">—</b></div>
+                    <div class="panchang-item panchang-extra"><small>मास पद्धति</small><b id="pLunarMonth">—</b><span id="pLunarNote"></span></div>
+                    <div class="panchang-item panchang-extra"><small>अयन</small><b id="pAyana">—</b></div>
+                    <div class="panchang-item panchang-extra panchang-wide"><small>घडी · पला (सूर्योदयदेखि)</small><b id="pGhadiPala">—</b><span id="pGhadiNote"></span></div>
+                  </div>
+                  <button type="button" class="panchang-more" id="panchangMore" aria-expanded="false">थप विवरण देखाउनुहोस् ↓</button>
+                  <p class="panchang-foot" id="panchangFoot">गणना हुँदैछ…</p>
+                </section>
+                <div class="time-weather" aria-label="हालको स्थान र मौसम">
+                  <div class="weather-panel-heading">स्थान तथा मौसम</div>
+                  <div class="weather-summary">
+                    <div class="place-line">
+                      <span class="place-pin" aria-hidden="true">⌖</span>
+                      <span id="placeName">काठमाडौँ</span>
+                      <span id="locationMode" class="mode-badge">पूर्वनिर्धारित</span>
+                    </div>
+                    <div class="location-coordinates" aria-live="polite">
+                      <span id="locationCoordinates">निर्देशाङ्क: उपलब्ध छैन</span>
+                      <strong id="locationAltitude">▲ उचाइ: उपलब्ध छैन</strong>
+                      <span id="locationAccuracy"></span>
+                    </div>
+                    <div id="weatherExtra" class="weather-extra" aria-label="मौसमका विस्तृत विवरण"></div>
+                    <div id="weatherSuggestion" class="weather-suggestion" hidden></div>
+                    <div id="weatherUpdated" class="weather-updated"></div>
+                  </div>
                 </div>
-                <span id="panchangStatus" class="panchang-status" role="status">गणना हुँदैछ…</span>
-              </div>
-              <div class="panchang-grid">
-                <div class="panchang-item panchang-primary"><small>तिथि · पक्ष</small><b id="pTithi">—</b><span id="pPaksha"></span><span id="pTithiEnd"></span></div>
-                <div class="panchang-item panchang-primary"><small>नक्षत्र · पाद</small><b id="pNakshatra">—</b><span id="pNakshatraPada"></span><span id="pNakshatraEnd"></span></div>
-                <div class="panchang-item"><small>योग</small><b id="pYoga">—</b><span id="pYogaEnd"></span></div>
-                <div class="panchang-item panchang-extra"><small>करण</small><b id="pKarana">—</b><span id="pKaranaEnd"></span></div>
-                <div class="panchang-item panchang-extra"><small>चन्द्र राशि</small><b id="pMoonRashi">—</b></div>
-                <div class="panchang-item panchang-extra"><small>सूर्य राशि</small><b id="pSunRashi">—</b></div>
-                <div class="panchang-item panchang-extra"><small>मास पद्धति</small><b id="pLunarMonth">—</b><span id="pLunarNote"></span></div>
-                <div class="panchang-item panchang-extra"><small>अयन</small><b id="pAyana">—</b></div>
-                <div class="panchang-item panchang-extra panchang-wide"><small>घडी · पला (सूर्योदयदेखि)</small><b id="pGhadiPala">—</b><span id="pGhadiNote"></span></div>
-              </div>
-              <button type="button" class="panchang-more" id="panchangMore" aria-expanded="false">थप विवरण देखाउनुहोस् ↓</button>
-              <p class="panchang-foot" id="panchangFoot">गणना हुँदैछ…</p>
-            </section>
-            <div class="time-weather" aria-label="हालको स्थान र मौसम">
-              <div class="weather-panel-heading">स्थान तथा मौसम</div>
-              <div class="weather-summary">
-                <div class="place-line">
-                  <span class="place-pin" aria-hidden="true">⌖</span>
-                  <span id="placeName">काठमाडौँ</span>
-                  <span id="locationMode" class="mode-badge">पूर्वनिर्धारित</span>
-                </div>
-                <div class="location-coordinates" aria-live="polite">
-                  <span id="locationCoordinates">निर्देशाङ्क: उपलब्ध छैन</span>
-                  <strong id="locationAltitude">▲ उचाइ: उपलब्ध छैन</strong>
-                  <span id="locationAccuracy"></span>
-                </div>
-                <div id="weatherExtra" class="weather-extra" aria-label="मौसमका विस्तृत विवरण"></div>
-                <div id="weatherSuggestion" class="weather-suggestion" hidden></div>
-                <div id="weatherUpdated" class="weather-updated"></div>
               </div>
             </div>
           </article>
