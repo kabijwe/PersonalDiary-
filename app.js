@@ -335,7 +335,7 @@
   function solarWaveGeometry(){
     // Smooth phase spline: the curve crosses the horizon exactly at the real
     // sunrise and sunset times, while keeping a broad daytime arc and a deeper night trough.
-    const scaleY=110/245,peakY=26*scaleY,troughY=224*scaleY,midY=(peakY+troughY)/2,amplitude=(troughY-peakY)/2;
+    const peakY=26,troughY=224,midY=(peakY+troughY)/2,amplitude=(troughY-peakY)/2;
     const horizonPhase=0.725;
     const sunriseParts=nptP(solar.sunriseMs),sunsetParts=nptP(solar.sunsetMs);
     const sunriseMins=sunriseParts.hh*60+sunriseParts.mm;
@@ -368,9 +368,9 @@
   // The full-day curve and elapsed overlay use one shared clock-aligned function.
   function drawFullSunCycle(){
     if(!solar||solar.polar)return;
-    const startX=16,endX=324,width=endX-startX;
+    const startX=40,endX=760,width=endX-startX;
     const {waveY,sunriseY,sunsetMins}=solarWaveGeometry();
-    const sunsetX=16+(sunsetMins/1440)*308;
+    const sunsetX=startX+(sunsetMins/1440)*width;
     const fade=$("#sun-curve-gradient");if(fade)fade.setAttribute("x2",sunsetX.toFixed(2));
     const horizonY=sunriseY; // Intersects the restored full-day cosine at sunrise and sunset.
     const horizon=$("#sun-horizon-line");
@@ -385,9 +385,9 @@
   function updateSolarPosition(){
     if(!solar||solar.polar)return;
     const p=nptP(Date.now()),nowMins=p.hh*60+p.mm+p.ss/60;
-    const startX=16,endX=324,width=endX-startX;
+    const startX=40,endX=760,width=endX-startX;
     const {waveY,sunriseMins,sunsetMins}=solarWaveGeometry();
-    const sunsetX=16+(sunsetMins/1440)*308;
+    const sunsetX=startX+(sunsetMins/1440)*width;
     const fade=$("#sun-curve-gradient");if(fade)fade.setAttribute("x2",sunsetX.toFixed(2));
     const clampedNow=Math.max(0,Math.min(1440,nowMins));
     let elapsed="";
