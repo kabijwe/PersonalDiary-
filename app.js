@@ -245,7 +245,7 @@
     setText("timeWeekday",wd);
     const tithiName=$("#pTithi")?.textContent?.trim()||"";
     const pakshaName=$("#pPaksha")?.textContent?.trim()||"";
-    setText("timeTithi",[tithiName,pakshaName].filter(x=>x&&x!=="—").join(" · ")||"तिथि गणना हुँदैछ…");
+    setText("timeTithi",[pan?.lunarMonth?.amanta||pan?.lunarMonth?.purnimanta,pakshaName,tithiName].filter(x=>x&&x!=="—").join(" ")||"पञ्चाङ्ग गणना हुँदैछ…");
     setText("timeAdDate",`${pad2(p.d)} ${AD_MONTHS[p.m-1]} ${p.y}`);
     setText("timeWeekNumber",`हप्ता ${nepaliNumber(isoWeekNumber(now))}`);
     const t=bsText();
