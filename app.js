@@ -28,7 +28,8 @@
       accuracyM:Number.isFinite(loc.accuracy)?loc.accuracy:null,
       weatherTemp:wxMatches?read("weatherTemp"):"",apparentTemperature:wxMatches&&Number.isFinite(wx.apparent)?wx.apparent:null,
       weatherCondition:wxMatches?read("weatherCondition"):"",humidity:wxMatches&&Number.isFinite(wx.hum)?wx.hum:null,
-      windKmh:wxMatches&&Number.isFinite(wx.wind)?wx.wind:null,weatherUpdated:wxMatches?read("weatherUpdated"):"",
+      windKmh:wxMatches&&Number.isFinite(wx.wind)?wx.wind:null,cloudCover:wxMatches&&Number.isFinite(wx.cloud)?wx.cloud:null,
+      precipitation:wxMatches&&Number.isFinite(wx.precip)?wx.precip:null,weatherUpdated:wxMatches?read("weatherUpdated"):"",
       weatherFetchedAt:wxMatches?(wx.fetched||null):null,weatherCode:wxMatches&&Number.isFinite(wx.code)?wx.code:null
     };
   }
@@ -43,7 +44,8 @@
       ["स्थान",ctx.place],["स्थानको स्रोत",ctx.locationMode],["अक्षांश / देशान्तर",ctx.latitude!=null&&ctx.longitude!=null?ctx.latitude.toFixed(6)+", "+ctx.longitude.toFixed(6):""],
       ["समुद्री सतहबाट उचाइ",ctx.altitudeM!=null?Math.round(ctx.altitudeM)+" m":"उपलब्ध भएन"],["GPS शुद्धता",ctx.accuracyM!=null?Math.round(ctx.accuracyM)+" m":""],
       ["तापक्रम",ctx.weatherTemp],["महसुस हुने तापक्रम",ctx.apparentTemperature!=null?ctx.apparentTemperature+" °C":""],["मौसम",ctx.weatherCondition],
-      ["आर्द्रता",ctx.humidity!=null?ctx.humidity+" %":""],["हावाको गति",ctx.windKmh!=null?ctx.windKmh+" km/h":""],["मौसम अद्यावधिक",ctx.weatherUpdated],
+      ["आर्द्रता",ctx.humidity!=null?ctx.humidity+" %":""],["हावाको गति",ctx.windKmh!=null?ctx.windKmh+" km/h":""],
+      ["बादल",ctx.cloudCover!=null?ctx.cloudCover+" %":""],["वर्षा",ctx.precipitation!=null?ctx.precipitation+" mm":""],["मौसम अद्यावधिक",ctx.weatherUpdated],
       ["रेकर्ड गरिएको (नेपाल समय)",ctx.nepalTime|| (ctx.capturedAt?new Date(ctx.capturedAt).toLocaleString("ne-NP",{timeZone:"Asia/Kathmandu",hour12:false,second:"2-digit"}):"")],
       ["रेकर्डको ISO समय",ctx.capturedAtISO]];
     return '<div class="context-detail-grid">'+rows.filter(r=>r[1]!==""&&r[1]!=null).map(r=>'<div class="context-detail"><small>'+esc(r[0])+'</small><b>'+esc(r[1])+'</b></div>').join("")+'</div>';
@@ -444,7 +446,7 @@
   const WX_TEXT={0:"सफा आकाश",1:"मुख्यतः सफा",2:"आंशिक बादल",3:"बादल लागेको",45:"कुहिरो",48:"बाक्लो कुहिरो",51:"हल्का झरी",53:"झरी",55:"घना झरी",56:"चिसो झरी",57:"चिसो झरी",61:"हल्का वर्षा",63:"वर्षा",65:"भारी वर्षा",66:"चिसो वर्षा",67:"चिसो वर्षा",71:"हल्का हिमपात",73:"हिमपात",75:"भारी हिमपात",77:"हिउँका कण",80:"छिटफुट वर्षा",81:"वर्षा",82:"भारी वर्षा",85:"हिउँ वर्षा",86:"भारी हिउँ वर्षा",95:"मेघगर्जन",96:"असिनासहित मेघगर्जन",99:"असिनासहित मेघगर्जन"};
   let wxSeq=0;
   function showWeather(w,stale){
-    setText("weatherTemp",`${Math.round(w.temp)}°`);
+    setText("weatherTemp",`${Math.round(w.temp)}°C`);
     setText("weatherCondition",WX_TEXT[w.code]||"मौसम विवरण");
     setText("weatherExtra",[Number.isFinite(w.apparent)?`महसुस हुने ${nepaliNumber(Math.round(w.apparent))}°`:"",Number.isFinite(w.hum)?`आर्द्रता ${nepaliNumber(Math.round(w.hum))}%`:"",Number.isFinite(w.wind)?`हावा ${nepaliNumber(Math.round(w.wind))} km/h`:"",Number.isFinite(w.cloud)?`बादल ${nepaliNumber(Math.round(w.cloud))}%`:"",Number.isFinite(w.precip)?`वर्षा ${nepaliNumber(w.precip)} mm`:""].filter(Boolean).join(" · "));
     const when=w.time?`${nepaliNumber(w.time.slice(11,16))}`:fmtClock(w.fetched);
@@ -463,7 +465,7 @@
       lsSet(LS_WX,w);showWeather(w,false);setServiceState("weatherServiceStatus","मौसम सेवा सफल","success");
       const history=state.locationHistory.find(x=>x.id===loc.historyId);if(history){
         history.weather={temp:w.temp,apparent:w.apparent,humidity:w.hum,windKmh:w.wind,condition:WX_TEXT[w.code]||"मौसम विवरण",updatedAt:w.fetched};
-        history.context={...(history.context||{}),weatherTemp:`${Math.round(w.temp)}°`,apparentTemperature:w.apparent,weatherCondition:WX_TEXT[w.code]||"मौसम विवरण",humidity:w.hum,windKmh:w.wind,weatherUpdated:`अद्यावधिक ${w.time?nepaliNumber(w.time.slice(11,16)):format24Clock(w.fetched)}`,weatherFetchedAt:w.fetched,weatherCode:w.code};
+        history.context={...(history.context||{}),weatherTemp:`${Math.round(w.temp)}°C`,apparentTemperature:w.apparent,weatherCondition:WX_TEXT[w.code]||"मौसम विवरण",humidity:w.hum,windKmh:w.wind,cloudCover:w.cloud,precipitation:w.precip,weatherUpdated:`अद्यावधिक ${w.time?nepaliNumber(w.time.slice(11,16)):format24Clock(w.fetched)}`,weatherFetchedAt:w.fetched,weatherCode:w.code};
         persist();renderLocationHistory();
       }
     }catch(e){
