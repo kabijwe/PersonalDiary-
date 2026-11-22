@@ -2552,3 +2552,89 @@ body .book-page.page-turn-prev{animation:pageTurnPrev .28s cubic-bezier(.35,.7,.
   #page-home .time-card .weather-suggestion{margin-top:8px;padding:9px 10px}
   #page-home .time-card .weather-suggestion-text{font-size:12px;line-height:1.55}
 }
+
+
+/* Weather details: plain aligned information, matching the Panchang text hierarchy. */
+#page-home .time-card .time-weather .weather-extra{
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  align-items:baseline!important;
+  column-gap:18px!important;
+  row-gap:3px!important;
+  width:100%!important;
+  margin:7px 0 0!important;
+  padding:0!important;
+  border:0!important;
+  background:transparent!important;
+  color:#cbd3dc!important;
+  font-family:"Mukta","Noto Sans Devanagari",sans-serif!important;
+  font-size:11.5px!important;
+  line-height:1.65!important;
+  text-align:left!important;
+}
+#page-home .time-card .time-weather .weather-metric{
+  display:block!important;
+  min-width:0!important;
+  min-height:0!important;
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  color:#cbd3dc!important;
+  overflow-wrap:anywhere!important;
+  word-break:normal!important;
+}
+#page-home .time-card .time-weather .weather-suggestion{
+  display:block!important;
+  margin:7px 0 0!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  color:#cbd3dc!important;
+  font-family:"Mukta","Noto Sans Devanagari",sans-serif!important;
+  font-size:11.5px!important;
+  line-height:1.65!important;
+}
+#page-home .time-card .time-weather .weather-suggestion[hidden]{display:none!important}
+#page-home .time-card .weather-suggestion-label{
+  display:inline!important;
+  margin-right:7px!important;
+  color:#e5e5e5!important;
+  font-size:11.5px!important;
+  font-weight:600!important;
+}
+#page-home .time-card .weather-suggestion-text{
+  color:#cbd3dc!important;
+  font-size:11.5px!important;
+  font-weight:400!important;
+  line-height:1.65!important;
+}
+#page-home .time-card .time-weather .weather-updated{
+  display:block!important;
+  margin:4px 0 0!important;
+  padding:0!important;
+  border:0!important;
+  background:transparent!important;
+  color:#929292!important;
+  font-size:10px!important;
+  line-height:1.5!important;
+  text-align:right!important;
+}
+@media(max-width:520px){
+  #page-home .time-card .time-weather .weather-extra{
+    column-gap:12px!important;
+    row-gap:2px!important;
+    font-size:10.5px!important;
+    line-height:1.6!important;
+  }
+  #page-home .time-card .time-weather .weather-suggestion,
+  #page-home .time-card .weather-suggestion-label,
+  #page-home .time-card .weather-suggestion-text{
+    font-size:10.5px!important;
+    line-height:1.6!important;
+  }
+}
