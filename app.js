@@ -499,25 +499,22 @@
     setText("weatherTemp",Number.isFinite(w.temp)?nepaliNumber(Math.round(w.temp))+"°C":"--°");
     setText("weatherCondition",WX_TEXT[w.code]||"मौसम विवरण");
     const lines=[];
-    if(Number.isFinite(w.tempMin)&&Number.isFinite(w.tempMax))lines.push(`न्यूनतम ${nepaliNumber(Math.round(w.tempMin))}° · अधिकतम ${nepaliNumber(Math.round(w.tempMax))}°`);
-    if(Number.isFinite(w.rainProbability))lines.push("वर्षा सम्भावना "+nepaliNumber(Math.round(w.rainProbability))+"%");
-    if(Number.isFinite(w.apparent))lines.push("महसुस हुने "+nepaliNumber(Math.round(w.apparent))+"°");
-    if(Number.isFinite(w.hum))lines.push("आर्द्रता "+nepaliNumber(Math.round(w.hum))+"%");
-    if(Number.isFinite(w.wind))lines.push("हावा "+nepaliNumber(Math.round(w.wind))+" km/h "+(windDirectionName(w.windDirection)||""));
-    if(Number.isFinite(w.gust))lines.push("झोक्का "+nepaliNumber(Math.round(w.gust))+" km/h");
-    if(Number.isFinite(w.pressure))lines.push("चाप "+nepaliNumber(Math.round(w.pressure))+" hPa");
-    if(Number.isFinite(w.dewPoint))lines.push("शीत बिन्दु "+nepaliNumber(Math.round(w.dewPoint))+"°");
-    if(Number.isFinite(w.visibility))lines.push("दृश्यता "+nepaliNumber((w.visibility/1000).toFixed(1))+" km");
-    if(Number.isFinite(w.aqi))lines.push("US AQI "+nepaliNumber(Math.round(w.aqi))+" ("+aqiCategory(w.aqi)+")");
-    if(Number.isFinite(w.pm25))lines.push("PM२.५ "+nepaliNumber(Math.round(w.pm25))+" µg/m³");
-    if(Number.isFinite(w.uv))lines.push("UV "+nepaliNumber(w.uv.toFixed(1)));
-    if(w.sunrise&&w.sunset){
-      const mins=(new Date(w.sunset).getTime()-new Date(w.sunrise).getTime())/60000;
-      const duration=Number.isFinite(mins)&&mins>0?Math.floor(mins):null;
-      lines.push("सूर्योदय "+nepaliNumber(w.sunrise.slice(11,16))+" · सूर्यास्त "+nepaliNumber(w.sunset.slice(11,16))+(duration!=null?" · दिन "+nepaliNumber(Math.floor(duration/60))+" घण्टा "+nepaliNumber(duration%60)+" मिनेट":""));
-    }
+    const addMetric=(label,value)=>lines.push({label,value});
+    if(Number.isFinite(w.tempMin)&&Number.isFinite(w.tempMax))addMetric("न्यूनतम / अधिकतम",nepaliNumber(Math.round(w.tempMin))+"° / "+nepaliNumber(Math.round(w.tempMax))+"°");
+    if(Number.isFinite(w.rainProbability))addMetric("वर्षा सम्भावना",nepaliNumber(Math.round(w.rainProbability))+"%");
+    if(Number.isFinite(w.apparent))addMetric("महसुस हुने",nepaliNumber(Math.round(w.apparent))+"°");
+    if(Number.isFinite(w.hum))addMetric("आर्द्रता",nepaliNumber(Math.round(w.hum))+"%");
+    if(Number.isFinite(w.wind))addMetric("हावा",nepaliNumber(Math.round(w.wind))+" km/h "+(windDirectionName(w.windDirection)||""));
+    if(Number.isFinite(w.gust))addMetric("झोक्का",nepaliNumber(Math.round(w.gust))+" km/h");
+    if(Number.isFinite(w.pressure))addMetric("चाप",nepaliNumber(Math.round(w.pressure))+" hPa");
+    if(Number.isFinite(w.dewPoint))addMetric("शीत बिन्दु",nepaliNumber(Math.round(w.dewPoint))+"°");
+    if(Number.isFinite(w.visibility))addMetric("दृश्यता",nepaliNumber((w.visibility/1000).toFixed(1))+" km");
+    if(Number.isFinite(w.aqi))addMetric("US AQI",nepaliNumber(Math.round(w.aqi))+" ("+aqiCategory(w.aqi)+")");
+    if(Number.isFinite(w.pm25))addMetric("PM२.५",nepaliNumber(Math.round(w.pm25))+" µg/m³");
+    if(Number.isFinite(w.uv))addMetric("UV",nepaliNumber(w.uv.toFixed(1)));
+    // Sunrise, sunset and day length are already shown in the dedicated solar-cycle section.
     const extra=$("#weatherExtra");
-    if(extra)extra.innerHTML=lines.map((line,i)=>`<span class="weather-metric" data-index="${i}">${esc(line)}</span>`).join("");
+    if(extra)extra.innerHTML=lines.map((item,i)=>`<span class="weather-metric" data-index="${i}"><span class="weather-label">${esc(item.label)}</span><span class="weather-value">${esc(item.value)}</span></span>`).join("");
     const suggestion=$("#weatherSuggestion");
     if(suggestion){
       suggestion.hidden=!w.suggestion;
