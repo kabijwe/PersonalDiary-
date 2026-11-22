@@ -1,9 +1,9 @@
 // Kabijwe service worker.
 // - App shell (same-origin only) is NETWORK-FIRST so a new app.js/panchang.js is picked up on the next
 //   online visit; the cache is only an offline fallback.
-// - Cross-origin requests (Trisambat, Open-Meteo, Nominatim) are never cached here, so weather and
+// - Cross-origin requests (Trisambat, Open-Meteo, BigDataCloud) are never cached here, so weather and
 //   dates can never be served stale from this cache. Pages cache their own data with timestamps.
-const CACHE = "kabijwe-shell-v53";
+const CACHE = "kabijwe-shell-v54";
 const CORE = ["./", "./index.html", "./styles.css", "./panchang.js", "./app.js", "./manifest.webmanifest", "./icons/icon.svg"];
 
 self.addEventListener("install", e => {
