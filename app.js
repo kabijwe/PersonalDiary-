@@ -325,28 +325,32 @@
     const sunrise=fmtClock(solar.sunriseMs),sunset=fmtClock(solar.sunsetMs);
     setText("sunriseTime",sunrise);setText("sunsetTime",sunset);setText("sunriseDetail",sunrise);setText("sunsetDetail",sunset);
     const curve=$("#sun-single-curve");
-    if(curve)curve.setAttribute("d","M 0,43 C 42,43 68,7 115,7 C 162,7 185,33 212,38");
+    if(curve)curve.setAttribute("d","M 0,27 C 40,27 80,6 120,6 C 160,6 200,27 240,27");
     $("#celestial-body")?.removeAttribute("display");
     updateSolarPosition();
   }
   function updateSolarPosition(){
     if(!solar||solar.polar)return;
-    const now=Date.now(),current=new Date(now);
-    const currentSec=current.getHours()*3600+current.getMinutes()*60+current.getSeconds()+current.getMilliseconds()/1000;
-    const sunriseDate=new Date(solar.sunriseMs),sunsetDate=new Date(solar.sunsetMs);
-    const sunriseSec=sunriseDate.getHours()*3600+sunriseDate.getMinutes()*60+sunriseDate.getSeconds();
-    const sunsetSec=sunsetDate.getHours()*3600+sunsetDate.getMinutes()*60+sunsetDate.getSeconds();
-    const duration=Math.max(1,sunsetSec-sunriseSec);
-    const daytime=currentSec>=sunriseSec&&currentSec<=sunsetSec;
-    const t=Math.max(0,Math.min(1,(currentSec-sunriseSec)/duration));
+    const now=Date.now();
+    const sunriseMs=solar.sunriseMs,sunsetMs=solar.sunsetMs;
+    const daytime=now>=sunriseMs&&now<=sunsetMs;
+    const t=Math.max(0,Math.min(1,(now-sunriseMs)/Math.max(1,sunsetMs-sunriseMs)));
     const cubic=(p0,p1,p2,p3,u)=>Math.pow(1-u,3)*p0+3*Math.pow(1-u,2)*u*p1+3*(1-u)*u*u*p2+u*u*u*p3;
     let x,y;
-    if(t<=.5){
-      const u=t*2;
-      x=cubic(0,42,68,115,u);y=cubic(43,43,7,7,u);
+    if(daytime){
+      if(t<=.5){
+        const u=t*2;
+        x=120*u;
+        y=cubic(27,27,6,6,u);
+      }else{
+        const u=(t-.5)*2;
+        x=120+120*u;
+        y=cubic(6,6,27,27,u);
+      }
     }else{
-      const u=(t-.5)*2;
-      x=cubic(115,162,185,212,u);y=cubic(7,7,33,38,u);
+      // At night, keep the moon at the matching horizon endpoint.
+      x=now<sunriseMs?0:240;
+      y=27;
     }
     const body=$("#celestial-body");
     if(body){
@@ -359,7 +363,7 @@
     const dayIcon=$("#day-sun-icon"),nightIcon=$("#night-moon-icon");
     if(dayIcon){dayIcon.style.display=daytime?"inline":"none";dayIcon.style.visibility=daytime?"visible":"hidden";dayIcon.style.opacity=daytime?"1":"0";}
     if(nightIcon){nightIcon.style.display=daytime?"none":"inline";nightIcon.style.visibility=daytime?"hidden":"visible";nightIcon.style.opacity=daytime?"0":"1";}
-    setText("sunStatus",daytime?"अहिले दिनको समय":currentSec<sunriseSec?"सूर्योदयअघि":"सूर्यास्तपछि");
+    setText("sunStatus",daytime?"अहिले दिनको समय":now<sunriseMs?"सूर्योदयअघि":"सूर्यास्तपछि");
   }
   /* ---------- Weather (Open-Meteo) ---------- */
   const WX_TEXT={0:"सफा आकाश",1:"मुख्यतः सफा",2:"आंशिक बादल",3:"बादल लागेको",45:"कुहिरो",48:"बाक्लो कुहिरो",51:"हल्का झरी",53:"झरी",55:"घना झरी",56:"चिसो झरी",57:"चिसो झरी",61:"हल्का वर्षा",63:"वर्षा",65:"भारी वर्षा",66:"चिसो वर्षा",67:"चिसो वर्षा",71:"हल्का हिमपात",73:"हिमपात",75:"भारी हिमपात",77:"हिउँका कण",80:"छिटफुट वर्षा",81:"वर्षा",82:"भारी वर्षा",85:"हिउँ वर्षा",86:"भारी हिउँ वर्षा",95:"मेघगर्जन",96:"असिनासहित मेघगर्जन",99:"असिनासहित मेघगर्जन"};
