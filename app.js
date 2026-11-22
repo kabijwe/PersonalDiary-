@@ -333,15 +333,25 @@
   // Clock-aligned solar curve: the marker follows Nepal wall-clock time horizontally,
   // while the daylight arc rises smoothly to the exact midpoint between sunrise and sunset.
   function solarWaveGeometry(){
-    // Restore the original full-day cosine profile: low at night, high at solar noon.
-    // Sunrise and sunset are symmetric around solar noon, so the curve meets the horizon at both points.
+    // Smooth full-day cosine with exact sunrise/sunset horizon intersections.
     const peakY=18,troughY=96,midY=(peakY+troughY)/2,amplitude=(troughY-peakY)/2;
     const sunriseParts=nptP(solar.sunriseMs),sunsetParts=nptP(solar.sunsetMs);
     const sunriseMins=sunriseParts.hh*60+sunriseParts.mm;
     const sunsetMins=sunsetParts.hh*60+sunsetParts.mm;
     const solarNoon=(sunriseMins+sunsetMins)/2;
-    const waveY=mins=>midY-amplitude*Math.cos(((mins-solarNoon)/1440)*2*Math.PI)-7;
-    const sunriseY=waveY(sunriseMins);
+    const baseY=mins=>midY-amplitude*Math.cos(((mins-solarNoon)/1440)*2*Math.PI)-7;
+    // A shallow, smooth dip straddles each horizon crossing without moving the intersection itself.
+    const edgeDip=(mins,edge)=>{
+      const distance=Math.abs(mins-edge),span=90;
+      return distance<span?3.6*Math.sin(Math.PI*distance/span)**2:0;
+    };
+    const waveY=mins=>{
+      const daylight=mins>=sunriseMins&&mins<=sunsetMins;
+      const progress=daylight?(mins-sunriseMins)/Math.max(1,sunsetMins-sunriseMins):0;
+      const gentleLift=daylight?1.8*Math.sin(Math.PI*progress):0;
+      return baseY(mins)-gentleLift+edgeDip(mins,sunriseMins)+edgeDip(mins,sunsetMins);
+    };
+    const sunriseY=baseY(sunriseMins);
     return {waveY,sunriseY,sunriseMins,sunsetMins};
   }
   // The full-day curve and elapsed overlay use one shared clock-aligned function.
