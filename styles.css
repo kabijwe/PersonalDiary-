@@ -3171,3 +3171,33 @@ body .book-page.page-turn-prev{animation:pageTurnPrev .28s cubic-bezier(.35,.7,.
     right:10px!important;
   }
 }
+
+
+/* Weather/date is a true sibling of weekday in the header row (not absolutely positioned). */
+#page-home .time-card-head{
+  display:flex!important;
+  align-items:flex-start!important;
+  justify-content:space-between!important;
+  gap:12px!important;
+  width:100%!important;
+  padding:13px 18px 0 0!important;
+  margin:0!important;
+}
+#page-home .time-card-head #timeCardTitle{flex:0 1 auto!important;min-width:0!important}
+#page-home .time-card-head .time-date-side{
+  position:static!important;
+  inset:auto!important;
+  display:flex!important;
+  flex:0 0 auto!important;
+  align-items:flex-end!important;
+  max-width:52%!important;
+  margin:0!important;
+  padding:0!important;
+  transform:none!important;
+  text-align:right!important;
+}
+#page-home .time-date{margin:0!important;padding:0!important}
+@media(max-width:650px){
+  #page-home .time-card-head{padding:11px 10px 0 0!important;gap:8px!important}
+  #page-home .time-card-head .time-date-side{max-width:55%!important}
+}
