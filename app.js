@@ -323,8 +323,9 @@
     const el=$("#panchangSummaryText");if(!el||!pan)return;
     const t=pan.tithi,n=pan.nakshatra,y=pan.yoga,k=pan.karana,lm=pan.lunarMonth;
     const rows=[
-      ["बार",$("#timeWeekday")?.textContent?.trim()],
-      ["पक्ष",t?.paksha],
+      [["बार","पक्ष","चन्द्रमास"].join(" · "),[
+        $("#timeWeekday")?.textContent?.trim(),t?.paksha,(t?.shukla?lm?.amanta:lm?.purnimanta)
+      ].filter(Boolean).join(" · ")],
       ["तिथि",t?.name? t.name+" · समाप्ति "+fmtEnd(t.endMs,Date.now()):""],
       ["नक्षत्र",n?.name? n.name+" · पाद "+nepaliNumber(n.pada)+" · समाप्ति "+fmtEnd(n.endMs,Date.now()):""],
       ["योग",y?.name? y.name+" · समाप्ति "+fmtEnd(y.endMs,Date.now()):""],
