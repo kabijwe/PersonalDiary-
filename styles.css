@@ -958,3 +958,31 @@ body .book-page.page-turn-prev{animation:pageTurnPrev .28s cubic-bezier(.35,.7,.
   #page-home .sun-intersection-time{font-size:11px!important;}
   #page-home .sun-intersection-label{font-size:8px!important;}
 }
+
+
+/* Solar cycle: larger intersection labels and full-width responsive SVG */
+#page-home .sun-intersection-time{
+  font-size:19px!important;
+  font-weight:750!important;
+  letter-spacing:.15px!important;
+}
+#page-home .sun-intersection-label{
+  font-size:13px!important;
+  font-weight:600!important;
+}
+#page-home .sun-visual-wide,
+#page-home .sun-visual-wide svg{
+  width:100%!important;
+  max-width:100%!important;
+}
+#page-home .sun-visual-wide svg.sun-graph{
+  height:auto!important;
+  max-height:none!important;
+  aspect-ratio:800 / 245;
+  display:block;
+  overflow:visible;
+}
+@media(max-width:650px){
+  #page-home .sun-intersection-time{font-size:17px!important;}
+  #page-home .sun-intersection-label{font-size:12px!important;}
+}
