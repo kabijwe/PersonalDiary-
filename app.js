@@ -354,7 +354,7 @@
     const {waveY,sunriseY,sunsetMins}=solarWaveGeometry();
     const sunsetX=16+(sunsetMins/1440)*308;
     const fade=$("#sun-curve-gradient");if(fade)fade.setAttribute("x2",sunsetX.toFixed(2));
-    const horizonY=sunriseY+30;
+    const horizonY=sunriseY; // The curve meets the horizon exactly at sunrise and sunset.
     const horizon=$("#sun-horizon-line");
     if(horizon){horizon.setAttribute("y1",horizonY.toFixed(2));horizon.setAttribute("y2",horizonY.toFixed(2));}
     let d="";
