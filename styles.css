@@ -761,3 +761,10 @@ body .book-page.page-turn-prev{animation:pageTurnPrev .28s cubic-bezier(.35,.7,.
 #page-home #full-sun-path{fill:none!important;stroke:#3f3f46!important;stroke-width:2.5!important;stroke-linecap:round!important;stroke-linejoin:round!important;}
 #page-home #elapsed-sun-path{fill:none!important;stroke:#ffffff!important;stroke-width:2.5!important;stroke-linecap:round!important;stroke-linejoin:round!important;}
 #page-home #sun-marker{fill:#FF2D20!important;stroke:none!important;filter:none!important;}
+
+
+/* Local network sync status */
+#serverSyncStatus{padding:8px 10px;border-left:3px solid #777;background:transparent;overflow-wrap:anywhere}
+#serverSyncStatus[data-state="online"]{border-left-color:#23834b;color:inherit}
+#serverSyncStatus[data-state="conflict"],#serverSyncStatus[data-state="offline"]{border-left-color:#9f1d1d;color:#9f1d1d}
+#serverSyncStatus[data-state="migrating"]{border-left-color:#777;color:inherit}
