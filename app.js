@@ -333,7 +333,7 @@
   }
   // Reference-style smooth 24-hour solar arc; actual sunrise/sunset are exact horizon crossings.
   function solarWaveGeometry(){
-    const peakY=26,troughY=224,midY=(peakY+troughY)/2,amplitude=(troughY-peakY)/2;
+    const peakY=60,troughY=210,midY=(peakY+troughY)/2,amplitude=(troughY-peakY)/2;
     const horizonPhase=0.725;
     const sunriseParts=nptP(solar.sunriseMs),sunsetParts=nptP(solar.sunsetMs);
     const sunriseMins=sunriseParts.hh*60+sunriseParts.mm;
@@ -363,7 +363,7 @@
     if(!solar||solar.polar)return;
     const startX=40,endX=760,width=endX-startX;
     const {waveY,horizonY,sunriseMins,sunsetMins}=solarWaveGeometry();
-    const xAt=m=>startX+(m/1440)*width;
+    const xAt=m=>startX+((m-sunriseMins)/(sunsetMins-sunriseMins))*width;
     const horizon=$("#sun-horizon-line");
     if(horizon){horizon.setAttribute("y1",horizonY.toFixed(2));horizon.setAttribute("y2",horizonY.toFixed(2));}
     const night=$("#sun-night-bg");
@@ -372,7 +372,7 @@
     if(clip){clip.setAttribute("x",0);clip.setAttribute("width",800);clip.setAttribute("height",horizonY.toFixed(2));}
     let d="";
     for(let i=0;i<=720;i++){
-      const m=i*2,x=xAt(m),y=waveY(m);
+      const m=sunriseMins+(i/720)*(sunsetMins-sunriseMins),x=xAt(m),y=waveY(m);
       d+=(i===0?"M ":" L ")+x.toFixed(2)+","+y.toFixed(2);
     }
     $("#full-sun-path")?.setAttribute("d",d);
@@ -395,11 +395,12 @@
     const p=nptP(Date.now()),nowMins=p.hh*60+p.mm+p.ss/60;
     const startX=40,endX=760,width=endX-startX;
     const {waveY,sunriseMins,sunsetMins}=solarWaveGeometry();
-    const sunX=startX+(nowMins/1440)*width,sunY=waveY(nowMins);
+    const visibleMins=Math.max(sunriseMins,Math.min(sunsetMins,nowMins));
+    const sunX=startX+((visibleMins-sunriseMins)/(sunsetMins-sunriseMins))*width,sunY=waveY(visibleMins);
     const fullPath=$("#full-sun-path")?.getAttribute("d")||"";
     $("#elapsed-sun-path")?.setAttribute("d",fullPath);
     const progress=$("#sun-progress-rect");
-    if(progress)progress.setAttribute("width",Math.max(0,Math.min(width,sunX)).toFixed(2));
+    if(progress)progress.setAttribute("width",Math.max(0,Math.min(width,sunX-startX)).toFixed(2));
     const marker=$("#sun-marker");
     if(marker){marker.setAttribute("transform",`translate(${sunX.toFixed(2)} ${sunY.toFixed(2)})`);marker.setAttribute("visibility","visible");}
     const daytime=nowMins>=sunriseMins&&nowMins<=sunsetMins;
