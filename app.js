@@ -25,7 +25,6 @@
       season:read("seasonName"),seasonDescription:read("seasonDesc"),
       place:loc.name||read("placeName"),locationMode:modeLabel(),latitude:Number.isFinite(loc.lat)?loc.lat:null,
       longitude:Number.isFinite(loc.lon)?loc.lon:null,altitudeM:Number.isFinite(loc.elevation)?loc.elevation:(Number.isFinite(loc.altitude)?loc.altitude:null),accuracyM:Number.isFinite(loc.accuracy)?loc.accuracy:null,speedKmh:Number.isFinite(loc.speed)?loc.speed*3.6:null,
-      accuracyM:Number.isFinite(loc.accuracy)?loc.accuracy:null,
       weatherTemp:wxMatches?read("weatherTemp"):"",apparentTemperature:wxMatches&&Number.isFinite(wx.apparent)?wx.apparent:null,
       weatherCondition:wxMatches?read("weatherCondition"):"",humidity:wxMatches&&Number.isFinite(wx.hum)?wx.hum:null,
       windKmh:wxMatches&&Number.isFinite(wx.wind)?wx.wind:null,cloudCover:wxMatches&&Number.isFinite(wx.cloud)?wx.cloud:null,
@@ -606,7 +605,6 @@
   function renderLocation(){
     setText("placeName",loc.name||"स्थान उपलब्ध छैन");
     setText("locationMode",modeLabel());
-    setText("locationCoordinates",Number.isFinite(loc.lat)&&Number.isFinite(loc.lon)?`⌖ ${loc.lat.toFixed(6)}, ${loc.lon.toFixed(6)}`:"निर्देशाङ्क: उपलब्ध छैन");
     const altitude=Number.isFinite(loc.elevation)?loc.elevation:loc.altitude;
     const alt=$("#locationAltitude");if(alt){alt.textContent=Number.isFinite(altitude)?"▲ उचाइ "+nepaliNumber(Math.round(altitude))+" मिटर":"▲ उचाइ: उपलब्ध छैन";alt.classList.toggle("altitude-known",Number.isFinite(altitude));}
     const coords=Number.isFinite(loc.lat)&&Number.isFinite(loc.lon)?"निर्देशाङ्क "+nepaliNumber(loc.lat.toFixed(6))+", "+nepaliNumber(loc.lon.toFixed(6)):"निर्देशाङ्क: उपलब्ध छैन";
