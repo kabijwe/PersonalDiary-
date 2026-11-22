@@ -41,7 +41,7 @@ This is a functional **local-first prototype**, not a deployed production servic
 - There is no server, user authentication, encrypted private storage, public publishing backend, cloud backup or multi-user access control.
 - A "public" entry is only marked as intended for publication; it is not actually published to the internet.
 - The calendar currently displays Gregorian dates. It does **not** claim BS conversion. A verified Bikram Sambat calendar dataset/library must be integrated and tested before displaying accurate BS dates.
-- Season display is a rough Gregorian-month approximation, not an authoritative Nepali season calendar.
+- Season boundaries follow the traditional two-BS-month Nepali grouping; descriptive text is educational, not a local weather forecast.
 - The time card requests GPS only after the user taps its location button. Sunrise/sunset use an approximate NOAA solar calculation for the returned coordinates; weather comes from Open-Meteo and place names from BigDataCloud reverse geocoding. These external services require an internet connection.
 - Weather and reverse-geocoding requests send the chosen coordinates to Open-Meteo and BigDataCloud respectively. Do not enable location unless you are comfortable sharing it with those services.
 - Time-card GPS is requested only after the user taps its GPS button. Every GPS button request is timestamped, including denied, failed or unsupported attempts; successful GPS fixes and each manual place change also store coordinates in local location history. GPS altitude/accuracy are stored only if the device/browser supplies them. A historical map-plotting screen is a planned follow-up, not included yet.
@@ -80,10 +80,11 @@ Open the hosted HTTPS URL on your phone, then use the browser menu's **Add to Ho
 | Ghadi–pala | local: 1 ghadi = 24 min, 1 pala = 24 s, counted from the most recent sunrise (before today's sunrise it continues from yesterday's) | |
 | Bikram Sambat date | [Trisambat](https://trisambat.com/developers?lang=ne) month file `/api/v1/ad/{YYYY}/{MM}.json` (beta, attribution required) | Response is validated (month 1–12, day 1–32, BS year = AD+56/57), cached 30 days per month in localStorage, retried with timeout. If unavailable and not cached, a local sankranti-based **estimate** is shown, labelled "अनुमानित" (may be ±1 day). |
 | Seasons | Traditional Nepali reckoning by BS month: वसन्त चैत–बैशाख, ग्रीष्म जेठ–असार, वर्षा साउन–भदौ, शरद असोज–कात्तिक, हेमन्त मंसिर–पुष, शिशिर माघ–फागुन | |
-| Weather | Open-Meteo Forecast API (current conditions, daily min/max, rain probability, wind, pressure, dew point, visibility and sunrise/sunset) |\n| Air quality / UV | Open-Meteo Air Quality API (US AQI, PM2.5 and hourly UV; gracefully optional if unavailable) |\n| Place name (GPS only) | BigDataCloud reverse geocoding (locality, city, province; ward shown only if supplied by the source) | |
-| Place name (GPS only) | BigDataCloud reverse geocoding | |
+| Weather | Open-Meteo Forecast API | Current conditions, daily minimum/maximum, rain probability, wind direction/gusts, pressure, dew point, visibility and sunrise/sunset. |
+| Air quality / UV | Open-Meteo Air Quality API | US AQI, PM2.5 and hourly UV; shown when the service provides data. |
+| Place name (GPS only) | BigDataCloud reverse geocoding | Locality, city and province; ward is shown only when the source supplies it. |
 
-**Location & privacy**: GPS is requested only when the user presses the GPS button. No background tracking. If denied, the previous location stays and a manual list of Nepali towns is available; the card always says whether the place is GPS, manual, or the Kathmandu default. Only manual choices are remembered (`kabijwe.location`).
+**Location & privacy**: GPS is requested only when the user presses the GPS button. No background tracking. If denied, the previous location stays and a manual list of Nepali towns is available; the card always says whether the place is GPS, manual, or the Kathmandu default. The latest successful GPS fix or manual choice is remembered locally (`kabijwe.location`); there is no background tracking.
 
 **Limitations (honest list)**
 - Trisambat's live response could not be fetched from the build environment; the parser follows the schema used by the earlier working build (`days[].ad`, `days[].bs.{year,month,day}`) and is covered by a mocked test only. Verify on your phone once online.
@@ -123,7 +124,7 @@ cd ~/Projects/PersonalDiary
 bash https-local.sh
 ```
 
-The helper detects the current LAN IPv4 address, creates a trusted local certificate for localhost and that LAN IP, and serves the diary on `https://<LAN-IP>:8443`. Certificates and private keys are kept in the ignored `.certs/` folder and must never be committed or shared.
+The helper detects the current LAN IPv4 address, creates a local certificate for localhost and that LAN IP, and binds the HTTPS server only to the detected LAN interface at `https://<LAN-IP>:8443`. Certificates and private keys are kept in the ignored `.certs/` folder and must never be committed or shared.
 
 For phone GPS, the phone must trust the local mkcert root certificate. Find it with `mkcert -CAROOT` (file `rootCA.pem`), transfer that public root certificate to the phone over USB, then install it as a CA certificate (Android: Settings → Security → Encryption & credentials → Install a certificate → CA certificate; iOS: install the downloaded profile and enable full trust under Certificate Trust Settings). Browser menus differ by device. If the LAN IP changes, stop the server and rerun the helper to regenerate the certificate. Keep the server on a trusted private Wi-Fi network.
 
