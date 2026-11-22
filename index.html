@@ -65,7 +65,6 @@
             <span class="sun-card-live"><i id="sunCardLiveDot"></i> <span id="sunCardLiveText">स्थानीय समय</span></span>
           </div>
           <div class="sun-visual sun-visual-wide">
-            <div class="sun-times"><span><b id="sunriseTime">--:--</b><small>सूर्योदय</small></span><span><b id="sunsetTime">--:--</b><small>सूर्यास्त</small></span></div>
             <svg id="sunPath" class="sun-graph" viewBox="0 0 800 245" role="img" aria-label="२४ घण्टाको सूर्यचक्र र हालको स्थानीय समय">
               <defs>
                 <linearGradient id="sun-daylight-fill" x1="0" y1="0" x2="0" y2="1">
@@ -90,6 +89,8 @@
               <line id="sun-horizon-line" x1="20" y1="189" x2="780" y2="189" class="sun-horizon"/>
               <path id="full-sun-path" fill="none" stroke="#36383f" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
               <path id="elapsed-sun-path" fill="none" stroke="#ffffff" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" clip-path="url(#sun-progress-clip)"/>
+              <g id="sunrise-text" class="sun-intersection-text" aria-label="सूर्योदय समय"><text id="sunrise-graph-time" class="sun-intersection-time" x="30" y="150" text-anchor="start">--:--</text><text id="sunrise-graph-label" class="sun-intersection-label" x="30" y="165" text-anchor="start">सूर्योदय</text></g>
+              <g id="sunset-text" class="sun-intersection-text" aria-label="सूर्यास्त समय"><text id="sunset-graph-time" class="sun-intersection-time" x="770" y="150" text-anchor="end">--:--</text><text id="sunset-graph-label" class="sun-intersection-label" x="770" y="165" text-anchor="end">सूर्यास्त</text></g>
               <g id="sunrise-marker"><line id="sunrise-tick" x1="0" y1="183" x2="0" y2="195" stroke="#71717a" stroke-width="1.5"/><circle id="sunrise-dot" cx="0" cy="189" r="5" fill="#000" stroke="#fff" stroke-width="2.5"/></g>
               <g id="sunset-marker"><line id="sunset-tick" x1="0" y1="183" x2="0" y2="195" stroke="#71717a" stroke-width="1.5"/><circle id="sunset-dot" cx="0" cy="189" r="5" fill="#000" stroke="#9ca3af" stroke-width="2.5"/></g>
               <g id="sun-marker" transform="translate(40 220)">
