@@ -333,28 +333,27 @@
   // Clock-aligned solar curve: the marker follows Nepal wall-clock time horizontally,
   // while the daylight arc rises smoothly to the exact midpoint between sunrise and sunset.
   function solarWaveGeometry(){
-    // Smooth full-day cosine with exact sunrise/sunset horizon intersections.
-    const peakY=18,troughY=96,midY=(peakY+troughY)/2,amplitude=(troughY-peakY)/2;
+    // One continuous, smooth cosine arc: above the horizon by day and below it by night.
+    // Both sunrise and sunset meet the same lowered horizon with a flat tangent.
+    const horizonY=66,dayHeight=46,nightDepth=28;
     const sunriseParts=nptP(solar.sunriseMs),sunsetParts=nptP(solar.sunsetMs);
     const sunriseMins=sunriseParts.hh*60+sunriseParts.mm;
     const sunsetMins=sunsetParts.hh*60+sunsetParts.mm;
-    const solarNoon=(sunriseMins+sunsetMins)/2;
-    const baseY=mins=>midY-amplitude*Math.cos(((mins-solarNoon)/1440)*2*Math.PI)-7;
-    // A shallow, smooth dip straddles each horizon crossing without moving the intersection itself.
-    const edgeDip=(mins,edge)=>{
-      const distance=Math.abs(mins-edge),span=90;
-      return distance<span?3.6*Math.sin(Math.PI*distance/span)**2:0;
-    };
+    const dayLength=Math.max(1,sunsetMins-sunriseMins);
+    const nightLength=Math.max(1,1440-dayLength);
     const waveY=mins=>{
-      const daylight=mins>=sunriseMins&&mins<=sunsetMins;
-      const progress=daylight?(mins-sunriseMins)/Math.max(1,sunsetMins-sunriseMins):0;
-      const gentleLift=daylight?1.8*Math.sin(Math.PI*progress):0;
-      return baseY(mins)-gentleLift+edgeDip(mins,sunriseMins)+edgeDip(mins,sunsetMins);
+      if(mins>=sunriseMins&&mins<=sunsetMins){
+        const t=(mins-sunriseMins)/dayLength;
+        return horizonY-dayHeight*(1-Math.cos(2*Math.PI*t))/2;
+      }
+      const elapsed=mins>sunsetMins
+        ? mins-sunsetMins
+        : (1440-sunsetMins)+mins;
+      const t=elapsed/nightLength;
+      return horizonY+nightDepth*(1-Math.cos(2*Math.PI*t))/2;
     };
-    const sunriseY=baseY(sunriseMins);
-    return {waveY,sunriseY,sunriseMins,sunsetMins};
-  }
-  // The full-day curve and elapsed overlay use one shared clock-aligned function.
+    return {waveY,sunriseY:horizonY,horizonY,sunriseMins,sunsetMins};
+  }  // The full-day curve and elapsed overlay use one shared clock-aligned function.
   function drawFullSunCycle(){
     if(!solar||solar.polar)return;
     const startX=16,endX=324,width=endX-startX;
