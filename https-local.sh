@@ -13,7 +13,7 @@ LAN_IP="$(ip -4 route get 1.1.1.1 2>/dev/null | awk '{for(i=1;i<=NF;i++) if($i==
 if [ -z "$LAN_IP" ]; then LAN_IP="$(hostname -I 2>/dev/null | awk '{print $1}')"; fi
 if [ -z "$LAN_IP" ]; then echo "LAN IPv4 पत्ता लगाउन सकिएन।"; exit 1; fi
 mkdir -p .certs
-mkcert -install
+mkcert -install || echo "स्थानीय trust store स्वतः अपडेट भएन; Root CA फोन/ब्राउजरमा manual trust गर्नुहोस्।"
 mkcert -cert-file .certs/diary.pem -key-file .certs/diary-key.pem localhost 127.0.0.1 ::1 "$LAN_IP"
 echo ""
 echo "=============================================="
