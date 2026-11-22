@@ -39,29 +39,29 @@
           <article class="season-card time-card" id="timeCard" aria-labelledby="timeCardTitle">
             <div class="time-overview-grid">
               <div class="time-overview-main">
-            <div class="time-card-head">
-              <span class="eyebrow light time-weekday-heading" id="timeCardTitle">आइतबार</span>
-              <div class="time-date-side">
-                <div class="date-side-weather weather-main"><b id="weatherTemp">--°</b><span id="weatherCondition">मौसम लोड हुँदैछ…</span></div>
-                <b id="timeAdDate">--</b>
-                <span id="timeBsDate">नेपाली मिति लोड हुँदै…</span>
-                <span id="timeWeekNumber">हप्ता —</span>
+            <div class="time-overview-left">
+              <div class="time-card-head">
+                <span class="eyebrow light time-weekday-heading" id="timeCardTitle">आइतबार</span>
+              </div>
+              <div class="time-date">
+                <div>
+                  <div id="clock" class="nepali-clock" aria-live="off">--:--</div>
+                  <div id="timeTithi" class="time-tithi">तिथि गणना हुँदैछ…</div>
+                </div>
+              </div>
+              <p id="panchangSummary" class="panchang-summary" aria-label="आजको पञ्चाङ्ग सारांश"><span id="panchangSummaryText">गणना हुँदैछ…</span></p>
+              <div class="season-line">
+                <span id="seasonName">ऋतु</span>
+                <span id="seasonDesc">नेपाली मिति पर्खँदै…</span>
               </div>
             </div>
-
-            <div class="time-date">
-              <div>
-                <div id="clock" class="nepali-clock" aria-live="off">--:--</div>
-                <div id="timeTithi" class="time-tithi">तिथि गणना हुँदैछ…</div>
-              </div>
+            <div class="time-date-side">
+              <div class="date-side-weather weather-main"><b id="weatherTemp">--°</b><span id="weatherCondition">मौसम लोड हुँदैछ…</span></div>
+              <b id="timeAdDate">--</b>
+              <span id="timeBsDate">नेपाली मिति लोड हुँदै…</span>
+              <span id="timeWeekNumber">हप्ता —</span>
             </div>
-
-            <p id="panchangSummary" class="panchang-summary" aria-label="आजको पञ्चाङ्ग सारांश"><span id="panchangSummaryText">गणना हुँदैछ…</span></p>
-            <div class="season-line">
-              <span id="seasonName">ऋतु</span>
-              <span id="seasonDesc">नेपाली मिति पर्खँदै…</span>
-            </div>
-              <div class="time-weather" aria-label="हालको स्थान र मौसम">
+            <div class="time-weather" aria-label="हालको स्थान र मौसम">
                 <div class="weather-panel-heading">स्थान तथा मौसम</div>
                 <div class="weather-summary">
                   <div class="place-line">
