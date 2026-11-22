@@ -335,7 +335,7 @@
   function solarWaveGeometry(){
     // Smooth phase spline: the curve crosses the horizon exactly at the real
     // sunrise and sunset times, while keeping a broad daytime arc and a deeper night trough.
-    const peakY=10,troughY=102,midY=(peakY+troughY)/2,amplitude=(troughY-peakY)/2;
+    const scaleY=110/245,peakY=26*scaleY,troughY=224*scaleY,midY=(peakY+troughY)/2,amplitude=(troughY-peakY)/2;
     const horizonPhase=0.725;
     const sunriseParts=nptP(solar.sunriseMs),sunsetParts=nptP(solar.sunsetMs);
     const sunriseMins=sunriseParts.hh*60+sunriseParts.mm;
