@@ -22,7 +22,7 @@ Run from the project directory:
 
 Server port: 8443. Do not configure router port forwarding. Allow this port only from your trusted Wi-Fi subnet in the host firewall. Reserve the laptop IP in router DHCP settings.
 
-The TLS script prints the LAN IP and CA certificate path. Transfer ca.crt securely to each phone. Android: install as a CA certificate under Security > Encryption & credentials (menu labels vary). iPhone: install the profile, then enable full trust under Certificate Trust Settings. Never transfer ca.key or server.key to a phone.
+The TLS script prints the LAN IP and CA certificate path. First trust ca.crt in the laptop browser too (Firefox: Settings > Privacy & Security > Certificates > View Certificates > Authorities > Import; enable trust for identifying websites). Transfer ca.crt securely to each phone. Android: install as a CA certificate under Security > Encryption & credentials (menu labels vary). iPhone: install the profile, then enable full trust under Certificate Trust Settings. Never transfer ca.key or server.key to a phone.
 
 Open https://LAN-IP:8443 and enter the username/password created by setup_auth.py.
 
@@ -46,7 +46,7 @@ To also copy it to a mounted USB drive:
 
 GPG AES-256 encryption is used. The passphrase is requested interactively and is not stored. Keep it separately from the laptop and USB.
 
-Restore (the current database is first preserved as .before-restore):
+Stop the server with Ctrl+C before restoring. The current database is first preserved as .before-restore:
 
     python3 backup.py restore /path/to/backup.sqlite.gpg
 
