@@ -2042,3 +2042,18 @@ body .book-page.page-turn-prev{animation:pageTurnPrev .28s cubic-bezier(.35,.7,.
   #page-home .weather-location-controls .manual-place{width:100%!important;justify-content:space-between!important}
   #page-home .weather-location-controls .manual-place select{max-width:62%!important;flex:0 1 62%!important}
 }
+
+
+/* Season and live location details stay visually unified with the time card. */
+#page-home .time-card .season-line{
+  display:flex!important;align-items:baseline!important;flex-wrap:wrap!important;gap:5px 8px!important;
+  margin:5px 0 0!important;padding:0!important;background:transparent!important;border:0!important;
+  border-radius:0!important;box-shadow:none!important;font-family:"Noto Serif Devanagari",serif!important;
+}
+#page-home .time-card .season-line #seasonName{color:#C40014!important;font:600 13px/1.55 "Noto Serif Devanagari",serif!important}
+#page-home .time-card .season-line #seasonDesc{color:#d4deea!important;background:transparent!important;font:400 11.5px/1.65 "Noto Serif Devanagari",serif!important}
+#page-home .time-card .weather-main b,#page-home .time-card #weatherTemp{color:#C40014!important}
+#page-home .time-card .location-coordinates #locationAltitude{color:#C40014!important;font-weight:600!important}
+#page-home .time-card .location-coordinates #locationCoordinates,#page-home .time-card .location-coordinates #locationAccuracy{color:#c4cfda!important}
+#page-home .time-card .time-weather,#page-home .time-card .time-weather *{font-family:"Noto Serif Devanagari",serif}
+@media(max-width:760px){#page-home .time-card .season-line #seasonDesc{font-size:10.5px!important}}
