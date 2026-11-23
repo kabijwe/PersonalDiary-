@@ -292,6 +292,11 @@
     const t=pan.tithi,n=pan.nakshatra,y=pan.yoga,k=pan.karana;
     setText("pTithi",t.name);
     setText("pPaksha",t.paksha);
+    // Keep the live time-card line synchronized with the calculated current tithi.
+    const endParts=nptP(t.endMs),endClock=clock12(t.endMs);
+    const endDate=nepaliNumber(`${pad2(endParts.d)} ${AD_MONTHS[endParts.m-1]} ${endParts.y}`);
+    const monthName=t.shukla?pan.lunarMonth.amanta:pan.lunarMonth.purnimanta;
+    setText("timeTithi",`${monthName} ${t.paksha} ${t.name} तिथि · समाप्ति ${endDate} · ${endClock.word} ${endClock.text}`);
     const sr=pan.atSunrise&&pan.atSunrise.tithi.number!==t.number?` · सूर्योदयमा ${pan.atSunrise.tithi.name}`:"";
     setText("pTithiEnd",`समाप्ति ${fmtEnd(t.endMs,now)}${sr}`);
     setText("pNakshatra",n.name);
