@@ -250,15 +250,15 @@
   function renderDate(){
     const now=Date.now(),p=nptP(now),c=clock12(now),wd=WEEKDAYS[dayOfWeek(now)];
     setText("clock",format24Clock(now));
-    const t=pan?.tithi;
+    const currentTithi=pan?.tithi;
     setText("timeCardTitle",wd);
-    const endMs=t?.endMs;
+    const endMs=currentTithi?.endMs;
     const endParts=endMs?nptP(endMs):null;
     const endClock=endMs?clock12(endMs):null;
     const endDate=endParts?nepaliNumber(`${pad2(endParts.d)} ${AD_MONTHS[endParts.m-1]} ${endParts.y}`):"";
     const tithiEnd=endMs?` तिथि · समाप्ति ${endDate} · ${endClock.word} ${endClock.text}`:"";
-    const lunarMonth=t?(t.shukla?pan.lunarMonth.amanta:pan.lunarMonth.purnimanta):"";
-    setText("timeTithi",t?`${lunarMonth} ${t.paksha} ${t.name}${tithiEnd}`:"पञ्चाङ्ग गणना हुँदैछ…");
+    const lunarMonth=currentTithi?(currentTithi.shukla?pan.lunarMonth.amanta:pan.lunarMonth.purnimanta):"";
+    setText("timeTithi",currentTithi?`${lunarMonth} ${currentTithi.paksha} ${currentTithi.name}${tithiEnd}`:"पञ्चाङ्ग गणना हुँदैछ…");
     setText("timeAdDate",nepaliNumber(`${pad2(p.d)} ${AD_MONTHS[p.m-1]} ${p.y}`));
     setText("timeWeekNumber",`हप्ता ${nepaliNumber(isoWeekNumber(now))}`);
     const t=bsText();
