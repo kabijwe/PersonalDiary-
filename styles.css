@@ -3782,3 +3782,32 @@ body .book-page.page-turn-prev{animation:pageTurnPrev .28s cubic-bezier(.35,.7,.
 
 /* Replace Panchang tile red borders with white borders. */
 #page-home #panchangPanel .panchang-item{border-color:#fff!important;border-left-color:#fff!important}
+
+
+/* Show the complete season description; allow it to wrap instead of clipping. */
+#page-home .time-card .season-line{
+  display:flex!important;
+  flex-wrap:wrap!important;
+  align-items:baseline!important;
+  white-space:normal!important;
+  overflow:visible!important;
+  height:auto!important;
+  max-height:none!important;
+  min-width:0!important;
+  line-height:1.55!important;
+}
+#page-home .time-card .season-line #seasonName,
+#page-home .time-card .season-line #seasonDesc{
+  display:inline!important;
+  flex:0 1 auto!important;
+  min-width:0!important;
+  max-width:100%!important;
+  white-space:normal!important;
+  overflow:visible!important;
+  overflow-wrap:anywhere!important;
+  word-break:normal!important;
+  height:auto!important;
+  max-height:none!important;
+  line-height:1.55!important;
+}
+#page-home .time-card .season-line #seasonDesc{flex:1 1 220px!important}
