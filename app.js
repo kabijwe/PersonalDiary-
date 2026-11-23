@@ -253,7 +253,11 @@
     const tithiName=$("#pTithi")?.textContent?.trim()||"";
     const pakshaName=$("#pPaksha")?.textContent?.trim()||"";
     setText("timeCardTitle",wd);
-    const tithiEnd=pan?.tithi?.endMs?(" · समाप्ति "+fmtEnd(pan.tithi.endMs,now)):"";
+    const endMs=pan?.tithi?.endMs;
+    const endParts=endMs?nptP(endMs):null;
+    const endClock=endMs?clock12(endMs):null;
+    const endDate=endParts?nepaliNumber(`${pad2(endParts.d)} ${AD_MONTHS[endParts.m-1]} ${endParts.y}`):"";
+    const tithiEnd=endMs?` · समाप्ति ${endDate} · ${endClock.word} ${endClock.text}`:"";
     setText("timeTithi",[pan?.lunarMonth?.amanta||pan?.lunarMonth?.purnimanta,pakshaName,tithiName].filter(x=>x&&x!=="—").join(" ")+(tithiName&&tithiName!=="—"?tithiEnd:"")||"पञ्चाङ्ग गणना हुँदैछ…");
     setText("timeAdDate",nepaliNumber(`${pad2(p.d)} ${AD_MONTHS[p.m-1]} ${p.y}`));
     setText("timeWeekNumber",`हप्ता ${nepaliNumber(isoWeekNumber(now))}`);
