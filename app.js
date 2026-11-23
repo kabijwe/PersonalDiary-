@@ -250,15 +250,15 @@
   function renderDate(){
     const now=Date.now(),p=nptP(now),c=clock12(now),wd=WEEKDAYS[dayOfWeek(now)];
     setText("clock",format24Clock(now));
-    const tithiName=$("#pTithi")?.textContent?.trim()||"";
-    const pakshaName=$("#pPaksha")?.textContent?.trim()||"";
+    const t=pan?.tithi;
     setText("timeCardTitle",wd);
-    const endMs=pan?.tithi?.endMs;
+    const endMs=t?.endMs;
     const endParts=endMs?nptP(endMs):null;
     const endClock=endMs?clock12(endMs):null;
     const endDate=endParts?nepaliNumber(`${pad2(endParts.d)} ${AD_MONTHS[endParts.m-1]} ${endParts.y}`):"";
-    const tithiEnd=endMs?` · समाप्ति ${endDate} · ${endClock.word} ${endClock.text}`:"";
-    setText("timeTithi",[pan?.lunarMonth?.amanta||pan?.lunarMonth?.purnimanta,pakshaName,tithiName].filter(x=>x&&x!=="—").join(" ")+(tithiName&&tithiName!=="—"?tithiEnd:"")||"पञ्चाङ्ग गणना हुँदैछ…");
+    const tithiEnd=endMs?` तिथि · समाप्ति ${endDate} · ${endClock.word} ${endClock.text}`:"";
+    const lunarMonth=t?(t.shukla?pan.lunarMonth.amanta:pan.lunarMonth.purnimanta):"";
+    setText("timeTithi",t?`${lunarMonth} ${t.paksha} ${t.name}${tithiEnd}`:"पञ्चाङ्ग गणना हुँदैछ…");
     setText("timeAdDate",nepaliNumber(`${pad2(p.d)} ${AD_MONTHS[p.m-1]} ${p.y}`));
     setText("timeWeekNumber",`हप्ता ${nepaliNumber(isoWeekNumber(now))}`);
     const t=bsText();
@@ -284,7 +284,11 @@
       // the traditional "day's" tithi is the one prevailing at sunrise
       pan.atSunrise=solar.sunriseMs?PX.panchang(solar.sunriseMs):null;
       panError=null;
-    }catch(e){pan=null;panError=e;console.error("Panchang engine:",e)}
+    }catch(e){
+      // Keep the last valid Panchang on screen if a refresh calculation briefly fails.
+      // The next successful timed refresh or an explicit GPS update will replace it.
+      panError=e;console.error("Panchang engine:",e);
+    }
     renderPanchang();drawSun();renderGhadiPala();
   }
   function renderPanchang(){
