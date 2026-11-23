@@ -3778,3 +3778,7 @@ body .book-page.page-turn-prev{animation:pageTurnPrev .28s cubic-bezier(.35,.7,.
 
 /* Panchang headings only: white and bold; keep detail values unchanged. */
 #page-home #panchangPanel .panchang-item .weather-label{color:#fff!important;-webkit-text-fill-color:#fff!important;font-weight:800!important}
+
+
+/* Replace Panchang tile red borders with white borders. */
+#page-home #panchangPanel .panchang-item{border-color:#fff!important;border-left-color:#fff!important}
