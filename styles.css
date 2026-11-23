@@ -3774,3 +3774,7 @@ body .book-page.page-turn-prev{animation:pageTurnPrev .28s cubic-bezier(.35,.7,.
 #page-home #panchangPanel .panchang-item{padding:4px 4px!important;gap:1px!important}
 #page-home #panchangPanel .panchang-item .weather-label,#page-home #panchangPanel .panchang-item .weather-value{font-size:9px!important;line-height:1.2!important}
 }
+
+
+/* Panchang headings only: white and bold; keep detail values unchanged. */
+#page-home #panchangPanel .panchang-item .weather-label{color:#fff!important;-webkit-text-fill-color:#fff!important;font-weight:800!important}
