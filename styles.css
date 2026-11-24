@@ -2164,7 +2164,7 @@ body .book-page.page-turn-prev{animation:pageTurnPrev .28s cubic-bezier(.35,.7,.
   background:transparent!important;
   border:0!important;
   color:#bdbdbd!important;
-  font:400 10px/1.6 "Noto Serif Devanagari",serif!important;
+  font:400 12px/1.6 "Noto Serif Devanagari",serif!important;
 }
 #page-home .time-card .time-weather .location-coordinates #locationAltitude{
   color:#C40014!important;
@@ -3246,7 +3246,7 @@ body .book-page.page-turn-prev{animation:pageTurnPrev .28s cubic-bezier(.35,.7,.
   padding:0!important;
   line-height:1.08!important;
 }
-#page-home .time-overview-left #timeTithi{margin:1px 0 0!important}
+#page-home .time-overview-left #timeTithi{margin:1px 0 0!important;white-space:nowrap!important;display:block!important;width:max-content!important;max-width:none!important;font-size:clamp(9px,2.65vw,12px)!important;line-height:1.25!important;letter-spacing:-.15px!important}
 #page-home .time-overview-left .panchang-summary,
 #page-home .time-overview-left .season-line{grid-column:1!important}
 #page-home .time-date-side{
@@ -3280,7 +3280,7 @@ body .book-page.page-turn-prev{animation:pageTurnPrev .28s cubic-bezier(.35,.7,.
   #page-home .time-date-side{max-width:100%!important}
   #page-home .time-overview-left .time-card-head #timeCardTitle{font-size:21px!important}
   #page-home .time-overview-left #clock{font-size:24px!important}
-  #page-home .time-overview-left #timeTithi{font-size:12px!important;line-height:1.3!important}
+  #page-home .time-overview-left #timeTithi{font-size:10px!important;line-height:1.25!important;white-space:nowrap!important}
   #page-home .time-date-side .date-side-weather b#weatherTemp{font-size:21px!important;line-height:1.1!important}
   #page-home .time-date-side .date-side-weather span,
   #page-home .time-date-side #timeAdDate,
@@ -3870,5 +3870,5 @@ body .book-page.page-turn-prev{animation:pageTurnPrev .28s cubic-bezier(.35,.7,.
 #page-home .time-date-side{min-width:0!important}
 #page-home .season-line{grid-column:1 / -1!important;display:flex!important;flex-wrap:nowrap!important;align-items:baseline!important;gap:4px!important;width:100%!important;min-width:0!important;margin:6px 0 0!important;overflow:visible!important}
 #page-home .season-line #seasonName{flex:0 0 auto!important;white-space:nowrap!important}
-#page-home .season-line #seasonDesc{flex:0 0 auto!important;min-width:0!important;white-space:nowrap!important;overflow:visible!important;text-overflow:clip!important;font-size:clamp(8px,2.8vw,11px)!important;letter-spacing:-.2px!important;line-height:1.3!important}
+#page-home .season-line #seasonDesc{flex:0 0 auto!important;min-width:0!important;white-space:nowrap!important;overflow:visible!important;text-overflow:clip!important;font-size:clamp(9px,3vw,12px)!important;letter-spacing:-.15px!important;line-height:1.35!important}
 #page-home .season-line #seasonDesc::before{content:": ";white-space:pre}
