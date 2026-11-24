@@ -3872,5 +3872,5 @@ body .book-page.page-turn-prev{animation:pageTurnPrev .28s cubic-bezier(.35,.7,.
 #page-home .time-date-side{grid-column:2!important;grid-row:1 / span 2!important}
 #page-home .season-line{grid-column:1 / -1!important;grid-row:3!important;display:flex!important;flex-wrap:nowrap!important;align-items:baseline!important;gap:4px!important;width:100%!important;min-width:0!important;margin:4px 0 0!important}
 #page-home .season-line #seasonName{flex:0 0 auto!important;white-space:nowrap!important}
-#page-home .season-line #seasonDesc{flex:1 1 auto!important;min-width:0!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:clip!important;font-size:clamp(8px,2.6vw,11px)!important;letter-spacing:-.2px!important;line-height:1.2!important}
+#page-home .season-line #seasonDesc{flex:0 0 auto!important;min-width:0!important;white-space:nowrap!important;overflow:visible!important;text-overflow:clip!important;font-size:clamp(7px,2.1vw,9px)!important;letter-spacing:-.2px!important;line-height:1.2!important}
 #page-home .season-line #seasonDesc::before{content:": ";white-space:pre}
