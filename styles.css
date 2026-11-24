@@ -3847,3 +3847,12 @@ body .book-page.page-turn-prev{animation:pageTurnPrev .28s cubic-bezier(.35,.7,.
   #page-calendar .calendar-detail-grid .weather-value{font-size:10px;line-height:1.35}
   #page-calendar .calendar-live-heading h2{font-size:17px}
 }
+
+
+/* Detailed Panchang and weather metrics now live in the Calendar menu only. */
+#page-home #panchangPanel,
+#page-home #weatherExtra,
+#page-home #weatherSuggestion,
+#page-home #weatherUpdated{
+  display:none!important;
+}
