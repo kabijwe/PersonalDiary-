@@ -3876,3 +3876,8 @@ body .book-page.page-turn-prev{animation:pageTurnPrev .28s cubic-bezier(.35,.7,.
 
 /* Hide the manual location picker; keep its element for existing app logic. */
 #page-home .manual-place{display:none!important}
+
+
+/* Nudge the location details and season line slightly upward. */
+#page-home .time-card .time-weather,
+#page-home .time-card .season-line{transform:translateY(-6px)!important}
