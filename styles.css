@@ -4062,3 +4062,20 @@ body .book-page.page-turn-prev{animation:pageTurnPrev .28s cubic-bezier(.35,.7,.
  .context-summary-fact small{font-size:6px}
  .context-summary-fact b{font-size:7px;line-height:1.15}
 }
+
+
+/* Shared three-line timestamp, Panchang, GPS and weather snapshot. */
+.context-stamp{display:grid;gap:3px;min-width:0;text-align:left}
+.context-stamp-row{font:500 9px/1.45 "Mukta",sans-serif;color:var(--muted,#64748b);overflow-wrap:anywhere;word-break:normal}
+.context-stamp-row b{font-weight:800;color:var(--text,#263445)}
+.editor-context-stamp{margin:0 0 9px;padding:7px 9px;border:1px solid var(--line,#d8dce2);border-radius:8px;background:rgba(128,128,128,.06)}
+.letter-context-stamp{margin:8px 0 12px;padding:7px 9px;border-top:1px solid currentColor;border-bottom:1px solid currentColor;opacity:.82}
+.reminder-item{align-items:flex-start!important}
+.reminder-item-copy{min-width:0;flex:1}
+.reminder-context-stamp{margin-top:5px;padding:6px 7px;border-left:2px solid var(--accent,#c40014);background:rgba(128,128,128,.055);border-radius:4px}
+.reminder-context-stamp .context-stamp-row{font-size:8px;line-height:1.35}
+@media(max-width:520px){
+ .editor-context-stamp{padding:6px 7px}
+ .context-stamp-row{font-size:8px;line-height:1.35}
+ .reminder-context-stamp .context-stamp-row{font-size:7px}
+}
