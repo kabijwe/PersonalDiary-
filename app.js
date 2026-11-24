@@ -72,7 +72,7 @@
     $$(".page").forEach(p=>p.classList.toggle("active",p===target));
     $$("[data-page]").forEach(b=>b.classList.toggle("active",b.dataset.page===name));
     const sidebar=$("#sidebar");sidebar.classList.remove("open");sidebar.style.display="";
-    if(name==="calendar")renderCalendar();
+    if(name==="calendar"){renderCalendar();renderCalendarDetails();}
     if(name==="records"){renderLocationHistory();setTimeout(()=>historyMap?.invalidateSize(),180)}
     if(name==="poetry")renderDiary();
     if(name==="memories")renderMemories();
@@ -357,6 +357,7 @@
       const detail=document.createElement("span");detail.className="panchang-value";detail.textContent=value;
       row.append(detail);el.append(row);
     });
+    renderCalendarDetails();
   }
 
   /* ---------- Live day/night solar cycle ---------- */
@@ -528,6 +529,7 @@
     }
     const when=w.time?nepaliNumber(w.time.slice(11,16)):fmtClock(w.fetched);
     setText("weatherUpdated",stale?"⚠ पुरानो मौसम · "+when+" को (इन्टरनेट/सेवा समस्या)":"अद्यावधिक "+when);
+    renderCalendarDetails();
   }
   function nearestHourlyValue(hourly,field,clock){
     if(!hourly?.time?.length||!Array.isArray(hourly[field]))return null;
@@ -784,6 +786,28 @@
   $("#quickVoice").onclick=()=>{const draft=$("#quickEntry").value,media=quickMedia.slice(),visibility=$("#quickVisibility").value;openEditor();$("#entryContent").value=draft;$("#entryTitle").value="आजको डायरी";$("#entryVisibility").value=visibility;$("#privacyHelp").textContent=privacyHelpText(visibility);pendingEntryMedia=media;updateMediaPreview();$("#quickEntry").value="";$("#quickMediaPreview").innerHTML="";quickMedia=[];toast("ड्राफ्ट र मिडिया आवाज रेकर्डरसहित तयार छ।")};
   $("#saveQuick").onclick=()=>{const content=$("#quickEntry").value.trim();if(!content&&!quickMedia.length){toast("केही लेख्नुहोस् वा फोटो/भिडियो/अडियो थप्नुहोस्।");return}const ctx=getContextSnapshot(),item={id:uid(),title:"आजको डायरी",date:nptISO(),mood:"शान्त",content,type:"diary",visibility:$("#quickVisibility").value,tags:"",media:quickMedia,created:Date.now(),updated:Date.now(),context:ctx};state.entries.push(item);try{persist()}catch(err){state.entries.pop();toast("भण्डारण भरियो। सानो मिडिया फाइल प्रयोग गर्नुहोस्।");return}quickMedia=[];$("#quickEntry").value="";$("#quickMediaPreview").innerHTML="";renderAll();toast("पोस्ट सुरक्षित भयो।")};
   function renderPoetry(){const arr=state.entries.filter(e=>e.type==="poem").sort((a,b)=>b.updated-a.updated);$("#poetryList").innerHTML=arr.length?arr.map(e=>{const ctx=formatContextLine(e.context);return `<article class="poem-card post-tap-card" data-entry-open="${e.id}" tabindex="0" role="button"><div class="entry-meta">${dateText(e.date)} · ${e.visibility==="private"?"निजी":e.visibility==="public"?"प्रकाशनका लागि":"ड्राफ्ट"}</div>${ctx?`<div class="entry-context">${esc(ctx)}</div>`:""}<h3>${esc(e.title||"शीर्षकविहीन सिर्जना")}</h3><p class="poem-preview">${esc(e.content.slice(0,280))}</p><small class="tap-hint">Letterhead · खोल्न ट्याप गर्नुहोस्</small></article>`}).join(""):`<div class="empty-state">तपाईंका कविता र लेखहरू यहाँ सङ्ग्रहित हुनेछन्।</div>`;$$("#poetryList [data-entry-open]").forEach(card=>{const open=()=>openPostView(state.entries.find(e=>e.id===card.dataset.entryOpen));card.onclick=open;card.onkeydown=ev=>{if(ev.key==="Enter"||ev.key===" "){ev.preventDefault();open()}}})}
+  function renderCalendarDetails(){
+    const copyGrid=(sourceId,targetId)=>{
+      const source=$("#"+sourceId),target=$("#"+targetId);
+      if(!source||!target)return;
+      const cards=Array.from(source.children).map(node=>{
+        const clone=node.cloneNode(true);
+        if(clone.removeAttribute)clone.removeAttribute("id");
+        clone.querySelectorAll?.("[id]").forEach(el=>el.removeAttribute("id"));
+        return clone;
+      });
+      target.replaceChildren(...cards);
+    };
+    copyGrid("panchangPanel","calendarPanchangGrid");
+    copyGrid("weatherExtra","calendarWeatherGrid");
+    const meta=$("#calendarDetailsMeta");
+    if(meta){
+      const date=$("#timeBsDate")?.textContent?.trim()||"आज";
+      const place=$("#placeName")?.textContent?.trim()||"स्थान उपलब्ध छैन";
+      const updated=$("#weatherUpdated")?.textContent?.trim()||"मौसम विवरण पर्खँदै";
+      meta.textContent=date+" · "+place+" · "+updated;
+    }
+  }
   function renderCalendar(){const y=selectedCalendar.getFullYear(),m=selectedCalendar.getMonth(),first=new Date(y,m,1).getDay(),days=new Date(y,m+1,0).getDate();$("#calendarMonth").textContent=selectedCalendar.toLocaleDateString("ne-NP",{month:"long",year:"numeric"});$("#calendarAd").textContent=selectedCalendar.toLocaleDateString("en-US",{month:"long",year:"numeric"});let html="";for(let i=0;i<first;i++)html+="<button disabled></button>";for(let d=1;d<=days;d++){const iso=`${y}-${String(m+1).padStart(2,"0")}-${String(d).padStart(2,"0")}`,isToday=iso===nptISO(),has=state.events.some(e=>e.date===iso);html+=`<button class="${isToday?"today":""} ${has?"has-event":""}" data-date="${iso}">${d}</button>`}$("#calendarDays").innerHTML=html;$$("[data-date]").forEach(b=>b.onclick=()=>{const date=b.dataset.date;const events=state.events.filter(e=>e.date===date);toast(events.length?events.map(e=>e.title).join(" · "):dateText(date))});$("#eventList").innerHTML=state.events.length?state.events.slice().sort((a,b)=>a.date.localeCompare(b.date)).map(e=>`<div class="entry-row"><div><div class="entry-meta">${dateText(e.date)}</div><h3>${esc(e.title)}</h3><p>${esc(e.note||"")}</p></div><button class="small-btn" data-remove-event="${e.id}">हटाउनुहोस्</button></div>`).join(""):`<div class="empty-state">आफ्ना विशेष दिनहरू यहाँ थप्नुहोस्।</div>`;$$("[data-remove-event]").forEach(b=>b.onclick=()=>{state.events=state.events.filter(e=>e.id!==b.dataset.removeEvent);persist();renderCalendar()})}
   $("#prevMonth").onclick=()=>{selectedCalendar.setMonth(selectedCalendar.getMonth()-1);renderCalendar()};$("#nextMonth").onclick=()=>{selectedCalendar.setMonth(selectedCalendar.getMonth()+1);renderCalendar()};
   $("#addEvent").onclick=()=>{$("#eventForm").reset();$("#eventDialog").showModal()};$("#eventForm").onsubmit=e=>{e.preventDefault();state.events.push({id:uid(),title:$("#eventTitle").value,date:$("#eventDate").value,note:$("#eventNote").value});persist();$("#eventDialog").close();renderCalendar();toast("विशेष दिन सुरक्षित भयो।")};
