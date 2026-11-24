@@ -3881,3 +3881,7 @@ body .book-page.page-turn-prev{animation:pageTurnPrev .28s cubic-bezier(.35,.7,.
 /* Nudge the location details and season line slightly upward. */
 #page-home .time-card .time-weather,
 #page-home .time-card .season-line{transform:translateY(-6px)!important}
+
+
+/* Hide manual location selection in the sunrise/location controls as well. */
+.sun-location-controls .manual-place{display:none!important}
