@@ -726,22 +726,12 @@
   function updateMediaPreview(){const el=$("#entryMediaPreview");if(el)el.innerHTML=mediaMarkup(pendingEntryMedia)}
   function openEditor(entry=null){$("#entryForm").reset();pendingEntryMedia=(entry?.media||[]).slice();$("#entryId").value=entry?.id||"";$("#entryTitle").value=entry?.title||"";$("#entryDate").value=entry?.date||nptISO();$("#entryMood").value=entry?.mood||"शान्त";$("#entryContent").value=entry?.content||"";$("#entryType").value=entry?.type||"diary";$("#entryVisibility").value=entry?.visibility||"private";$("#privacyHelp").textContent=privacyHelpText($("#entryVisibility").value);$("#entryTags").value=entry?.tags||"";$("#editorEyebrow").textContent=entry?"LETTERHEAD · सम्पादन":"LETTERHEAD · नयाँ पोस्ट";$("#editorHeading").textContent=entry?(entry.title||"डायरीको पोस्ट"):"नयाँ पोस्ट";const detail=$("#entryContextDetails");if(detail)detail.innerHTML=contextDetailsHTML(entry?.context||getContextSnapshot());$("#deleteEntry").style.visibility=entry?"visible":"hidden";updateMediaPreview();$("#editorDialog").showModal()}
   $("#homeDiaryFab").addEventListener("click",()=>{
-    const draft=$("#quickEntry").value,visibility=$("#quickVisibility").value;
-    const media=quickMedia.slice();
     openEditor();
     $("#entryTitle").value="आजको डायरी";
     $("#editorEyebrow").textContent="आजको डायरी";
     $("#editorHeading").textContent="आजको डायरी";
-    $("#entryContent").value=draft;
-    $("#entryVisibility").value=visibility;
-    $("#privacyHelp").textContent=privacyHelpText(visibility);
-    pendingEntryMedia=media;
-    updateMediaPreview();
-    $("#quickEntry").value="";
-    $("#quickMediaPreview").innerHTML="";
-    quickMedia=[];
   });
-  // The current editor is opened from the home composer; removed stale buttons are not bound here.
+  // Diary creation and media capture are handled only by the diary editor opened from the fixed FAB.
   ["entryPhotoCamera","entryPhoto","entryVideoCamera","entryVideo","entryAudio"].forEach(id=>$("#"+id).addEventListener("change",async e=>{const file=e.target.files?.[0];if(!file)return;if(file.size>2*1024*1024){toast("प्रति मिडिया फाइल २ MB सम्म मात्र छान्नुहोस्।");e.target.value="";return}try{const item=await readMediaFile(file);const kind=item.type.split("/")[0];const next=pendingEntryMedia.filter(x=>!x.type?.startsWith(kind+"/"));if(next.reduce((n,x)=>n+(x.size||0),0)+item.size>3*1024*1024){toast("एउटा पोस्टमा मिडिया जम्मा ३ MB सम्म राख्नुहोस्।");e.target.value="";return}pendingEntryMedia=next;pendingEntryMedia.push(item);updateMediaPreview()}catch(err){toast(err.message)}}));
   let voiceRecorder=null,voiceChunks=[],voiceBlob=null,voiceStream=null,voiceElapsed=0,voiceStartAt=0,voiceTimerHandle=null,voiceAudioContext=null,voiceAnalyser=null,voiceVisualFrame=0;
   function voiceTime(ms){const t=Math.floor(ms/1000);return String(Math.floor(t/60)).padStart(2,"0")+":"+String(t%60).padStart(2,"0")}
@@ -798,11 +788,6 @@
   updateDiaryPagesCount();
   $("#diaryPagesCard").addEventListener("click",()=>showPage("poetry"));
   $("#diarySearch").oninput=renderDiary;$("#diaryFilter").onchange=renderDiary;
-  let quickMedia=[];
-  async function attachQuickMedia(input){const f=input.files?.[0];if(!f)return;if(f.size>2*1024*1024){toast("प्रति मिडिया फाइल २ MB सम्म छान्नुहोस्।");input.value="";return}try{const item=await readMediaFile(f),kind=item.type.split("/")[0];quickMedia=quickMedia.filter(x=>!x.type?.startsWith(kind+"/"));if(quickMedia.reduce((n,x)=>n+(x.size||0),0)+item.size>3*1024*1024)throw new Error("पोस्टमा मिडिया जम्मा ३ MB सम्म राख्न सकिन्छ।");quickMedia.push(item);$("#quickMediaPreview").innerHTML=mediaMarkup(quickMedia)}catch(err){toast(err.message)}input.value=""}
-  ["quickPhotoCamera","quickPhoto","quickVideoCamera","quickVideo","quickAudio"].forEach(id=>$("#"+id).addEventListener("change",e=>attachQuickMedia(e.target)));
-  $("#quickVoice").onclick=()=>{const draft=$("#quickEntry").value,media=quickMedia.slice(),visibility=$("#quickVisibility").value;openEditor();$("#entryContent").value=draft;$("#entryTitle").value="आजको डायरी";$("#entryVisibility").value=visibility;$("#privacyHelp").textContent=privacyHelpText(visibility);pendingEntryMedia=media;updateMediaPreview();$("#quickEntry").value="";$("#quickMediaPreview").innerHTML="";quickMedia=[];toast("ड्राफ्ट र मिडिया आवाज रेकर्डरसहित तयार छ।")};
-  $("#saveQuick").onclick=()=>{const content=$("#quickEntry").value.trim();if(!content&&!quickMedia.length){toast("केही लेख्नुहोस् वा फोटो/भिडियो/अडियो थप्नुहोस्।");return}const ctx=getContextSnapshot(),item={id:uid(),title:"आजको डायरी",date:nptISO(),mood:"शान्त",content,type:"diary",visibility:$("#quickVisibility").value,tags:"",media:quickMedia,created:Date.now(),updated:Date.now(),context:ctx};state.entries.push(item);try{persist()}catch(err){state.entries.pop();toast("भण्डारण भरियो। सानो मिडिया फाइल प्रयोग गर्नुहोस्।");return}quickMedia=[];$("#quickEntry").value="";$("#quickMediaPreview").innerHTML="";renderAll();toast("पोस्ट सुरक्षित भयो।")};
   function renderPoetry(){const arr=state.entries.filter(e=>e.type==="poem").sort((a,b)=>b.updated-a.updated);$("#poetryList").innerHTML=arr.length?arr.map(e=>{const ctx=formatContextLine(e.context);return `<article class="poem-card post-tap-card" data-entry-open="${e.id}" tabindex="0" role="button"><div class="entry-meta">${dateText(e.date)} · ${e.visibility==="private"?"निजी":e.visibility==="public"?"प्रकाशनका लागि":"ड्राफ्ट"}</div>${ctx?`<div class="entry-context">${esc(ctx)}</div>`:""}<h3>${esc(e.title||"शीर्षकविहीन सिर्जना")}</h3><p class="poem-preview">${esc(e.content.slice(0,280))}</p><small class="tap-hint">Letterhead · खोल्न ट्याप गर्नुहोस्</small></article>`}).join(""):`<div class="empty-state">तपाईंका कविता र लेखहरू यहाँ सङ्ग्रहित हुनेछन्।</div>`;$$("#poetryList [data-entry-open]").forEach(card=>{const open=()=>openPostView(state.entries.find(e=>e.id===card.dataset.entryOpen));card.onclick=open;card.onkeydown=ev=>{if(ev.key==="Enter"||ev.key===" "){ev.preventDefault();open()}}})}
   function renderCalendarDetails(){
     const copyGrid=(sourceId,targetId)=>{
