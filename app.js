@@ -69,6 +69,7 @@
     if(name==="diary")name="poetry";
     const target=$("#page-"+name);
     if(!target){toast("यो मेनु उपलब्ध छैन।");return}
+    const diaryFab=$("#homeDiaryFab");if(diaryFab)diaryFab.hidden=name!=="home";
     $$(".page").forEach(p=>p.classList.toggle("active",p===target));
     $$("[data-page]").forEach(b=>b.classList.toggle("active",b.dataset.page===name));
     const sidebar=$("#sidebar");sidebar.classList.remove("open");sidebar.style.display="";
@@ -724,6 +725,22 @@
   function mediaMarkup(media=[]){return media.map(m=>m.type?.startsWith("image/")?'<img src="'+m.data+'" alt="'+esc(m.name||"डायरी तस्वीर")+'">':m.type?.startsWith("audio/")?'<audio controls preload="metadata" src="'+m.data+'"></audio>':m.type?.startsWith("video/")?'<video controls playsinline preload="metadata" src="'+m.data+'"></video>':'').join("")}
   function updateMediaPreview(){const el=$("#entryMediaPreview");if(el)el.innerHTML=mediaMarkup(pendingEntryMedia)}
   function openEditor(entry=null){$("#entryForm").reset();pendingEntryMedia=(entry?.media||[]).slice();$("#entryId").value=entry?.id||"";$("#entryTitle").value=entry?.title||"";$("#entryDate").value=entry?.date||nptISO();$("#entryMood").value=entry?.mood||"शान्त";$("#entryContent").value=entry?.content||"";$("#entryType").value=entry?.type||"diary";$("#entryVisibility").value=entry?.visibility||"private";$("#privacyHelp").textContent=privacyHelpText($("#entryVisibility").value);$("#entryTags").value=entry?.tags||"";$("#editorEyebrow").textContent=entry?"LETTERHEAD · सम्पादन":"LETTERHEAD · नयाँ पोस्ट";$("#editorHeading").textContent=entry?(entry.title||"डायरीको पोस्ट"):"नयाँ पोस्ट";const detail=$("#entryContextDetails");if(detail)detail.innerHTML=contextDetailsHTML(entry?.context||getContextSnapshot());$("#deleteEntry").style.visibility=entry?"visible":"hidden";updateMediaPreview();$("#editorDialog").showModal()}
+  $("#homeDiaryFab").addEventListener("click",()=>{
+    const draft=$("#quickEntry").value,visibility=$("#quickVisibility").value;
+    const media=quickMedia.slice();
+    openEditor();
+    $("#entryTitle").value="आजको डायरी";
+    $("#editorEyebrow").textContent="आजको डायरी";
+    $("#editorHeading").textContent="आजको डायरी";
+    $("#entryContent").value=draft;
+    $("#entryVisibility").value=visibility;
+    $("#privacyHelp").textContent=privacyHelpText(visibility);
+    pendingEntryMedia=media;
+    updateMediaPreview();
+    $("#quickEntry").value="";
+    $("#quickMediaPreview").innerHTML="";
+    quickMedia=[];
+  });
   // The current editor is opened from the home composer; removed stale buttons are not bound here.
   ["entryPhotoCamera","entryPhoto","entryVideoCamera","entryVideo","entryAudio"].forEach(id=>$("#"+id).addEventListener("change",async e=>{const file=e.target.files?.[0];if(!file)return;if(file.size>2*1024*1024){toast("प्रति मिडिया फाइल २ MB सम्म मात्र छान्नुहोस्।");e.target.value="";return}try{const item=await readMediaFile(file);const kind=item.type.split("/")[0];const next=pendingEntryMedia.filter(x=>!x.type?.startsWith(kind+"/"));if(next.reduce((n,x)=>n+(x.size||0),0)+item.size>3*1024*1024){toast("एउटा पोस्टमा मिडिया जम्मा ३ MB सम्म राख्नुहोस्।");e.target.value="";return}pendingEntryMedia=next;pendingEntryMedia.push(item);updateMediaPreview()}catch(err){toast(err.message)}}));
   let voiceRecorder=null,voiceChunks=[],voiceBlob=null,voiceStream=null,voiceElapsed=0,voiceStartAt=0,voiceTimerHandle=null,voiceAudioContext=null,voiceAnalyser=null,voiceVisualFrame=0;
