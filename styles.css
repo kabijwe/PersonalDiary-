@@ -4133,8 +4133,6 @@ body .book-page.page-turn-prev{animation:pageTurnPrev .28s cubic-bezier(.35,.7,.
 @media(max-width:520px){.book-context-top{margin:5px 0 4px!important}.book-context-top .context-disclaimer-line,.book-context-location .context-disclaimer-line{font-size:7px!important;line-height:1.35!important}}
 
 /* Full diary metadata: always visible at the foot of the letterpad, above its page number. */
-.book-page{background:#080808!important;color:#fff!important}
-.book-page .book-head{color:#fff!important}
 .book-page .book-rule{height:3px!important;background:#780014!important;border:0!important;margin:8px 0 14px!important}
 .book-context-bottom{
  display:block!important;margin:18px 0 12px!important;padding:8px 0 7px!important;
@@ -4149,8 +4147,6 @@ body .book-page.page-turn-prev{animation:pageTurnPrev .28s cubic-bezier(.35,.7,.
  overflow-wrap:anywhere!important;word-break:normal!important;
 }
 .book-context-bottom .context-disclaimer-line b{color:#fff!important;font-weight:800!important}
-.book-page .book-page-number{color:#fff!important}
-.book-page .book-sign{color:#fff!important}
 .book-page .book-context-summary-wrap:not(.book-context-bottom){display:none!important}
 .book-page .book-more-context{display:none!important}
 @media(max-width:520px){
