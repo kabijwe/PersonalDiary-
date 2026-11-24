@@ -158,7 +158,7 @@
     {id:"bhr",name:"भरतपुर",lat:27.6833,lon:84.4333},{id:"jml",name:"जुम्ला",lat:29.2747,lon:82.1838},
     {id:"ilm",name:"इलाम",lat:26.9090,lon:87.9280},{id:"lmb",name:"लुम्बिनी",lat:27.4833,lon:83.2760}
   ];
-  const LS_LOC="kabijwe.location", LS_WX="kabijwe.weather", LS_BS="kabijwe.bsmonth.";
+  const LS_LOC="kabijwe.location", LS_SPEED="kabijwe.location.speed", LS_WX="kabijwe.weather", LS_BS="kabijwe.bsmonth.";
   const lsGet=k=>{try{return JSON.parse(localStorage.getItem(k))}catch{return null}};
   const lsSet=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch{}};
 
@@ -188,7 +188,7 @@
   let loc={mode:"default",id:DEFAULT_LOC.id,name:DEFAULT_LOC.name,lat:DEFAULT_LOC.lat,lon:DEFAULT_LOC.lon};
   (function restoreLocation(){
     const saved=lsGet(LS_LOC);
-    if(saved&&saved.mode==="gps"&&Number.isFinite(saved.lat)&&Number.isFinite(saved.lon)&&Math.abs(saved.lat)<=90&&Math.abs(saved.lon)<=180){loc={mode:"gps",id:"",name:saved.name||"GPS स्थान",lat:saved.lat,lon:saved.lon,altitude:Number.isFinite(saved.altitude)?saved.altitude:null,accuracy:Number.isFinite(saved.accuracy)?saved.accuracy:null,speed:Number.isFinite(saved.speed)?saved.speed:null,elevation:Number.isFinite(saved.elevation)?saved.elevation:null};return;}
+    if(saved&&saved.mode==="gps"&&Number.isFinite(saved.lat)&&Number.isFinite(saved.lon)&&Math.abs(saved.lat)<=90&&Math.abs(saved.lon)<=180){const savedSpeed=Number.isFinite(saved.speed)?saved.speed:lsGet(LS_SPEED);loc={mode:"gps",id:"",name:saved.name||"GPS स्थान",lat:saved.lat,lon:saved.lon,altitude:Number.isFinite(saved.altitude)?saved.altitude:null,accuracy:Number.isFinite(saved.accuracy)?saved.accuracy:null,speed:Number.isFinite(savedSpeed)?savedSpeed:null,elevation:Number.isFinite(saved.elevation)?saved.elevation:null};if(Number.isFinite(loc.speed))lsSet(LS_SPEED,loc.speed);return;}
     const hit=saved&&LOCATIONS.find(x=>x.id===saved.id);if(hit)loc={mode:"manual",id:hit.id,name:hit.name,lat:hit.lat,lon:hit.lon};
   })();
   function modeLabel(){return loc.mode==="gps"?"GPS बाट":loc.mode==="manual"?"हातले छानिएको":"पूर्वनिर्धारित (GPS होइन)"}
@@ -711,7 +711,7 @@
       if(!Number.isFinite(lat)||!Number.isFinite(lon)||Math.abs(lat)>90||Math.abs(lon)>180){fail({code:2});return;}
       if(!attemptId){try{attemptId=recordLocationAttempt();}catch(err){console.warn("GPS record creation:",err);}}
       completed=true;finishButton();
-      const next={mode:"gps",id:"",name:"GPS स्थान",lat,lon,altitude:Number.isFinite(c.altitude)?c.altitude:null,accuracy:Number.isFinite(c.accuracy)?c.accuracy:null,speed:Number.isFinite(c.speed)?c.speed:null};
+      const next={mode:"gps",id:"",name:"GPS स्थान",lat,lon,altitude:Number.isFinite(c.altitude)?c.altitude:null,accuracy:Number.isFinite(c.accuracy)?c.accuracy:null,speed:Number.isFinite(c.speed)?c.speed:(Number.isFinite(loc.speed)?loc.speed:null)};if(Number.isFinite(next.speed))lsSet(LS_SPEED,next.speed);
       try{applyLocation(next,{historyId:attemptId});}
       catch(err){console.error("GPS location apply:",err);loc=next;renderLocation();try{refreshPanchang();}catch{}try{loadWeather();}catch{}}
       status("GPS सफल · शुद्धता ±"+nepaliNumber(Math.round(c.accuracy||0))+" मिटर","success");
