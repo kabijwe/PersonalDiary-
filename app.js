@@ -788,7 +788,7 @@
   function renderPoetry(){const arr=state.entries.filter(e=>e.type==="poem").sort((a,b)=>b.updated-a.updated);$("#poetryList").innerHTML=arr.length?arr.map(e=>{const ctx=formatContextLine(e.context);return `<article class="poem-card post-tap-card" data-entry-open="${e.id}" tabindex="0" role="button"><div class="entry-meta">${dateText(e.date)} · ${e.visibility==="private"?"निजी":e.visibility==="public"?"प्रकाशनका लागि":"ड्राफ्ट"}</div>${ctx?`<div class="entry-context">${esc(ctx)}</div>`:""}<h3>${esc(e.title||"शीर्षकविहीन सिर्जना")}</h3><p class="poem-preview">${esc(e.content.slice(0,280))}</p><small class="tap-hint">Letterhead · खोल्न ट्याप गर्नुहोस्</small></article>`}).join(""):`<div class="empty-state">तपाईंका कविता र लेखहरू यहाँ सङ्ग्रहित हुनेछन्।</div>`;$$("#poetryList [data-entry-open]").forEach(card=>{const open=()=>openPostView(state.entries.find(e=>e.id===card.dataset.entryOpen));card.onclick=open;card.onkeydown=ev=>{if(ev.key==="Enter"||ev.key===" "){ev.preventDefault();open()}}})}
   function renderCalendarDetails(){
     const copyGrid=(sourceId,targetId)=>{
-      const source=$("#"+sourceId),target=$("#"+targetId);
+      const source=sourceId==="panchangPanel"?$("#panchangPanel .panchang-grid"):$("#"+sourceId),target=$("#"+targetId);
       if(!source||!target)return;
       const cards=Array.from(source.children).map(node=>{
         const clone=node.cloneNode(true);
