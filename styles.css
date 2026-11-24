@@ -4118,3 +4118,16 @@ body .book-page.page-turn-prev{animation:pageTurnPrev .28s cubic-bezier(.35,.7,.
  .book-context-summary-wrap{margin:14px 0 8px!important;padding:6px 0!important}
  .book-context-summary-wrap .context-stamp-row{font-size:7.5px!important;line-height:1.4!important}
 }
+
+/* Minimal letterpad metadata: plain disclaimer text, ordered around the masthead rule. */
+.book-context-top{display:block!important;margin:7px 0 6px!important;padding:0!important;border:0!important;background:transparent!important;box-shadow:none!important}
+.book-context-top .context-stamp-top{display:block!important}
+.book-context-top .context-disclaimer-line,.editor-context-stamp .context-disclaimer-line{margin:1px 0!important;padding:0!important;border:0!important;background:transparent!important;color:#776d60!important;font:400 7.5px/1.38 "Mukta",serif!important;overflow-wrap:anywhere!important}
+.book-context-top .context-disclaimer-line b,.editor-context-stamp .context-disclaimer-line b{font-weight:700!important;color:#8a0012!important}
+.book-context-location{display:block!important;margin:7px 0 10px!important;padding:0!important;border:0!important;background:transparent!important}
+.book-context-location .context-disclaimer-line{margin:0!important;padding:0!important;border:0!important;color:#796f61!important;font:400 7.5px/1.4 "Mukta",serif!important;overflow-wrap:anywhere!important}
+.book-context-location .context-disclaimer-line b{color:#8a0012!important}
+.editor-context-stamp{display:block!important;padding:0!important;border:0!important;background:transparent!important}
+.editor-context-panel .context-disclaimer-line,.book-more-context .context-disclaimer-line{display:block!important;margin:0 0 6px!important;padding:0!important;border:0!important;background:transparent!important;color:#796f61!important;font:400 9px/1.5 "Mukta",serif!important;overflow-wrap:anywhere!important}
+.editor-context-panel .context-disclaimer-line b,.book-more-context .context-disclaimer-line b{color:#8a0012!important}
+@media(max-width:520px){.book-context-top{margin:5px 0 4px!important}.book-context-top .context-disclaimer-line,.book-context-location .context-disclaimer-line{font-size:7px!important;line-height:1.35!important}}
