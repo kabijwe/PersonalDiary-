@@ -46,9 +46,9 @@
     const time=x=>{const s=clean(x);return s.includes("T")?nepaliNumber(s.slice(11,16)):s};
     const date=[ctx.adDate,ctx.bsDate,ctx.weekday].filter(Boolean).join(" · ");
     const panchang=[
-      ctx.tithi&&[ctx.tithi,ctx.paksha].filter(Boolean).join(" "),
+      ctx.tithi&&[ctx.tithi,ctx.paksha,ctx.tithiEnd].filter(Boolean).join(" "),
       ctx.nakshatra&&[ctx.nakshatra,ctx.nakshatraPada].filter(Boolean).join(" "),
-      ctx.yoga&&"योग "+ctx.yoga,ctx.karana&&"करण "+ctx.karana,
+      ctx.yoga&&"योग "+ctx.yoga+(ctx.yogaEnd?" · "+ctx.yogaEnd:""),ctx.karana&&"करण "+ctx.karana+(ctx.karanaEnd?" · "+ctx.karanaEnd:""),
       ctx.moonRashi&&"चन्द्र "+ctx.moonRashi,ctx.sunRashi&&"सूर्य "+ctx.sunRashi,
       ctx.lunarMonth,ctx.ayana,ctx.ghadiPala&&"घडी "+ctx.ghadiPala,
       (ctx.sunrise||ctx.sunset)&&"सूर्योदय/अस्त "+[time(ctx.sunrise),time(ctx.sunset)].filter(Boolean).join("/"),
@@ -56,16 +56,16 @@
     ].filter(Boolean).join(" · ");
     const coords=ctx.latitude!=null&&ctx.longitude!=null?nepaliNumber(Number(ctx.latitude).toFixed(5))+", "+nepaliNumber(Number(ctx.longitude).toFixed(5)):"";
     const gps=[
-      ctx.place,coords,ctx.altitudeM!=null?"उचाइ "+nepaliNumber(Math.round(ctx.altitudeM))+"m":"",
+      ctx.place,ctx.locationMode,coords,ctx.altitudeM!=null?"उचाइ "+nepaliNumber(Math.round(ctx.altitudeM))+"m":"",
       ctx.accuracyM!=null?"शुद्धता ±"+nepaliNumber(Math.round(ctx.accuracyM))+"m":"",
-      ctx.speedKmh!=null?"गति "+nepaliNumber(Number(ctx.speedKmh).toFixed(1))+" km/h":""
+      ctx.speedKmh!=null?"गति "+nepaliNumber(Number(ctx.speedKmh).toFixed(1))+" km/h":"",ctx.timezone
     ].filter(Boolean).join(" · ");
     const weather=[
       [ctx.weatherTemp,ctx.weatherCondition].filter(Boolean).join(" "),
       ctx.apparentTemperature!=null?"महसुस "+nepaliNumber(ctx.apparentTemperature)+"°":"",
       Number.isFinite(ctx.tempMin)&&Number.isFinite(ctx.tempMax)?"न्यून/अधिक "+nepaliNumber(Math.round(ctx.tempMin))+"°/"+nepaliNumber(Math.round(ctx.tempMax))+"°":"",
       ctx.humidity!=null?"आर्द्रता "+nepaliNumber(ctx.humidity)+"%":"",
-      ctx.windKmh!=null?"हावा "+nepaliNumber(ctx.windKmh)+" km/h":"",
+      ctx.windKmh!=null?"हावा "+nepaliNumber(ctx.windKmh)+" km/h"+(ctx.windDirection!=null?" · दिशा "+nepaliNumber(Math.round(ctx.windDirection))+"°":""):"",
       ctx.windGustKmh!=null?"झोक्का "+nepaliNumber(ctx.windGustKmh)+" km/h":"",
       ctx.precipitation!=null?"वर्षा "+nepaliNumber(ctx.precipitation)+"mm":"",
       ctx.rainProbability!=null?"सम्भावना "+nepaliNumber(Math.round(ctx.rainProbability))+"%":"",
@@ -73,7 +73,7 @@
       ctx.pressureHpa!=null?"चाप "+nepaliNumber(Math.round(ctx.pressureHpa))+"hPa":"",
       ctx.dewPointC!=null?"शीत "+nepaliNumber(Math.round(ctx.dewPointC))+"°":"",
       ctx.visibilityM!=null?"दृश्यता "+nepaliNumber((ctx.visibilityM/1000).toFixed(1))+"km":"",
-      ctx.usAqi!=null?"AQI "+nepaliNumber(Math.round(ctx.usAqi)):"",
+      ctx.usAqi!=null?"AQI "+nepaliNumber(Math.round(ctx.usAqi))+" ("+aqiCategory(ctx.usAqi)+")":"",
       ctx.pm25!=null?"PM2.5 "+nepaliNumber(Math.round(ctx.pm25)):"",
       ctx.uvIndex!=null?"UV "+nepaliNumber(Number(ctx.uvIndex).toFixed(1)):""
     ].filter(Boolean).join(" · ");
@@ -85,7 +85,7 @@
     if(!ctx)return '<p class="muted">समय/स्थान विवरण उपलब्ध छैन।</p>';
     const rows=[["नेपाल समय",ctx.nepalTime],["ग्रेगोरियन मिति",ctx.adDate],["विक्रम संवत्",ctx.bsDate],["बार / हप्ता",[ctx.weekday,ctx.weekNumber].filter(Boolean).join(" · ")],
       ["तिथि / पक्ष",[ctx.tithi,ctx.paksha,ctx.tithiEnd].filter(Boolean).join(" · ")],["नक्षत्र / पाद",[ctx.nakshatra,ctx.nakshatraPada,ctx.nakshatraEnd].filter(Boolean).join(" · ")],
-      ["योग",ctx.yoga],["करण",ctx.karana],["चन्द्र राशि",ctx.moonRashi],["सूर्य राशि",ctx.sunRashi],["चन्द्रमास",ctx.lunarMonth],["अयन",ctx.ayana],
+      ["योग", [ctx.yoga,ctx.yogaEnd].filter(Boolean).join(" · ")],["करण",[ctx.karana,ctx.karanaEnd].filter(Boolean).join(" · ")],["चन्द्र राशि",ctx.moonRashi],["सूर्य राशि",ctx.sunRashi],["चन्द्रमास",ctx.lunarMonth],["अयन",ctx.ayana],
       ...((ctx.planets||[]).map(g=>["ग्रह · "+g.name,[g.rashi,g.degreeText,g.retrograde?"वक्री":"मार्गी"].filter(Boolean).join(" · ")])),
       ["घडी / पला",ctx.ghadiPala],["सूर्योदय / सूर्यास्त",[ctx.sunrise,ctx.sunset].filter(Boolean).map(x=>String(x).includes("T")?nepaliNumber(String(x).slice(11,16)):x).join(" / ")],["ऋतु",[ctx.season,ctx.seasonDescription].filter(Boolean).join(" · ")],
       ["स्थान",ctx.place],["स्थानको स्रोत",ctx.locationMode],["अक्षांश / देशान्तर",ctx.latitude!=null&&ctx.longitude!=null?nepaliNumber(ctx.latitude.toFixed(6))+", "+nepaliNumber(ctx.longitude.toFixed(6)):""],
@@ -117,7 +117,7 @@
       ["स्थान",[
         ["ठेगाना",ctx.place],["निर्देशाङ्क",coord],["उचाइ",ctx.elevationM!=null?n(Math.round(ctx.elevationM))+" मिटर":ctx.altitudeM!=null?n(Math.round(ctx.altitudeM))+" मिटर":""],["GPS शुद्धता",ctx.accuracyM!=null?"±"+n(Math.round(ctx.accuracyM))+" मिटर":""]]],
       ["मौसम तथा वातावरण",[
-        ["तापक्रम",[ctx.weatherTemp,ctx.weatherCondition].filter(Boolean).join(" · ")],["महसुस / न्यूनतम–अधिकतम",[ctx.apparentTemperature!=null?ctx.apparentTemperature+"°":"",Number.isFinite(ctx.tempMin)&&Number.isFinite(ctx.tempMax)?n(Math.round(ctx.tempMin))+"° / "+n(Math.round(ctx.tempMax))+"°":""].filter(Boolean).join(" · ")],["आर्द्रता / हावा",[ctx.humidity!=null?n(ctx.humidity)+"%":"",ctx.windKmh!=null?n(ctx.windKmh)+" km/h":"",ctx.windGustKmh!=null?"झोक्का "+n(ctx.windGustKmh)+" km/h":""].filter(Boolean).join(" · ")],["वर्षा / बादल",[ctx.precipitation!=null?n(ctx.precipitation)+" mm":"",ctx.rainProbability!=null?n(Math.round(ctx.rainProbability))+"%":"",ctx.cloudCover!=null?"बादल "+n(ctx.cloudCover)+"%":""].filter(Boolean).join(" · ")],["वायु गुणस्तर",ctx.usAqi!=null?"AQI "+n(Math.round(ctx.usAqi))+" · "+aqiCategory(ctx.usAqi):""],["अद्यावधिक",ctx.weatherUpdated]]]
+        ["तापक्रम",[ctx.weatherTemp,ctx.weatherCondition].filter(Boolean).join(" · ")],["महसुस / न्यूनतम–अधिकतम",[ctx.apparentTemperature!=null?ctx.apparentTemperature+"°":"",Number.isFinite(ctx.tempMin)&&Number.isFinite(ctx.tempMax)?n(Math.round(ctx.tempMin))+"° / "+n(Math.round(ctx.tempMax))+"°":""].filter(Boolean).join(" · ")],["आर्द्रता / हावा",[ctx.humidity!=null?n(ctx.humidity)+"%":"",ctx.windKmh!=null?n(ctx.windKmh)+" km/h":"",ctx.windGustKmh!=null?"झोक्का "+n(ctx.windGustKmh)+" km/h":""].filter(Boolean).join(" · ")],["वर्षा / बादल",[ctx.precipitation!=null?n(ctx.precipitation)+" mm":"",ctx.rainProbability!=null?n(Math.round(ctx.rainProbability))+"%":"",ctx.cloudCover!=null?"बादल "+n(ctx.cloudCover)+"%":""].filter(Boolean).join(" · ")],["वायु गुणस्तर",ctx.usAqi!=null?"AQI "+n(Math.round(ctx.usAqi))+" · "+aqiCategory(ctx.usAqi):""],["PM2.5",ctx.pm25!=null?n(Math.round(ctx.pm25))+" µg/m³":""],["UV सूचकाङ्क",ctx.uvIndex!=null?n(Number(ctx.uvIndex).toFixed(1)):""],["चाप / शीत बिन्दु",[ctx.pressureHpa!=null?n(Math.round(ctx.pressureHpa))+" hPa":"",ctx.dewPointC!=null?"शीत "+n(Math.round(ctx.dewPointC))+"°":""].filter(Boolean).join(" · ")],["दृश्यता",ctx.visibilityM!=null?n((ctx.visibilityM/1000).toFixed(1))+" km":""],["अद्यावधिक",ctx.weatherUpdated]]]
     ];
     const cards=groups.map(([heading,items])=>{
       const facts=items.filter(([,x])=>v(x)).map(([label,x])=>'<div class="context-summary-fact"><small>'+esc(label)+'</small><b>'+esc(v(x))+'</b></div>').join("");
