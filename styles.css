@@ -3894,3 +3894,8 @@ body .book-page.page-turn-prev{animation:pageTurnPrev .28s cubic-bezier(.35,.7,.
   display:none!important;
   visibility:hidden!important;
 }
+
+
+/* Move the location/weather details and season line a little further upward. */
+#page-home .time-card .time-weather,
+#page-home .time-card .season-line{transform:translateY(-10px)!important}
