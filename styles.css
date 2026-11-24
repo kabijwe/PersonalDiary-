@@ -3967,3 +3967,35 @@ body .book-page.page-turn-prev{animation:pageTurnPrev .28s cubic-bezier(.35,.7,.
   #page-home .social-composer .composer-tools{gap:4px!important;margin-top:5px!important}
   #page-home .social-composer .card-bottom{margin-top:5px!important}
 }
+
+
+/* Fixed quick-entry action: stays in place while the home page scrolls. */
+.home-diary-fab{
+  position:fixed!important;
+  right:20px!important;
+  bottom:24px!important;
+  z-index:85!important;
+  width:60px!important;
+  height:60px!important;
+  display:grid!important;
+  place-items:center!important;
+  padding:0!important;
+  border:1px solid #C40014!important;
+  border-radius:50%!important;
+  background:#C40014!important;
+  color:#fff!important;
+  box-shadow:0 5px 18px rgba(0,0,0,.35)!important;
+  cursor:pointer!important;
+  touch-action:manipulation;
+}
+.home-diary-fab svg{width:27px;height:27px;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.home-diary-fab:active{transform:scale(.95)}
+.home-diary-fab[hidden]{display:none!important}
+@media(max-width:650px){
+  .home-diary-fab{
+    right:16px!important;
+    bottom:calc(76px + env(safe-area-inset-bottom,0px))!important;
+    width:56px!important;
+    height:56px!important;
+  }
+}
