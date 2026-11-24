@@ -3885,3 +3885,12 @@ body .book-page.page-turn-prev{animation:pageTurnPrev .28s cubic-bezier(.35,.7,.
 
 /* Hide manual location selection in the sunrise/location controls as well. */
 .sun-location-controls .manual-place{display:none!important}
+
+
+/* Definitively hide the manual picker inside the sunrise location controls. */
+#page-home .time-card .sun-location-controls .manual-place,
+#page-home .time-card .sun-location-controls .manual-place > span,
+#page-home .time-card .sun-location-controls .manual-place select{
+  display:none!important;
+  visibility:hidden!important;
+}
