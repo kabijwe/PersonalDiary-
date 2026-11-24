@@ -3899,3 +3899,71 @@ body .book-page.page-turn-prev{animation:pageTurnPrev .28s cubic-bezier(.35,.7,.
 /* Move the location/weather details and season line a little further upward. */
 #page-home .time-card .time-weather,
 #page-home .time-card .season-line{transform:translateY(-10px)!important}
+
+
+/* Compact the home overview vertically so the diary composer is reachable without scrolling. */
+@media(max-width:650px){
+  #page-home .time-card{
+    padding:9px 11px!important;
+    margin-bottom:5px!important;
+  }
+  #page-home .time-overview-grid,
+  #page-home .time-overview-main{
+    row-gap:0!important;
+    gap:0!important;
+  }
+  #page-home .time-card .time-weather{
+    margin-top:1px!important;
+    padding:0!important;
+    gap:2px!important;
+    transform:translateY(-10px)!important;
+  }
+  #page-home .time-card .weather-panel-heading{
+    margin:0 0 2px!important;
+    padding:0 0 2px!important;
+    font-size:11px!important;
+    line-height:1.2!important;
+  }
+  #page-home .time-card .weather-summary .place-line{
+    gap:4px!important;
+    line-height:1.2!important;
+  }
+  #page-home .time-card .weather-summary .location-coordinates{
+    gap:1px 8px!important;
+    margin:1px 0 0!important;
+    padding:0!important;
+    line-height:1.2!important;
+  }
+  #page-home .time-card .season-line{
+    margin:0!important;
+    transform:translateY(-10px)!important;
+    line-height:1.25!important;
+  }
+  #page-home .sun-card{
+    margin:0!important;
+    padding:5px 8px!important;
+  }
+  #page-home .sun-card-heading{margin:0 0 1px!important}
+  #page-home .sun-visual-wide{margin:0!important;padding:0!important}
+  #page-home #sunPath{height:74px!important;max-height:74px!important}
+  #page-home .sun-reference-caption{margin:0!important;line-height:1.1!important}
+  #page-home .sun-detail-grid{margin:0!important;padding-top:2px!important;gap:0!important}
+  #page-home .sun-detail-grid>div{gap:0!important;padding:0 3px!important}
+  #page-home .sun-detail-grid>div+div{padding-left:5px!important}
+  #page-home .sun-detail-grid span{line-height:1.1!important}
+  #page-home .sun-detail-grid b{line-height:1.15!important}
+  #page-home .sun-detail-grid small{line-height:1.05!important}
+  #page-home .sun-location-controls{margin:1px 0 0!important}
+  #page-home .sun-location-controls .location-button{min-height:26px!important;padding:3px 7px!important}
+  #page-home .social-composer{
+    margin-top:6px!important;
+    padding:10px!important;
+  }
+  #page-home #quickEntry{
+    min-height:64px!important;
+    height:64px!important;
+    padding:7px 9px!important;
+  }
+  #page-home .social-composer .composer-tools{gap:4px!important;margin-top:5px!important}
+  #page-home .social-composer .card-bottom{margin-top:5px!important}
+}
