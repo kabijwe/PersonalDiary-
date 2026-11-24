@@ -3999,3 +3999,20 @@ body .book-page.page-turn-prev{animation:pageTurnPrev .28s cubic-bezier(.35,.7,.
     height:56px!important;
   }
 }
+
+
+/* Home shortcut card for the complete personal diary archive. */
+.diary-pages-card{
+  width:100%;display:flex;align-items:center;gap:12px;text-align:left;
+  margin:10px 0 14px;padding:15px 16px;border:1px solid rgba(255,255,255,.24);
+  border-radius:14px;background:linear-gradient(115deg,rgba(196,0,20,.16),rgba(20,20,24,.92));
+  color:#fff;cursor:pointer;box-shadow:0 5px 18px rgba(0,0,0,.16);
+}
+.diary-pages-card:active{transform:scale(.99)}
+.diary-pages-icon{display:grid;place-items:center;flex:0 0 42px;height:42px;border-radius:11px;background:#c40014;color:#fff;font-size:23px}
+.diary-pages-copy{display:flex;flex:1;min-width:0;flex-direction:column;gap:3px}
+.diary-pages-copy strong{font-size:15px;font-weight:800;color:#fff}
+.diary-pages-copy small{font-size:11px;line-height:1.4;color:rgba(255,255,255,.72)}
+.diary-pages-count{white-space:nowrap;padding:5px 8px;border:1px solid rgba(255,255,255,.22);border-radius:20px;color:#fff;font-size:11px}
+.diary-pages-arrow{font-size:19px;color:#fff}
+@media(max-width:650px){.diary-pages-card{gap:9px;margin:8px 0 12px;padding:12px}.diary-pages-icon{flex-basis:38px;height:38px}.diary-pages-copy strong{font-size:14px}.diary-pages-copy small{font-size:10px}.diary-pages-count{font-size:10px;padding:4px 6px}}
