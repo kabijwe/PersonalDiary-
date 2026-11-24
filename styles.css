@@ -3856,3 +3856,9 @@ body .book-page.page-turn-prev{animation:pageTurnPrev .28s cubic-bezier(.35,.7,.
 #page-home #weatherUpdated{
   display:none!important;
 }
+
+
+/* Keep the season description on one line and make altitude text white. */
+#page-home .season-line{flex-wrap:nowrap;gap:5px;min-width:0}
+#page-home .season-line #seasonDesc{white-space:nowrap;overflow:hidden;text-overflow:clip;min-width:0;font-size:clamp(8px,2.25vw,11px);letter-spacing:-.18px;line-height:1.2}
+#page-home .location-coordinates #locationAltitude{color:#fff!important;-webkit-text-fill-color:#fff!important}
