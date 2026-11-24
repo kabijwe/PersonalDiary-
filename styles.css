@@ -3872,3 +3872,7 @@ body .book-page.page-turn-prev{animation:pageTurnPrev .28s cubic-bezier(.35,.7,.
 #page-home .season-line #seasonName{flex:0 0 auto!important;white-space:nowrap!important}
 #page-home .season-line #seasonDesc{flex:0 0 auto!important;min-width:0!important;white-space:nowrap!important;overflow:visible!important;text-overflow:clip!important;font-size:clamp(9px,3vw,12px)!important;letter-spacing:-.15px!important;line-height:1.35!important}
 #page-home .season-line #seasonDesc::before{content:": ";white-space:pre}
+
+
+/* Hide the manual location picker; keep its element for existing app logic. */
+#page-home .manual-place{display:none!important}
