@@ -4039,3 +4039,26 @@ body .book-page.page-turn-prev{animation:pageTurnPrev .28s cubic-bezier(.35,.7,.
 .book-more-context summary{font-size:9px;color:#8b654e}
 .book-more-context .context-detail-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
 @media(max-width:520px){.context-summary-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:5px}.context-summary-group{padding:6px}.context-summary-facts{grid-template-columns:repeat(2,minmax(0,1fr));gap:4px}.context-summary-group h3{font-size:8px}.context-summary-fact small{font-size:7px}.context-summary-fact b{font-size:8px;line-height:1.3}.book-context-summary-wrap{margin:7px 0 10px}}
+
+
+/* Diary page context: concise grouped facts, no overflowing metadata strip or inner scrolling. */
+.book-context-summary-wrap{margin:8px 0 12px!important;overflow:visible!important;max-height:none!important}
+.context-summary-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px}
+.context-summary-group{min-width:0;padding:5px 6px;border:1px solid #d8cfbd;border-radius:6px;background:#fffdf7;break-inside:avoid}
+.context-summary-group h3{margin:0 0 4px;padding-bottom:3px;border-bottom:1px solid #e7e0d4;font:700 8px "DM Sans",sans-serif;color:#8b0010}
+.context-summary-facts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:3px 5px}
+.context-summary-fact{min-width:0;display:flex;flex-direction:column;gap:0}
+.context-summary-fact small{font:7px "DM Sans",sans-serif;color:#8a7a66;line-height:1.15}
+.context-summary-fact b{font:600 8px "Mukta",sans-serif;color:#344b60;line-height:1.2;overflow-wrap:anywhere}
+.context-summary-fact:last-child:nth-child(odd){grid-column:1/-1}
+.book-page .book-context-line,.book-page .book-auto-details{display:none!important}
+.book-page .book-context-summary-wrap *{max-height:none!important;overflow:visible!important}
+@media(max-width:520px){
+ .book-context-summary-wrap{margin:5px 0 8px!important}
+ .context-summary-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:4px}
+ .context-summary-group{padding:4px 5px}
+ .context-summary-group h3{font-size:7px;margin-bottom:3px}
+ .context-summary-facts{gap:2px 4px}
+ .context-summary-fact small{font-size:6px}
+ .context-summary-fact b{font-size:7px;line-height:1.15}
+}
