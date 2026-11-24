@@ -61,17 +61,25 @@
   function contextSummaryHTML(ctx){
     if(!ctx)return '<p class="muted">यस पानाको समय, स्थान वा मौसम विवरण उपलब्ध छैन।</p>';
     const v=x=>x===null||x===undefined||x===""||x==="—"?"":String(x);
-    const tm=x=>{const s=v(x);return s.includes("T")?nepaliNumber(s.slice(11,16)):s};
-    const coord=ctx.latitude!=null&&ctx.longitude!=null?nepaliNumber(Number(ctx.latitude).toFixed(5))+", "+nepaliNumber(Number(ctx.longitude).toFixed(5)):"";
-    const sun=[tm(ctx.sunrise),tm(ctx.sunset)].filter(Boolean).join(" / ");
+    const n=x=>nepaliNumber(x);
+    const time=x=>{const s=v(x);return s.includes("T")?n(s.slice(11,16)):s};
+    const coord=ctx.latitude!=null&&ctx.longitude!=null?n(Number(ctx.latitude).toFixed(4))+", "+n(Number(ctx.longitude).toFixed(4)):"";
+    const sun=[time(ctx.sunrise),time(ctx.sunset)].filter(Boolean).join(" / ");
     const groups=[
-      ["समय तथा मिति",[["नेपाल समय",ctx.nepalTime],["अङ्ग्रेजी मिति",ctx.adDate],["विक्रम संवत्",ctx.bsDate],["बार / हप्ता",[ctx.weekday,ctx.weekNumber!=null?"हप्ता "+nepaliNumber(ctx.weekNumber):""].filter(Boolean).join(" · ")],["समय क्षेत्र",ctx.timezone]]],
-      ["पञ्चाङ्ग",[["तिथि / पक्ष",[ctx.tithi,ctx.paksha,ctx.tithiEnd].filter(Boolean).join(" · ")],["नक्षत्र / पाद",[ctx.nakshatra,ctx.nakshatraPada,ctx.nakshatraEnd].filter(Boolean).join(" · ")],["योग",ctx.yoga],["करण",ctx.karana],["चन्द्र / सूर्य राशि",[ctx.moonRashi&&"चन्द्र "+ctx.moonRashi,ctx.sunRashi&&"सूर्य "+ctx.sunRashi].filter(Boolean).join(" · ")],["चन्द्रमास / अयन",[ctx.lunarMonth,ctx.ayana].filter(Boolean).join(" · ")],["घडी / पला",ctx.ghadiPala],["सूर्योदय / सूर्यास्त",sun],["ऋतु",[ctx.season,ctx.seasonDescription].filter(Boolean).join(" · ")]]],
-      ["स्थान तथा GPS",[["स्थान",ctx.place],["स्थानको स्रोत",ctx.locationMode],["निर्देशाङ्क",coord],["उचाइ",ctx.elevationM!=null?nepaliNumber(Math.round(ctx.elevationM))+" मिटर":ctx.altitudeM!=null?nepaliNumber(Math.round(ctx.altitudeM))+" मिटर":""],["GPS शुद्धता",ctx.accuracyM!=null?"±"+nepaliNumber(Math.round(ctx.accuracyM))+" मिटर":""],["गति",ctx.speedKmh!=null?nepaliNumber(Number(ctx.speedKmh).toFixed(1))+" km/h":""]]],
-      ["मौसम तथा वातावरण",[["तापक्रम / अवस्था",[ctx.weatherTemp,ctx.weatherCondition].filter(Boolean).join(" · ")],["महसुस हुने",ctx.apparentTemperature!=null?ctx.apparentTemperature+" °C":""],["न्यूनतम / अधिकतम",[ctx.tempMin,ctx.tempMax].every(Number.isFinite)?nepaliNumber(Math.round(ctx.tempMin))+"° / "+nepaliNumber(Math.round(ctx.tempMax))+"°":""],["आर्द्रता",ctx.humidity!=null?nepaliNumber(ctx.humidity)+"%":""],["हावा",ctx.windKmh!=null?nepaliNumber(ctx.windKmh)+" km/h":""],["दिशा / झोक्का",[ctx.windDirection!=null?nepaliNumber(Math.round(ctx.windDirection))+"°":"",ctx.windGustKmh!=null?nepaliNumber(Math.round(ctx.windGustKmh))+" km/h":""].filter(Boolean).join(" · ")],["वर्षा / सम्भावना",[ctx.precipitation!=null?nepaliNumber(ctx.precipitation)+" mm":"",ctx.rainProbability!=null?nepaliNumber(Math.round(ctx.rainProbability))+"% सम्भावना":""].filter(Boolean).join(" · ")],["बादल",ctx.cloudCover!=null?nepaliNumber(ctx.cloudCover)+"%":""],["चाप",ctx.pressureHpa!=null?nepaliNumber(Math.round(ctx.pressureHpa))+" hPa":""],["शीत बिन्दु",ctx.dewPointC!=null?nepaliNumber(Math.round(ctx.dewPointC))+"°":""],["दृश्यता",ctx.visibilityM!=null?nepaliNumber((ctx.visibilityM/1000).toFixed(1))+" km":""],["वायु गुणस्तर",ctx.usAqi!=null?"AQI "+nepaliNumber(Math.round(ctx.usAqi))+" · "+aqiCategory(ctx.usAqi):""],["PM2.5",ctx.pm25!=null?nepaliNumber(Math.round(ctx.pm25))+" µg/m³":""],["UV Index",ctx.uvIndex!=null?nepaliNumber(Number(ctx.uvIndex).toFixed(1)):""],["अद्यावधिक",ctx.weatherUpdated],["सुझाव",ctx.suggestion]]]
+      ["मिति तथा समय",[
+        ["समय",ctx.nepalTime],["मिति",[ctx.adDate,ctx.bsDate].filter(Boolean).join(" · ")],["बार",ctx.weekday],["हप्ता",ctx.weekNumber!=null?n(ctx.weekNumber):""]]],
+      ["पञ्चाङ्ग",[
+        ["तिथि",[ctx.tithi,ctx.paksha].filter(Boolean).join(" · ")],["नक्षत्र",[ctx.nakshatra,ctx.nakshatraPada?"पाद "+ctx.nakshatraPada:"",ctx.nakshatraEnd].filter(Boolean).join(" · ")],["योग / करण",[ctx.yoga,ctx.karana].filter(Boolean).join(" · ")],["राशि",[ctx.moonRashi&&"चन्द्र "+ctx.moonRashi,ctx.sunRashi&&"सूर्य "+ctx.sunRashi].filter(Boolean).join(" · ")],["मास / अयन / ऋतु",[ctx.lunarMonth,ctx.ayana,ctx.season].filter(Boolean).join(" · ")],["घडी / पला",ctx.ghadiPala],["सूर्योदय / सूर्यास्त",sun]]],
+      ["स्थान",[
+        ["ठेगाना",ctx.place],["निर्देशाङ्क",coord],["उचाइ",ctx.elevationM!=null?n(Math.round(ctx.elevationM))+" मिटर":ctx.altitudeM!=null?n(Math.round(ctx.altitudeM))+" मिटर":""],["GPS शुद्धता",ctx.accuracyM!=null?"±"+n(Math.round(ctx.accuracyM))+" मिटर":""]]],
+      ["मौसम तथा वातावरण",[
+        ["तापक्रम",[ctx.weatherTemp,ctx.weatherCondition].filter(Boolean).join(" · ")],["महसुस / न्यूनतम–अधिकतम",[ctx.apparentTemperature!=null?ctx.apparentTemperature+"°":"",Number.isFinite(ctx.tempMin)&&Number.isFinite(ctx.tempMax)?n(Math.round(ctx.tempMin))+"° / "+n(Math.round(ctx.tempMax))+"°":""].filter(Boolean).join(" · ")],["आर्द्रता / हावा",[ctx.humidity!=null?n(ctx.humidity)+"%":"",ctx.windKmh!=null?n(ctx.windKmh)+" km/h":"",ctx.windGustKmh!=null?"झोक्का "+n(ctx.windGustKmh)+" km/h":""].filter(Boolean).join(" · ")],["वर्षा / बादल",[ctx.precipitation!=null?n(ctx.precipitation)+" mm":"",ctx.rainProbability!=null?n(Math.round(ctx.rainProbability))+"%":"",ctx.cloudCover!=null?"बादल "+n(ctx.cloudCover)+"%":""].filter(Boolean).join(" · ")],["वायु गुणस्तर",ctx.usAqi!=null?"AQI "+n(Math.round(ctx.usAqi))+" · "+aqiCategory(ctx.usAqi):""],["अद्यावधिक",ctx.weatherUpdated]]]
     ];
-    const cards=groups.map(([heading,items])=>{const facts=items.filter(([,x])=>v(x)).map(([label,x])=>'<div class="context-summary-fact"><small>'+esc(label)+'</small><b>'+esc(v(x))+'</b></div>').join("");return facts?'<section class="context-summary-group"><h3>'+esc(heading)+'</h3><div class="context-summary-facts">'+facts+'</div></section>':""}).join("");
-    return '<div class="context-summary-heading">यस पानाको स्वचालित विवरण</div><div class="context-summary-grid">'+cards+'</div>';
+    const cards=groups.map(([heading,items])=>{
+      const facts=items.filter(([,x])=>v(x)).map(([label,x])=>'<div class="context-summary-fact"><small>'+esc(label)+'</small><b>'+esc(v(x))+'</b></div>').join("");
+      return facts?'<section class="context-summary-group"><h3>'+esc(heading)+'</h3><div class="context-summary-facts">'+facts+'</div></section>':"";
+    }).join("");
+    return '<div class="context-summary-grid">'+cards+'</div>';
   }
 
   function load(){try{return JSON.parse(localStorage.getItem(KEY)) || {entries:[],events:[],memories:[],templates:[],settings:{}}}catch{return {entries:[],events:[],memories:[],templates:[],settings:{}}}}
@@ -772,13 +780,7 @@
       '<div class="book-binding"></div><div class="book-head"><span>kabijwe · व्यक्तिगत डायरी</span><span>~बिक्रमादित्य</span></div><div class="book-rule"></div>'+
       '<div class="book-date-row"><span>✧ '+esc(dateText(e.date))+'</span><span>◷ '+esc(e.context?.nepalTime||"")+'</span></div><div class="book-bs-date">'+esc(e.context?.bsDate||"")+'</div>'+
       '<div class="book-context-summary-wrap">'+contextSummaryHTML(e.context)+'</div>'+
-      ((e.context?.place||e.context?.weatherCondition||e.context?.weatherTemp||e.context?.season)?'<div class="book-auto-details">'+
-        (e.context?.place?'<span><small>स्थान</small><b>⌖ '+esc(e.context.place)+'</b></span>':"")+
-        ((e.context?.weatherCondition||e.context?.weatherTemp)?'<span><small>मौसम</small><b>☼ '+esc([e.context.weatherTemp,e.context.weatherCondition,e.context.humidity!=null?'आर्द्रता '+e.context.humidity+'%':'',e.context.windKmh!=null?'हावा '+e.context.windKmh+' km/h':''].filter(Boolean).join(" · "))+'</b></span>':"")+
-        (e.context?.season?'<span><small>ऋतु</small><b>'+esc([e.context.season,e.context.seasonDescription].filter(Boolean).join(" · "))+'</b></span>':"")+
-      '</div>':"")+
       '<h1 class="book-title">'+title+'</h1><div class="book-content">'+body+'</div><div class="book-media">'+media+'</div>'+
-      (p.showMeta!==false&&meta?'<div class="book-context-line">'+esc(meta)+'</div>':"")+
       '<details class="book-more-context"><summary>समयको अनुभूति · सम्पूर्ण विवरण</summary>'+(context||'<p class="muted">विवरण छैन।</p>')+'</details>'+
       '<div class="book-sign">~बिक्रमादित्य</div><div class="book-page-number">'+(activeBookIndex+1)+' / '+activeBookEntries.length+'</div></article></div>'+
       '<div class="book-navigation"><button class="btn secondary" id="bookPrev" '+(activeBookIndex===0?"disabled":"")+ '>‹ अघिल्लो पाना</button><span>'+(activeBookIndex+1)+' / '+activeBookEntries.length+'</span><button class="btn secondary" id="bookNext" '+(activeBookIndex===activeBookEntries.length-1?"disabled":"")+ '>अर्को पाना ›</button></div>'+
