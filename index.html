@@ -179,7 +179,7 @@
           <div id="reminderAlert" class="reminder-alert" role="alert" aria-live="assertive" hidden></div>
           <form id="reminderForm" class="reminder-form">
             <label>के सम्झनुपर्नेछ?<input id="reminderTitle" required maxlength="120" placeholder="औषधि, काम, भेटघाट..."></label>
-            <label>मिति र समय<input id="reminderDueAt" type="datetime-local" required></label>
+            <label>मिति र समय छान्नुहोस्<input id="reminderDueAt" type="datetime-local" required></label>
             <button class="btn primary" type="submit">＋ रिमाइन्डर सुरक्षित गर्नुहोस्</button>
           </form>
           <div id="reminderList" class="reminder-list" aria-live="polite"></div>
@@ -251,7 +251,7 @@
             <div class="button-row"><button class="btn primary" id="printLetter">PDF / Print</button><button class="btn secondary" id="saveTemplate">ढाँचा सुरक्षित</button></div>
             <p class="tiny muted">Print विकल्पबाट मोबाइल वा कम्प्युटरमा PDF रूपमा सुरक्षित गर्न सकिन्छ।</p>
           </div>
-          <div class="preview-wrap"><div id="letterPreview" class="letter-preview a4"><div class="lp-art" id="lpArt"></div><div class="lp-content"><div class="lp-brand">kabijwe <span>~बिक्रमादित्य</span></div><h2 id="previewTitle">कविताको शीर्षक</h2><div id="previewBody" class="lp-poem">तपाईंका शब्दहरू यहाँ देखिनेछन्...</div><div id="previewSign" class="lp-sign">~बिक्रमादित्य</div></div></div></div>
+          <div class="preview-wrap"><div id="letterPreview" class="letter-preview a4"><div class="lp-art" id="lpArt"></div><div class="lp-content"><div class="lp-brand">kabijwe <span>~बिक्रमादित्य</span></div><div id="letterContextMeta" class="letter-context-meta context-stamp letter-context-stamp"></div><h2 id="previewTitle">कविताको शीर्षक</h2><div id="previewBody" class="lp-poem">तपाईंका शब्दहरू यहाँ देखिनेछन्...</div><div id="previewSign" class="lp-sign">~बिक्रमादित्य</div></div></div></div>
         </div>
         <div class="section-heading"><div><p class="eyebrow">तपाईंका डिजाइन</p><h2>सुरक्षित ढाँचाहरू</h2></div></div><div id="templateList" class="template-list"></div>
       </section>
@@ -294,6 +294,7 @@
     <form method="dialog" id="entryForm">
       <div class="modal-head"><div><p class="eyebrow" id="editorEyebrow">नयाँ पाना</p><h2 id="editorHeading">डायरी लेख्नुहोस्</h2></div><button class="icon-btn" value="cancel" aria-label="Close">×</button></div>
       <p id="editorContextNote" class="entry-context" style="margin:0 0 10px;font-size:11px;">समयको अनुभूति · यस पानासँग सुरक्षित गरिएको मिति, पञ्चाङ्ग, स्थान र मौसम</p>
+      <div id="editorContextStamp" class="context-stamp editor-context-stamp" aria-label="यस पानाको समय, पञ्चाङ्ग, स्थान र मौसम"></div>
       <details id="entryContextDetails" class="post-letter-context editor-context-panel"><summary>समयको अनुभूति · विस्तृत विवरण आवश्यक परे खोल्नुहोस्</summary><div id="entryContextDetailsContent"></div></details>
       <input type="hidden" id="entryId">
       <label>शीर्षक<input id="entryTitle" placeholder="आजको दिन..." maxlength="120"></label>
