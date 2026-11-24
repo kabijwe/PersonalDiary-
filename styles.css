@@ -3862,3 +3862,15 @@ body .book-page.page-turn-prev{animation:pageTurnPrev .28s cubic-bezier(.35,.7,.
 #page-home .season-line{flex-wrap:nowrap;gap:5px;min-width:0}
 #page-home .season-line #seasonDesc{white-space:nowrap;overflow:hidden;text-overflow:clip;min-width:0;font-size:clamp(8px,2.25vw,11px);letter-spacing:-.18px;line-height:1.2}
 #page-home .location-coordinates #locationAltitude{color:#fff!important;-webkit-text-fill-color:#fff!important}
+
+
+/* Time-card hierarchy: tithi line stays clean; AD date remains prominent on the right. */
+#page-home #timeAdDate{font-size:15px!important;font-weight:700!important;line-height:1.35}
+#page-home .time-overview-left{display:contents!important}
+#page-home .time-card-head{grid-column:1!important;grid-row:1!important}
+#page-home .time-date{grid-column:1!important;grid-row:2!important;min-width:0}
+#page-home .time-date-side{grid-column:2!important;grid-row:1 / span 2!important}
+#page-home .season-line{grid-column:1 / -1!important;grid-row:3!important;display:flex!important;flex-wrap:nowrap!important;align-items:baseline!important;gap:4px!important;width:100%!important;min-width:0!important;margin:4px 0 0!important}
+#page-home .season-line #seasonName{flex:0 0 auto!important;white-space:nowrap!important}
+#page-home .season-line #seasonDesc{flex:1 1 auto!important;min-width:0!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:clip!important;font-size:clamp(8px,2.6vw,11px)!important;letter-spacing:-.2px!important;line-height:1.2!important}
+#page-home .season-line #seasonDesc::before{content:": ";white-space:pre}
