@@ -3811,3 +3811,39 @@ body .book-page.page-turn-prev{animation:pageTurnPrev .28s cubic-bezier(.35,.7,.
   line-height:1.55!important;
 }
 #page-home .time-card .season-line #seasonDesc{flex:1 1 220px!important}
+
+
+/* Calendar menu: live Panchang and weather detail cards with clean white borders. */
+#page-calendar .calendar-live-details{
+  margin:16px 0 22px;padding:16px;border:1px solid rgba(255,255,255,.28);
+  border-radius:14px;background:rgba(8,11,16,.72);
+}
+#page-calendar .calendar-live-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:14px}
+#page-calendar .calendar-live-heading h2{margin:2px 0 4px;color:#fff;font-size:20px}
+#page-calendar .calendar-live-heading .muted{margin:0}
+#page-calendar .calendar-detail-section{margin-top:14px}
+#page-calendar .calendar-detail-section h3{margin:0 0 9px;color:#fff;font-size:15px;font-weight:800}
+#page-calendar .calendar-detail-grid{
+  display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;align-items:stretch;
+}
+#page-calendar .calendar-detail-grid .weather-metric,
+#page-calendar .calendar-detail-grid .panchang-item{
+  display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-start;
+  min-width:0;margin:0;padding:9px;border:1px solid #fff!important;border-radius:8px;
+  background:#050505;box-shadow:none;gap:3px;line-height:1.4;
+}
+#page-calendar .calendar-detail-grid .weather-label{
+  color:#fff!important;-webkit-text-fill-color:#fff!important;font-size:12px;font-weight:800;line-height:1.4;
+}
+#page-calendar .calendar-detail-grid .weather-value{
+  color:#fff!important;-webkit-text-fill-color:#fff!important;font-size:12px;font-weight:500;line-height:1.4;overflow-wrap:anywhere;
+}
+@media(max-width:650px){
+  #page-calendar .calendar-live-details{padding:11px;margin:12px 0 18px}
+  #page-calendar .calendar-detail-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:5px}
+  #page-calendar .calendar-detail-grid .weather-metric,
+  #page-calendar .calendar-detail-grid .panchang-item{padding:6px 5px;gap:2px;border-radius:6px}
+  #page-calendar .calendar-detail-grid .weather-label,
+  #page-calendar .calendar-detail-grid .weather-value{font-size:10px;line-height:1.35}
+  #page-calendar .calendar-live-heading h2{font-size:17px}
+}
