@@ -655,7 +655,8 @@
     fillManualSelect();renderLocation();refreshPanchang();loadWeather();
     if(loc.mode==="gps")reverseName(loc.lat,loc.lon,locSeq);
   }
-  $("#manualPlace").addEventListener("change",e=>{
+  const manualPlace=$("#manualPlace");
+  if(manualPlace)manualPlace.addEventListener("change",e=>{
     const hit=LOCATIONS.find(x=>x.id===e.target.value);if(!hit)return;
     applyLocation({mode:"manual",id:hit.id,name:hit.name,lat:hit.lat,lon:hit.lon},{persist:true});
     toast(`स्थान: ${hit.name} (हातले छानिएको)`);
