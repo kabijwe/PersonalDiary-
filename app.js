@@ -253,10 +253,8 @@
     const currentTithi=pan?.tithi;
     setText("timeCardTitle",wd);
     const endMs=currentTithi?.endMs;
-    const endParts=endMs?nptP(endMs):null;
     const endClock=endMs?clock12(endMs):null;
-    const endDate=endParts?nepaliNumber(`${pad2(endParts.d)} ${AD_MONTHS[endParts.m-1]} ${endParts.y}`):"";
-    const tithiEnd=endMs?` तिथि · समाप्ति ${endDate} · ${endClock.word} ${endClock.text}`:"";
+    const tithiEnd=endMs?` तिथि · समाप्ति · ${endClock.word} ${endClock.text}`:"";
     const lunarMonth=currentTithi?(currentTithi.shukla?pan.lunarMonth.amanta:pan.lunarMonth.purnimanta):"";
     setText("timeTithi",currentTithi?`${lunarMonth} ${currentTithi.paksha} ${currentTithi.name}${tithiEnd}`:"पञ्चाङ्ग गणना हुँदैछ…");
     setText("timeAdDate",nepaliNumber(`${pad2(p.d)} ${AD_MONTHS[p.m-1]} ${p.y}`));
@@ -301,10 +299,9 @@
     setText("pTithi",t.name);
     setText("pPaksha",t.paksha);
     // Keep the live time-card line synchronized with the calculated current tithi.
-    const endParts=nptP(t.endMs),endClock=clock12(t.endMs);
-    const endDate=nepaliNumber(`${pad2(endParts.d)} ${AD_MONTHS[endParts.m-1]} ${endParts.y}`);
+    const endClock=clock12(t.endMs);
     const monthName=t.shukla?pan.lunarMonth.amanta:pan.lunarMonth.purnimanta;
-    setText("timeTithi",`${monthName} ${t.paksha} ${t.name} तिथि · समाप्ति ${endDate} · ${endClock.word} ${endClock.text}`);
+    setText("timeTithi",`${monthName} ${t.paksha} ${t.name} तिथि · समाप्ति · ${endClock.word} ${endClock.text}`);
     const sr=pan.atSunrise&&pan.atSunrise.tithi.number!==t.number?` · सूर्योदयमा ${pan.atSunrise.tithi.name}`:"";
     setText("pTithiEnd",`समाप्ति ${fmtEnd(t.endMs,now)}${sr}`);
     setText("pNakshatra",n.name);
