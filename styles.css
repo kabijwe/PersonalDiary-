@@ -4079,3 +4079,42 @@ body .book-page.page-turn-prev{animation:pageTurnPrev .28s cubic-bezier(.35,.7,.
  .context-stamp-row{font-size:8px;line-height:1.35}
  .reminder-context-stamp .context-stamp-row{font-size:7px}
 }
+
+
+/* Diary typography: metadata is a quiet three-line colophon, never dashboard cards. */
+.book-context-summary-wrap{
+  display:block!important;
+  margin:18px 0 10px!important;
+  padding:7px 0!important;
+  border:0!important;
+  border-top:1px dotted rgba(120,100,75,.35)!important;
+  border-bottom:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+.book-context-summary-wrap .context-stamp{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr)!important;
+  gap:2px!important;
+}
+.book-context-summary-wrap .context-stamp-row{
+  display:block!important;
+  padding:0!important;
+  margin:0!important;
+  border:0!important;
+  background:transparent!important;
+  font:400 8px/1.45 "Mukta",serif!important;
+  color:#796f61!important;
+  text-align:left!important;
+  overflow-wrap:anywhere!important;
+}
+.book-context-summary-wrap .context-stamp-row b{font-weight:700!important;color:#665746!important}
+.book-page .book-date-row{display:block!important;margin:0 0 12px!important;font-size:9px!important;color:#8b765e!important}
+.book-page .book-bs-date{display:none!important}
+.book-page .book-title{margin-top:8px!important}
+.book-more-context{margin:4px 0 12px!important;padding-top:5px!important;border-top:1px dashed rgba(120,100,75,.28)!important}
+.book-more-context summary{font-size:8px!important;color:#8b765e!important}
+@media(max-width:520px){
+ .book-context-summary-wrap{margin:14px 0 8px!important;padding:6px 0!important}
+ .book-context-summary-wrap .context-stamp-row{font-size:7.5px!important;line-height:1.4!important}
+}
