@@ -180,6 +180,13 @@
           <div class="card-bottom"><span class="muted tiny">तपाईंका शब्द र मिडिया यही उपकरणमा सुरक्षित हुन्छन्।</span><button class="btn primary" id="saveQuick">पोस्ट गर्नुहोस् ↗</button></div>
         </article>
 
+        <button type="button" class="paper-card diary-pages-card" id="diaryPagesCard" aria-label="मेरो डायरीका पानाहरू खोल्नुहोस्">
+          <span class="diary-pages-icon" aria-hidden="true">▤</span>
+          <span class="diary-pages-copy"><strong>मेरो डायरीका पानाहरू</strong><small>तपाईंले अहिलेसम्म लेखेका सबै पोस्टहरू एकै ठाउँमा</small></span>
+          <span class="diary-pages-count" id="diaryPagesCount">० पाना</span>
+          <span class="diary-pages-arrow" aria-hidden="true">↗</span>
+        </button>
+
         <section class="reminder-manager" aria-labelledby="reminderHeading">
           <div class="reminder-head">
             <div><span class="eyebrow">स्थानीय सम्झना</span><h2 id="reminderHeading">रिमाइन्डर</h2><p class="muted">तपाईंको उपकरणमै सुरक्षित हुने सूचना र सम्झना।</p></div>
@@ -240,7 +247,7 @@
       </section>
 
       <section class="page" id="page-poetry">
-        <div class="page-heading"><div><p class="eyebrow">तपाईंका शब्द र अनुभूतिहरू</p><h1>सिर्जना</h1><p class="muted">तपाईंले गृहपृष्ठबाट लेखेका डायरीका पानाहरू। कुनै GPS नक्सा वा यात्रा रेकर्ड यहाँ देखाइँदैन।</p></div></div>
+        <div class="page-heading"><div><p class="eyebrow">तपाईंका शब्द र अनुभूतिहरू</p><h1>मेरो डायरीका पानाहरू</h1><p class="muted">तपाईंले अहिलेसम्म लेखेका सबै डायरी पोस्टहरू। कुनै GPS नक्सा वा यात्रा रेकर्ड यहाँ देखाइँदैन।</p></div></div>
         <div class="toolbar"><input id="diarySearch" type="search" placeholder="आफ्ना पानाहरू खोज्नुहोस्..."><select id="diaryFilter"><option value="all">सबै पाना</option><option value="private">निजी</option><option value="selected">छानिएका साथीहरू</option><option value="friends">साथीहरू</option><option value="public">सार्वजनिक</option><option value="draft">ड्राफ्ट</option></select></div>
         <div class="creation-intro"><span>✧</span><p>हरेक लेखाइ एउटा छुट्टै पाना हो। पाना खोल्न ट्याप गर्नुहोस्, अनि अर्को/अघिल्लो पाना पल्टाएर पढ्नुहोस्।</p></div>
         <div id="diaryList" class="entry-list creation-pages"></div>
