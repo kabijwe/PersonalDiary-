@@ -14,6 +14,7 @@
     const wxMatches=Number.isFinite(wx.lat)&&Number.isFinite(wx.lon)&&Math.abs(wx.lat-loc.lat)<0.05&&Math.abs(wx.lon-loc.lon)<0.05;
     const exactClock=format24Clock(now);
     const exactDate=nepaliNumber(`${pad2(p.d)} ${AD_MONTHS[p.m-1]} ${p.y}`);
+    const planets=PX?.planetaryPositions?PX.planetaryPositions(now):[];
     return {
       capturedAt:now,capturedAtISO:new Date(now).toISOString(),nepalTime:exactClock,adDate:exactDate,
       bsDate:bsText()||read("timeBsDate"),weekday:WEEKDAYS[dayOfWeek(now)],weekNumber:`हप्ता ${nepaliNumber(isoWeekNumber(now))}`,
@@ -22,7 +23,7 @@
       yoga:read("pYoga"),yogaEnd:read("pYogaEnd"),karana:read("pKarana"),karanaEnd:read("pKaranaEnd"),
       moonRashi:read("pMoonRashi"),sunRashi:read("pSunRashi"),lunarMonth:read("pLunarMonth"),ayana:read("pAyana"),
       ghadiPala:read("pGhadiPala"),sunrise:read("sunriseTime"),sunset:read("sunsetTime"),
-      season:read("seasonName"),seasonDescription:read("seasonDesc"),
+      season:read("seasonName"),seasonDescription:read("seasonDesc"),planets,
       place:loc.name||read("placeName"),locationMode:modeLabel(),latitude:Number.isFinite(loc.lat)?loc.lat:null,
       longitude:Number.isFinite(loc.lon)?loc.lon:null,altitudeM:Number.isFinite(loc.elevation)?loc.elevation:(Number.isFinite(loc.altitude)?loc.altitude:null),accuracyM:Number.isFinite(loc.accuracy)?loc.accuracy:null,speedKmh:Number.isFinite(loc.speed)?loc.speed*3.6:null,
       weatherTemp:wxMatches?read("weatherTemp"):"",apparentTemperature:wxMatches&&Number.isFinite(wx.apparent)?wx.apparent:null,
@@ -50,7 +51,8 @@
       ctx.yoga&&"योग "+ctx.yoga,ctx.karana&&"करण "+ctx.karana,
       ctx.moonRashi&&"चन्द्र "+ctx.moonRashi,ctx.sunRashi&&"सूर्य "+ctx.sunRashi,
       ctx.lunarMonth,ctx.ayana,ctx.ghadiPala&&"घडी "+ctx.ghadiPala,
-      (ctx.sunrise||ctx.sunset)&&"सूर्योदय/अस्त "+[time(ctx.sunrise),time(ctx.sunset)].filter(Boolean).join("/")
+      (ctx.sunrise||ctx.sunset)&&"सूर्योदय/अस्त "+[time(ctx.sunrise),time(ctx.sunset)].filter(Boolean).join("/"),
+      (ctx.planets||[]).map(g=>g.name+" "+g.rashi+" "+g.degreeText+(g.retrograde?" वक्री":"")).join(" · ")
     ].filter(Boolean).join(" · ");
     const coords=ctx.latitude!=null&&ctx.longitude!=null?nepaliNumber(Number(ctx.latitude).toFixed(5))+", "+nepaliNumber(Number(ctx.longitude).toFixed(5)):"";
     const gps=[
@@ -84,6 +86,7 @@
     const rows=[["नेपाल समय",ctx.nepalTime],["ग्रेगोरियन मिति",ctx.adDate],["विक्रम संवत्",ctx.bsDate],["बार / हप्ता",[ctx.weekday,ctx.weekNumber].filter(Boolean).join(" · ")],
       ["तिथि / पक्ष",[ctx.tithi,ctx.paksha,ctx.tithiEnd].filter(Boolean).join(" · ")],["नक्षत्र / पाद",[ctx.nakshatra,ctx.nakshatraPada,ctx.nakshatraEnd].filter(Boolean).join(" · ")],
       ["योग",ctx.yoga],["करण",ctx.karana],["चन्द्र राशि",ctx.moonRashi],["सूर्य राशि",ctx.sunRashi],["चन्द्रमास",ctx.lunarMonth],["अयन",ctx.ayana],
+      ...((ctx.planets||[]).map(g=>["ग्रह · "+g.name,[g.rashi,g.degreeText,g.retrograde?"वक्री":"मार्गी"].filter(Boolean).join(" · ")])),
       ["घडी / पला",ctx.ghadiPala],["सूर्योदय / सूर्यास्त",[ctx.sunrise,ctx.sunset].filter(Boolean).map(x=>String(x).includes("T")?nepaliNumber(String(x).slice(11,16)):x).join(" / ")],["ऋतु",[ctx.season,ctx.seasonDescription].filter(Boolean).join(" · ")],
       ["स्थान",ctx.place],["स्थानको स्रोत",ctx.locationMode],["अक्षांश / देशान्तर",ctx.latitude!=null&&ctx.longitude!=null?nepaliNumber(ctx.latitude.toFixed(6))+", "+nepaliNumber(ctx.longitude.toFixed(6)):""],
       ["उचाइ",ctx.altitudeM!=null?nepaliNumber(Math.round(ctx.altitudeM))+" मिटर":"उपलब्ध भएन"],["GPS शुद्धता",ctx.accuracyM!=null?nepaliNumber(Math.round(ctx.accuracyM))+" मिटर":""],["गति",ctx.speedKmh!=null?nepaliNumber(ctx.speedKmh.toFixed(1))+" km/h":""],["समय क्षेत्र",ctx.timezone],
@@ -110,6 +113,7 @@
         ["समय",ctx.nepalTime],["मिति",[ctx.adDate,ctx.bsDate].filter(Boolean).join(" · ")],["बार",ctx.weekday],["हप्ता",ctx.weekNumber!=null?n(ctx.weekNumber):""]]],
       ["पञ्चाङ्ग",[
         ["तिथि",[ctx.tithi,ctx.paksha].filter(Boolean).join(" · ")],["नक्षत्र",[ctx.nakshatra,ctx.nakshatraPada?"पाद "+ctx.nakshatraPada:"",ctx.nakshatraEnd].filter(Boolean).join(" · ")],["योग / करण",[ctx.yoga,ctx.karana].filter(Boolean).join(" · ")],["राशि",[ctx.moonRashi&&"चन्द्र "+ctx.moonRashi,ctx.sunRashi&&"सूर्य "+ctx.sunRashi].filter(Boolean).join(" · ")],["मास / अयन / ऋतु",[ctx.lunarMonth,ctx.ayana,ctx.season].filter(Boolean).join(" · ")],["घडी / पला",ctx.ghadiPala],["सूर्योदय / सूर्यास्त",sun]]],
+      ["ग्रहस्थिति",(ctx.planets||[]).map(g=>[g.name,[g.rashi,g.degreeText,g.retrograde?"वक्री":"मार्गी"].filter(Boolean).join(" · ")])],
       ["स्थान",[
         ["ठेगाना",ctx.place],["निर्देशाङ्क",coord],["उचाइ",ctx.elevationM!=null?n(Math.round(ctx.elevationM))+" मिटर":ctx.altitudeM!=null?n(Math.round(ctx.altitudeM))+" मिटर":""],["GPS शुद्धता",ctx.accuracyM!=null?"±"+n(Math.round(ctx.accuracyM))+" मिटर":""]]],
       ["मौसम तथा वातावरण",[
