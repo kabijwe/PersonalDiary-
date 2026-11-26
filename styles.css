@@ -4173,3 +4173,23 @@ body .book-page.page-turn-prev{animation:pageTurnPrev .28s cubic-bezier(.35,.7,.
 .book-style-dark .book-page-number span{color:#e53935!important}
 .book-style-dark .book-date-row{color:#b0b0b0!important}
 .book-customize #bookDesign{max-width:55%;padding:7px;border:1px solid var(--line);border-radius:8px;background:var(--paper);color:var(--ink)}
+
+
+/* Dark Letterpad: move compact date/Panchang above the upper red rule and keep one red-dot separator below the signature. */
+.book-style-dark{background:#060606!important;color:#f5f5f5!important;font-family:"Noto Sans Devanagari",system-ui,sans-serif!important}
+.book-style-dark .book-head{margin-bottom:7px!important}
+.book-style-dark .book-top-meta{display:block!important;margin:0 0 8px!important;padding:0!important;color:#b0b0b0!important;font:400 9px/1.5 "Noto Sans Devanagari",system-ui,sans-serif!important}
+.book-style-dark .book-top-meta>div{margin:1px 0!important;overflow-wrap:anywhere!important}
+.book-style-dark .book-rule{height:2px!important;background:#8b0000!important;margin:7px 0 16px!important}
+.book-style-dark .book-date-row{display:none!important}
+.book-style-dark .book-title{color:#e53935!important;font-weight:800!important}
+.book-style-dark .book-content{color:#f5f5f5!important;line-height:1.75!important}
+.book-style-dark .book-sign{display:block!important;text-align:right!important;color:#e53935!important;font-weight:800!important;margin:18px 0 7px!important}
+.book-style-dark .book-footer-rule{height:2px!important;background:#8b0000!important;margin:7px 0 8px!important}
+.book-style-dark .book-dark-footer{display:block!important;color:#b0b0b0!important;font:400 8px/1.55 "Noto Sans Devanagari",system-ui,sans-serif!important;overflow-wrap:anywhere!important}
+.book-style-dark .book-footer-row{margin:2px 0!important}
+.book-style-dark .book-footer-row b{color:#e53935!important;font-weight:800!important}
+.book-style-dark .book-red-dot{color:#e53935!important;text-align:center!important;font-size:13px!important;line-height:1!important;height:10px!important;margin:2px 0!important}
+.book-style-dark .book-page-number{left:clamp(32px,8vw,68px)!important;right:clamp(24px,7vw,58px)!important;bottom:12px!important;display:flex!important;justify-content:space-between!important;border-top:1px dashed #555!important;padding-top:6px!important;color:#e53935!important;opacity:1!important;font-weight:800!important}
+.book-style-dark .book-page-number span{color:#e53935!important}
+@media(max-width:520px){.book-style-dark .book-top-meta{font-size:8px!important;line-height:1.45!important}.book-style-dark .book-dark-footer{font-size:7.5px!important;line-height:1.48!important}}
