@@ -4258,3 +4258,24 @@ body .book-page.page-turn-prev{animation:pageTurnPrev .28s cubic-bezier(.35,.7,.
   .book-style-dark .book-top-meta{padding:6px 7px!important;font-size:7.7px!important}
   .book-style-dark .book-dark-footer{padding:5px 7px 6px!important;font-size:7.4px!important}
 }
+
+
+/* Letterpad order requested: Panchang/date black band above upper red rule;
+   signature above lower red rule; concise weather/GPS below the signature. */
+.book-style-classic .book-top-meta{
+ display:block!important;margin:0 0 8px!important;padding:7px 9px!important;
+ background:#080808!important;color:#f5f5f5!important;border:0!important;border-radius:0!important;
+ font:400 8px/1.5 "Noto Sans Devanagari",system-ui,sans-serif!important;
+}
+.book-style-classic .book-top-meta>div{display:block!important;margin:1px 0!important;padding:0!important;color:#f5f5f5!important;overflow-wrap:anywhere!important}
+.book-style-classic .book-rule{display:block!important;height:2px!important;margin:7px 0 15px!important;padding:0!important;background:#920018!important;border:0!important}
+.book-style-classic .book-sign{display:block!important;margin:18px 0 7px!important;padding:0!important;color:#a00024!important;text-align:right!important}
+.book-style-classic .book-footer-rule{display:block!important;height:2px!important;margin:7px 0 8px!important;padding:0!important;background:#920018!important}
+.book-style-classic .book-dark-footer{display:block!important;margin:0!important;padding:6px 9px 7px!important;background:#080808!important;color:#f5f5f5!important;font:400 7.7px/1.5 "Noto Sans Devanagari",system-ui,sans-serif!important;overflow-wrap:anywhere!important}
+.book-style-classic .book-footer-row{margin:2px 0!important}
+.book-style-classic .book-footer-row b{color:#e04444!important;font-weight:800!important}
+.book-style-classic .book-red-dot{display:block!important;height:auto!important;margin:2px 0!important;color:#e32636!important;text-align:center!important;font-size:14px!important;line-height:1!important}
+@media(max-width:520px){
+ .book-style-classic .book-top-meta{padding:6px 7px!important;font-size:7.2px!important;line-height:1.43!important}
+ .book-style-classic .book-dark-footer{padding:5px 7px 6px!important;font-size:7px!important;line-height:1.42!important}
+}
