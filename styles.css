@@ -4362,7 +4362,7 @@ body .book-page.page-turn-prev{animation:pageTurnPrev .28s cubic-bezier(.35,.7,.
 }
 
 
-/* Diary page colours controlled from Settings; default black, white text, red bold text. */
-.book-page{background:var(--diary-page-bg,#000000)!important;color:var(--diary-page-text,#ffffff)!important}
-.book-page .book-head,.book-page .book-top-meta,.book-page .book-top-meta>div,.book-page .book-content,.book-page .book-dark-footer,.book-page .book-footer-row,.book-page .book-page-number,.book-page .book-page-number span{color:var(--diary-page-text,#ffffff)!important}
-.book-page b,.book-page strong,.book-page .book-title,.book-page .book-head b,.book-page .book-head span:last-child,.book-page .book-top-meta b,.book-page .book-footer-row b,.book-page .book-sign{color:var(--diary-page-bold,#e53935)!important}
+/* Optional custom diary colours: preserve the selected paper and letterpad layout until the user applies custom colours. */
+.book-page.book-colors-custom{background:var(--diary-page-bg,#000000)!important;color:var(--diary-page-text,#ffffff)!important}
+.book-page.book-colors-custom .book-head,.book-page.book-colors-custom .book-top-meta,.book-page.book-colors-custom .book-top-meta>div,.book-page.book-colors-custom .book-content,.book-page.book-colors-custom .book-dark-footer,.book-page.book-colors-custom .book-footer-row,.book-page.book-colors-custom .book-page-number,.book-page.book-colors-custom .book-page-number span{color:var(--diary-page-text,#ffffff)!important}
+.book-page.book-colors-custom b,.book-page.book-colors-custom strong,.book-page.book-colors-custom .book-title,.book-page.book-colors-custom .book-head b,.book-page.book-colors-custom .book-head span:last-child,.book-page.book-colors-custom .book-top-meta b,.book-page.book-colors-custom .book-footer-row b,.book-page.book-colors-custom .book-sign{color:var(--diary-page-bold,#e53935)!important}
