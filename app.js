@@ -836,7 +836,7 @@
     const darkFooter='<div class="book-footer-rule"></div><div class="book-dark-footer">'+detailFooter+navagrahaFooter+placeWeatherLine+'</div>';
     const dark=design==="dark";
     $("#postViewContent").innerHTML=
-      '<div class="book-stage"><article class="book-page paper-'+esc(paper)+' font-'+esc(font)+' book-style-'+esc(design)+'" id="activeBookPage">'+
+      '<div class="book-stage"><article class="book-page paper-'+esc(paper)+' font-'+esc(font)+' book-style-'+esc(design)+(state.settings.diaryColorsEnabled?" book-colors-custom":"")+'" id="activeBookPage">'+
       '<div class="book-binding"></div><div class="book-head"><span><b>KABIJWE</b> · व्यक्तिगत डायरी</span><span>~ बिक्रमादित्य</span></div>'+
       (p.showMeta!==false?topMeta:"")+
       '<div class="book-rule"></div>'+
@@ -944,7 +944,7 @@
   function applyTheme(){const t=$("#settingTheme").value;document.body.classList.toggle("dark",t==="dark"||(t==="system"&&matchMedia("(prefers-color-scheme: dark)").matches));state.settings.theme=t;applyPalette();persist();toast("रूप रङ लागू भए।")}
   applyPalette();syncBrand();
   $("#applyFontScale").onclick=()=>{const size=$("#settingFontScale").value;state.settings.fontScale=size;document.documentElement.dataset.fontScale=size;persist();toast("अक्षरको आकार सुरक्षित भयो।")};
-  function applyDiaryColors(){const root=document.documentElement.style;const bg=$("#settingDiaryBg").value||"#000000",textColor=$("#settingDiaryText").value||"#ffffff",bold=$("#settingDiaryBold").value||"#e53935";root.setProperty("--diary-page-bg",bg);root.setProperty("--diary-page-text",textColor);root.setProperty("--diary-page-bold",bold);state.settings.diaryBg=bg;state.settings.diaryText=textColor;state.settings.diaryBold=bold;persist();if($("#activeBookPage"))renderBookPage();toast("डायरी पानाको रङ सुरक्षित भयो।")}
+  function applyDiaryColors(){const root=document.documentElement.style;const bg=$("#settingDiaryBg").value||"#000000",textColor=$("#settingDiaryText").value||"#ffffff",bold=$("#settingDiaryBold").value||"#e53935";root.setProperty("--diary-page-bg",bg);root.setProperty("--diary-page-text",textColor);root.setProperty("--diary-page-bold",bold);state.settings.diaryBg=bg;state.settings.diaryText=textColor;state.settings.diaryBold=bold;state.settings.diaryColorsEnabled=true;persist();if($("#activeBookPage"))renderBookPage();toast("डायरी पानाको रङ सुरक्षित भयो।")}
   $("#applyDiaryColors").onclick=applyDiaryColors;
   ["settingDiaryBg","settingDiaryText","settingDiaryBold"].forEach(id=>$("#"+id).addEventListener("change",applyDiaryColors));
   $("#applyTheme").onclick=applyTheme;$("#themeToggle").onclick=()=>{document.body.classList.toggle("dark");$("#settingTheme").value=document.body.classList.contains("dark")?"dark":"light";state.settings.theme=$("#settingTheme").value;persist()};
