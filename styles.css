@@ -4342,3 +4342,21 @@ body .book-page.page-turn-prev{animation:pageTurnPrev .28s cubic-bezier(.35,.7,.
  .book-style-classic .book-footer-row{margin-bottom:3px!important}
  .book-style-classic .book-page-number{margin-top:6px!important}
 }
+
+
+/* Compact footer: sunrise/sunset/season below the red rule, then
+   location and headline weather together on one line. */
+.book-style-classic .book-dark-footer{padding-top:6px!important;font-size:8.8px!important;line-height:1.45!important}
+.book-style-classic .book-sun-season{display:block!important;margin:0 0 3px!important;white-space:normal!important}
+.book-style-classic .book-place-weather{
+ display:flex!important;align-items:baseline!important;justify-content:space-between!important;
+ gap:5px!important;white-space:nowrap!important;overflow:hidden!important;
+ font-size:8.2px!important;line-height:1.45!important
+}
+.book-style-classic .book-place-weather b{font-weight:700!important}
+.book-style-classic .book-place-weather .book-inline-dot{flex:0 0 auto!important;margin:0 3px!important}
+@media(max-width:520px){
+ .book-style-classic .book-dark-footer{font-size:7.5px!important;line-height:1.4!important}
+ .book-style-classic .book-place-weather{font-size:6.8px!important;gap:3px!important;letter-spacing:-.12px!important}
+ .book-style-classic .book-place-weather .book-inline-dot{margin:0 2px!important}
+}
