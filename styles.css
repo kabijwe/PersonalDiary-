@@ -4360,3 +4360,9 @@ body .book-page.page-turn-prev{animation:pageTurnPrev .28s cubic-bezier(.35,.7,.
  .book-style-classic .book-place-weather{font-size:6.8px!important;gap:3px!important;letter-spacing:-.12px!important}
  .book-style-classic .book-place-weather .book-inline-dot{margin:0 2px!important}
 }
+
+
+/* Diary page colours controlled from Settings; default black, white text, red bold text. */
+.book-page{background:var(--diary-page-bg,#000000)!important;color:var(--diary-page-text,#ffffff)!important}
+.book-page .book-head,.book-page .book-top-meta,.book-page .book-top-meta>div,.book-page .book-content,.book-page .book-dark-footer,.book-page .book-footer-row,.book-page .book-page-number,.book-page .book-page-number span{color:var(--diary-page-text,#ffffff)!important}
+.book-page b,.book-page strong,.book-page .book-title,.book-page .book-head b,.book-page .book-head span:last-child,.book-page .book-top-meta b,.book-page .book-footer-row b,.book-page .book-sign{color:var(--diary-page-bold,#e53935)!important}
