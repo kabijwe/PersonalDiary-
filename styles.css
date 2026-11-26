@@ -4279,3 +4279,35 @@ body .book-page.page-turn-prev{animation:pageTurnPrev .28s cubic-bezier(.35,.7,.
  .book-style-classic .book-top-meta{padding:6px 7px!important;font-size:7.2px!important;line-height:1.43!important}
  .book-style-classic .book-dark-footer{padding:5px 7px 6px!important;font-size:7px!important;line-height:1.42!important}
 }
+
+
+/* KABIJWE formal antique letterpad — CSS maintained in styles.css. */
+.book-style-classic{background:#f6f1e7!important;color:#1f1b16!important;border:1.5px solid #7a0000!important;border-radius:2px!important;box-shadow:0 12px 35px rgba(0,0,0,.55)!important}
+.book-style-classic:before,.book-style-classic .book-binding{display:none!important}
+.book-style-classic .book-head{display:flex!important;justify-content:space-between!important;align-items:baseline!important;margin:0 0 12px!important;padding:0!important;border:0!important;color:#2b251e!important;font:400 13px/1.4 "Noto Serif Devanagari",Georgia,serif!important}
+.book-style-classic .book-head b{font-family:Georgia,serif!important;font-weight:700!important;letter-spacing:.8px!important;color:#1f1b16!important}
+.book-style-classic .book-head span:last-child{font-size:14px!important;font-weight:600!important;color:#2b251e!important}
+.book-style-classic .book-top-meta{display:flex!important;flex-wrap:wrap!important;align-items:center!important;gap:0!important;margin:0!important;padding:0 0 7px!important;background:transparent!important;color:#26211b!important;font:500 10px/1.6 "Noto Serif Devanagari",Georgia,serif!important}
+.book-style-classic .book-top-meta>div{display:contents!important;color:#26211b!important;margin:0!important;padding:0!important}
+.book-style-classic .book-top-meta>div:not(:last-child)::after{content:"•";display:inline-block;margin:0 5px;color:#9e0000;font-weight:800}
+.book-style-classic .book-rule{display:block!important;width:100%!important;height:1.5px!important;margin:0!important;padding:0!important;border:0!important;background:#7a0000!important}
+.book-style-classic .book-title{margin:24px 0 16px!important;color:#16130f!important;font:700 28px/1.35 "Noto Serif Devanagari",Georgia,serif!important;letter-spacing:-.3px!important}
+.book-style-classic .book-content{min-height:230px!important;padding:0 0 42px!important;color:#241f19!important;font:400 16.5px/1.8 "Noto Serif Devanagari",Georgia,serif!important}
+.book-style-classic .book-media{margin:0!important}
+.book-style-classic .book-sign{display:block!important;text-align:right!important;padding:0 0 6px!important;margin:0!important;color:#7a0000!important;font:italic 600 16px/1.5 "Noto Serif Devanagari",Georgia,serif!important}
+.book-style-classic .book-footer-rule{display:block!important;width:100%!important;height:1.5px!important;margin:0!important;padding:0!important;border:0!important;background:#7a0000!important}
+.book-style-classic .book-dark-footer{display:block!important;margin:0!important;padding:9px 0 0!important;background:transparent!important;color:#2c261f!important;font:400 10.5px/1.65 "Noto Serif Devanagari",Georgia,serif!important;overflow-wrap:anywhere!important}
+.book-style-classic .book-footer-row{margin:0!important;padding:0!important;color:#2c261f!important}
+.book-style-classic .book-inline-dot{color:#9e0000!important;font-weight:800!important;margin:0 5px!important}
+.book-style-classic .book-footer-row b{color:#7a0000!important}
+.book-style-classic .book-red-dot{display:none!important}
+.book-style-classic .book-page-number{color:#2c261f!important;font-size:11px!important;font-weight:600!important;border:0!important;opacity:1!important}
+.book-style-classic .book-page-number span{color:#2c261f!important}
+@media(max-width:520px){
+ .book-style-classic .book-head{font-size:11px!important;margin-bottom:10px!important}
+ .book-style-classic .book-head span:last-child{font-size:12px!important}
+ .book-style-classic .book-top-meta{font-size:8.2px!important;line-height:1.5!important}
+ .book-style-classic .book-title{font-size:24px!important;margin:20px 0 14px!important}
+ .book-style-classic .book-content{font-size:14px!important;line-height:1.75!important;min-height:190px!important;padding-bottom:32px!important}
+ .book-style-classic .book-dark-footer{font-size:8.2px!important;line-height:1.55!important;padding-top:7px!important}
+}
