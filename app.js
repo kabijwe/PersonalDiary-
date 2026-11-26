@@ -836,7 +836,7 @@
     const darkFooter='<div class="book-footer-rule"></div><div class="book-dark-footer">'+detailFooter+navagrahaFooter+placeWeatherLine+'</div>';
     const dark=design==="dark";
     $("#postViewContent").innerHTML=
-      '<div class="book-stage"><article class="book-page paper-'+esc(paper)+' font-'+esc(font)+' book-style-'+esc(design)+(state.settings.diaryColorsEnabled?" book-colors-custom":"")+'" id="activeBookPage">'+
+      '<div class="book-stage"><article class="book-page paper-'+esc(paper)+' font-'+esc(font)+' book-style-'+esc(design)+" book-colors-custom"+'" id="activeBookPage">'+
       '<div class="book-binding"></div><div class="book-head"><span><b>KABIJWE</b> · व्यक्तिगत डायरी</span><span>~ बिक्रमादित्य</span></div>'+
       (p.showMeta!==false?topMeta:"")+
       '<div class="book-rule"></div>'+
