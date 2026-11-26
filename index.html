@@ -3,16 +3,20 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="theme-color" content="#153b66">
-  <meta name="description" content="Kabijwe — a personal diary, poetry journal and memory garden.">
+  <meta name="theme-color" content="#080b10">
+  <meta name="description" content="Mero diary — व्यक्तिगत डायरी र सिर्जनाको संसार।">
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="styles.css">
-  <title>Kabijwe — मेरो डायरी</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
+  <title>Mero diary — मेरो डायरी</title>
 </head>
 <body>
   <header class="topbar">
-    <a class="brand" href="#" data-page="home" aria-label="Kabijwe home"><span class="brand-mark">क</span><span><b>kabijwe</b><small>~ बिक्रमादित्य</small></span></a>
+    <a class="brand" href="#" data-page="home" aria-label="Mero diary home"><span class="brand-mark" id="brandMark">ब</span><span><b id="brandName">Mero diary</b><small id="brandSignature">~ बिक्रमादित्य</small></span></a>
     <div class="top-actions">
       <button class="icon-btn" id="themeToggle" aria-label="Toggle theme">◐</button>
       <button class="icon-btn" id="menuToggle" aria-label="Open menu">☰</button>
@@ -23,9 +27,9 @@
     <aside class="sidebar" id="sidebar">
       <div class="side-label">तपाईंको संसार</div>
       <button class="nav-item active" data-page="home"><span>⌂</span> गृहपृष्ठ</button>
-      <button class="nav-item" data-page="diary"><span>▤</span> मेरो डायरी</button>
+      <button class="nav-item" data-page="records"><span>⌖</span> मेरा पाइलाहरू</button>
       <button class="nav-item" data-page="calendar"><span>▦</span> नेपाली पात्रो</button>
-      <button class="nav-item" data-page="poetry"><span>✎</span> कविता र लेख</button>
+      <button class="nav-item" data-page="poetry"><span>✎</span> सिर्जना</button>
       <button class="nav-item" data-page="letterpad"><span>▧</span> Letterpad Studio</button>
       <button class="nav-item" data-page="memories"><span>◷</span> सम्झनाहरू</button>
       <button class="nav-item" data-page="settings"><span>⚙</span> सेटिङ्स</button>
@@ -34,114 +38,154 @@
 
     <main id="main" tabindex="-1">
       <section class="page active" id="page-home">
-        <div class="welcome-row">
-          <div><p class="eyebrow" id="todayNepali">आजको दिन</p><h1>शब्दहरूमा बाँचेका<br class="mobile-only"> दिनहरू।</h1><p class="muted">आफ्नो समय, अनुभूति र सम्झनालाई सुरक्षित राख्नुहोस्।</p></div>
-          <div class="date-stamp"><span id="todayDay">आज</span><b id="todayAd"></b><small id="todayBs">नेपाली मिति</small></div>
-        </div>
         <div class="hero-grid">
-          <article class="paper-card writing-card">
-            <div class="card-top"><span class="eyebrow">आजको डायरी</span><span class="privacy-pill">🔒 निजी</span></div>
-            <h2>आज मनमा के चलिरहेको छ?</h2>
-            <textarea id="quickEntry" rows="4" placeholder="आजका विचार, अनुभूति र साना-साना खुसीहरू यहाँ लेख्नुहोस्..."></textarea>
-            <div class="card-bottom"><span class="muted tiny">तपाईंका शब्दहरू यही उपकरणमा सुरक्षित हुन्छन्।</span><button class="btn primary" id="saveQuick">डायरी सुरक्षित गर्नुहोस् ↗</button></div>
-          </article>
           <article class="season-card time-card" id="timeCard" aria-labelledby="timeCardTitle">
-            <div class="time-card-head">
-              <span class="eyebrow light" id="timeCardTitle">समयको अनुभूति</span>
-              <span class="live-dot" aria-label="Live"></span>
-            </div>
-
-            <div class="time-date">
-              <div>
-                <div id="clock" class="nepali-clock" aria-live="off">--:--</div>
-                <div id="timeWeekday" class="time-weekday">आजको दिन</div>
-              </div>
-              <div class="time-date-side">
-                <b id="timeAdDate">--</b>
-                <span id="timeBsDate">नेपाली मिति लोड हुँदै…</span>
-                <span id="timeWeekNumber">हप्ता —</span>
-              </div>
-            </div>
-
-            <div class="season-line">
-              <span id="seasonName">ऋतु</span>
-              <span id="seasonDesc">नेपाली मिति पर्खँदै…</span>
-            </div>
-
-            <!-- One continuous sunrise → sunset arc; marker follows real local time -->
-            <div class="sun-visual">
-              <svg id="sunPath" viewBox="0 0 320 72" role="img" aria-label="सूर्योदयदेखि सूर्यास्तसम्मको समयरेखा">
-                <defs>
-                  <linearGradient id="sunArcGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                    <stop offset="0%" stop-color="#e8c07a"/>
-                    <stop offset="50%" stop-color="#f6dfb1"/>
-                    <stop offset="100%" stop-color="#e8c07a"/>
-                  </linearGradient>
-                </defs>
-                <path d="M12 58 C 70 58, 90 14, 160 14 C 230 14, 250 58, 308 58" class="sun-curve"/>
-                <path d="M12 58 H308" class="sun-horizon"/>
-                <circle cx="12" cy="58" r="3.2" class="sun-endpoint"/>
-                <circle cx="308" cy="58" r="3.2" class="sun-endpoint"/>
-                <circle id="sunMarker" cx="12" cy="58" r="4.5" class="sun-marker"/>
-              </svg>
-              <div class="sun-labels">
-                <span><b id="sunriseTime">--:--</b><small>सूर्योदय</small></span>
-                <span class="sun-status" id="sunStatus">गणना हुँदैछ…</span>
-                <span><b id="sunsetTime">--:--</b><small>सूर्यास्त</small></span>
-              </div>
-            </div>
-
-            <div class="time-weather">
-              <div class="place-line">
-                <span class="place-pin" aria-hidden="true">⌖</span>
-                <span id="placeName">काठमाडौँ</span>
-                <span id="locationMode" class="mode-badge">पूर्वनिर्धारित</span>
-              </div>
-              <div class="weather-line">
-                <b id="weatherTemp">--°</b>
-                <span id="weatherCondition">मौसम लोड हुँदैछ…</span>
-                <span id="weatherExtra"></span>
-                <span id="weatherUpdated" class="weather-updated"></span>
-              </div>
-            </div>
-
-            <section class="panchang-panel" aria-label="आजको पञ्चाङ्ग">
-              <div class="panchang-heading">
-                <div>
-                  <span class="panchang-kicker">आजको आकाशीय गणना</span>
-                  <h3>पञ्चाङ्ग</h3>
+            <div class="time-overview-grid">
+              <div class="time-overview-main">
+                <div class="time-overview-left">
+                  <div class="time-card-head">
+                    <span class="eyebrow light time-weekday-heading" id="timeCardTitle">आइतबार</span>
+                  </div>
+                  <div class="time-date">
+                    <div>
+                      <div id="clock" class="nepali-clock" aria-live="off">--:--</div>
+                      <div id="timeTithi" class="time-tithi">तिथि गणना हुँदैछ…</div>
+                    </div>
+                  </div>
+                  </div>
+                <div class="time-date-side">
+                  <div class="date-side-weather weather-main"><b id="weatherTemp">--°C</b><span id="weatherCondition">मौसम लोड हुँदैछ…</span></div>
+                  <b id="timeAdDate">--</b>
+                  <span id="timeBsDate">नेपाली मिति लोड हुँदै…</span>
+                  <span id="timeWeekNumber">हप्ता —</span>
                 </div>
-                <span id="panchangStatus" class="panchang-status" role="status">गणना हुँदैछ…</span>
+                <section class="panchang-panel" id="panchangPanel" aria-label="आजको पञ्चाङ्ग">
+                  <div class="panchang-grid">
+                    
+                    <div class="weather-metric panchang-item panchang-primary"><span class="weather-label">नक्षत्र · पाद</span><span class="weather-value" id="pNakshatra">—</span><span class="weather-value" id="pNakshatraPada"></span><span class="weather-value" id="pNakshatraEnd"></span></div>
+                    <div class="weather-metric panchang-item"><span class="weather-label">योग</span><span class="weather-value" id="pYoga">—</span><span class="weather-value" id="pYogaEnd"></span></div>
+                    <div class="weather-metric panchang-item panchang-extra"><span class="weather-label">करण</span><span class="weather-value" id="pKarana">—</span><span class="weather-value" id="pKaranaEnd"></span></div>
+                    <div class="weather-metric panchang-item panchang-extra"><span class="weather-label">चन्द्र राशि</span><span class="weather-value" id="pMoonRashi">—</span></div>
+                    <div class="weather-metric panchang-item panchang-extra"><span class="weather-label">सूर्य राशि</span><span class="weather-value" id="pSunRashi">—</span></div>
+                    <div class="weather-metric panchang-item panchang-extra"><span class="weather-label">मास पद्धति</span><span class="weather-value" id="pLunarMonth">—</span><span class="weather-value" id="pLunarNote"></span></div>
+                    <div class="weather-metric panchang-item panchang-extra"><span class="weather-label">अयन</span><span class="weather-value" id="pAyana">—</span></div>
+                    <div class="weather-metric panchang-item panchang-extra panchang-wide"><span class="weather-label">घडी · पला (सूर्योदयदेखि)</span><span class="weather-value" id="pGhadiPala">—</span><span class="weather-value" id="pGhadiNote"></span></div>
+                  </div>
+                  <button type="button" class="panchang-more" id="panchangMore" aria-expanded="false">थप विवरण देखाउनुहोस् ↓</button>
+                </section>
+                <div class="time-weather" aria-label="हालको स्थान र मौसम">
+                  <div class="weather-panel-heading">स्थान तथा मौसम</div>
+                  <div class="weather-summary">
+                    <div class="place-line">
+                      <span class="place-pin" aria-hidden="true">⌖</span>
+                      <span id="placeName">काठमाडौँ</span>
+                      <span id="locationMode" class="mode-badge">पूर्वनिर्धारित</span>
+                    </div>
+                    <div class="location-coordinates" aria-live="polite">
+                      <span id="locationCoordinates">निर्देशाङ्क: उपलब्ध छैन</span>
+                      <strong id="locationAltitude">▲ उचाइ: उपलब्ध छैन</strong>
+                      <span id="locationAccuracy"></span>
+                    </div>
+                    <div id="weatherExtra" class="weather-extra" aria-label="मौसमका विस्तृत विवरण"></div>
+                    <div id="weatherSuggestion" class="weather-suggestion" hidden></div>
+                    <div id="weatherUpdated" class="weather-updated"></div>
+                  </div>
+                </div>
               </div>
-              <div class="panchang-grid">
-                <div class="panchang-item panchang-primary"><small>तिथि · पक्ष</small><b id="pTithi">—</b><span id="pPaksha"></span><span id="pTithiEnd"></span></div>
-                <div class="panchang-item panchang-primary"><small>नक्षत्र · पाद</small><b id="pNakshatra">—</b><span id="pNakshatraPada"></span><span id="pNakshatraEnd"></span></div>
-                <div class="panchang-item"><small>योग</small><b id="pYoga">—</b><span id="pYogaEnd"></span></div>
-                <div class="panchang-item"><small>करण</small><b id="pKarana">—</b><span id="pKaranaEnd"></span></div>
-                <div class="panchang-item"><small>चन्द्र राशि</small><b id="pMoonRashi">—</b></div>
-                <div class="panchang-item"><small>सूर्य राशि</small><b id="pSunRashi">—</b></div>
-                <div class="panchang-item"><small>चन्द्रमास</small><b id="pLunarMonth">—</b><span id="pLunarNote"></span></div>
-                <div class="panchang-item"><small>अयन</small><b id="pAyana">—</b></div>
-                <div class="panchang-item panchang-wide"><small>घडी · पला (सूर्योदयदेखि)</small><b id="pGhadiPala">—</b><span id="pGhadiNote"></span></div>
+              <div class="season-line">
+                <span id="seasonName">ऋतु</span>
+                <span id="seasonDesc">नेपाली मिति पर्खँदै…</span>
               </div>
-              <p class="panchang-foot" id="panchangFoot">गणना हुँदैछ…</p>
-              <button class="retry-btn" id="panchangRetry" type="button" hidden>↻ फेरि प्रयास गर्नुहोस्</button>
-            </section>
+            </div>
+          </article>
 
-            <div class="loc-controls">
+<article class="sun-card" aria-labelledby="sunCardTitle">
+          <div class="sun-card-heading">
+            <div><span class="eyebrow">आजको सूर्यचक्र</span><h2 id="sunCardTitle">सूर्योदयदेखि सूर्यास्तसम्म</h2></div>
+            <span class="sun-card-live"><i id="sunCardLiveDot"></i> <span id="sunCardLiveText">स्थानीय समय</span></span>
+          </div>
+          <div class="sun-visual sun-visual-wide">
+            <svg id="sunPath" class="sun-graph" viewBox="0 0 800 245" role="img" aria-label="२४ घण्टाको सूर्यचक्र र हालको स्थानीय समय">
+              <defs>
+                <linearGradient id="sun-daylight-fill" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#ffffff" stop-opacity=".14"/>
+                  <stop offset="85%" stop-color="#ffffff" stop-opacity=".02"/>
+                  <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+                </linearGradient>
+                <linearGradient id="sun-night-fill" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#0b0c0e" stop-opacity=".95"/>
+                  <stop offset="100%" stop-color="#060608" stop-opacity=".4"/>
+                </linearGradient>
+                <radialGradient id="sun-red-glow">
+                  <stop offset="0%" stop-color="#ff2e1f" stop-opacity=".9"/>
+                  <stop offset="50%" stop-color="#ff2e1f" stop-opacity=".32"/>
+                  <stop offset="100%" stop-color="#ff2e1f" stop-opacity="0"/>
+                </radialGradient>
+                <clipPath id="sun-above-horizon-clip"><rect id="sun-above-horizon-rect" x="0" y="0" width="800" height="189"/></clipPath>
+                <clipPath id="sun-progress-clip"><rect id="sun-progress-rect" x="20" y="0" width="0" height="245"/></clipPath>
+              </defs>
+              <rect id="sun-night-bg" x="20" y="189" width="760" height="49" rx="10" fill="url(#sun-night-fill)"/>
+              <path id="sun-day-area" fill="url(#sun-daylight-fill)" clip-path="url(#sun-above-horizon-clip)"/>
+              <line id="sun-horizon-line" x1="20" y1="189" x2="780" y2="189" class="sun-horizon"/>
+              <path id="full-sun-path" fill="none" stroke="#36383f" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path id="elapsed-sun-path" fill="none" stroke="#ffffff" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" clip-path="url(#sun-progress-clip)"/>
+              <g id="sunrise-text" class="sun-intersection-text" aria-label="सूर्योदय समय"><text id="sunrise-graph-time" class="sun-intersection-time" x="30" y="150" text-anchor="start">--:--</text><text id="sunrise-graph-label" class="sun-intersection-label" x="30" y="165" text-anchor="start">सूर्योदय</text></g>
+              <g id="sunset-text" class="sun-intersection-text" aria-label="सूर्यास्त समय"><text id="sunset-graph-time" class="sun-intersection-time" x="770" y="150" text-anchor="end">--:--</text><text id="sunset-graph-label" class="sun-intersection-label" x="770" y="165" text-anchor="end">सूर्यास्त</text></g>
+              <g id="sunrise-marker"><line id="sunrise-tick" x1="0" y1="183" x2="0" y2="195" stroke="#71717a" stroke-width="1.5"/><circle id="sunrise-dot" cx="0" cy="189" r="5" fill="#000" stroke="#fff" stroke-width="2.5"/></g>
+              <g id="sunset-marker"><line id="sunset-tick" x1="0" y1="183" x2="0" y2="195" stroke="#71717a" stroke-width="1.5"/><circle id="sunset-dot" cx="0" cy="189" r="5" fill="#000" stroke="#9ca3af" stroke-width="2.5"/></g>
+              <g id="sun-marker" transform="translate(40 220)">
+                <circle class="sun-glow" cx="0" cy="0" r="28" fill="url(#sun-red-glow)"/>
+                <circle id="sun-marker-core" cx="0" cy="0" r="11" fill="#ff2e1f"/>
+              </g>
+            </svg>
+            <div class="sun-reference-caption"><span id="sunStatus">अहिले दिनको समय</span><b id="sunLiveClock">--:--</b></div>
+          </div>
+          <div class="sun-detail-grid">
+            <div><span>सूर्योदय</span><b id="sunriseDetail">--</b><small>पूर्वी क्षितिज</small></div>
+            <div><span>सूर्यास्त</span><b id="sunsetDetail">--</b><small>पश्चिमी क्षितिज</small></div>
+            <div><span>घडी · पला</span><b id="sunGhadiDetail">गणना हुँदैछ…</b><small>सूर्योदयदेखि बितेको समय</small></div>
+          </div>
+        </article>
+            <div class="loc-controls weather-location-controls sun-location-controls">
               <button class="location-button" id="timeLocationBtn" type="button">
                 <span class="loc-icon" aria-hidden="true">◎</span>
                 <span class="loc-text">मेरो GPS स्थान प्रयोग गर्नुहोस्</span>
               </button>
-              <label class="manual-place"><span>वा हातले स्थान छान्नुहोस्</span>
-                <select id="manualPlace" aria-label="हातले स्थान छान्नुहोस्"></select>
-              </label>
             </div>
+
+            <div class="time-service-status" aria-live="polite" aria-label="डाटा सेवाको अवस्था">
+              <span id="gpsServiceStatus" data-state="info">GPS: बटन थिचेपछि मात्र</span>
+              <span id="placeServiceStatus" data-state="info">स्थानको नाम: पर्खँदै</span>
+              <span id="weatherServiceStatus" data-state="info">मौसम: पर्खँदै</span>
+              <span id="bsServiceStatus" data-state="info">वि.सं.: पर्खँदै</span>
+              <span id="panchangServiceStatus" data-state="success">पञ्चाङ्ग: अफलाइन गणना</span>
+            </div>
+            <p class="gps-help">GPS नचलेमा: Android Location खोल्नुहोस्, browser लाई Location अनुमति दिनुहोस्, र एप HTTPS वा localhost बाट खोल्नुहोस्।</p>
             <p class="time-privacy">GPS बटन थिचेपछि मात्र स्थान माग्छ; पृष्ठभूमिमा ट्र्याक गर्दैन।</p>
           </article>
         </div>
-        <div class="section-heading"><div><p class="eyebrow">तपाईंका पानाहरू</p><h2>भर्खरका सम्झना</h2></div><button class="text-btn" data-goto="diary">सबै हेर्नुहोस् →</button></div>
-        <div id="recentEntries" class="entry-grid"><div class="empty-state">तपाईंको पहिलो डायरी यहाँ देखिनेछ।</div></div>
+        <button type="button" class="paper-card diary-pages-card" id="diaryPagesCard" aria-label="मेरो डायरीका पानाहरू खोल्नुहोस्">
+          <span class="diary-pages-icon" aria-hidden="true">▤</span>
+          <span class="diary-pages-copy"><strong>मेरो डायरीका पानाहरू</strong><small>तपाईंले अहिलेसम्म लेखेका सबै पोस्टहरू एकै ठाउँमा</small></span>
+          <span class="diary-pages-count" id="diaryPagesCount">० पाना</span>
+          <span class="diary-pages-arrow" aria-hidden="true">↗</span>
+        </button>
+
+        <section class="reminder-manager" aria-labelledby="reminderHeading">
+          <div class="reminder-head">
+            <div><span class="eyebrow">स्थानीय सम्झना</span><h2 id="reminderHeading">रिमाइन्डर</h2><p class="muted">तपाईंको उपकरणमै सुरक्षित हुने सूचना र सम्झना।</p></div>
+            <button type="button" class="btn secondary" id="enableReminderNotifications">सूचना अनुमति दिनुहोस्</button>
+          </div>
+          <div id="reminderAlert" class="reminder-alert" role="alert" aria-live="assertive" hidden></div>
+          <form id="reminderForm" class="reminder-form">
+            <label>के सम्झनुपर्नेछ?<input id="reminderTitle" required maxlength="120" placeholder="औषधि, काम, भेटघाट..."></label>
+            <label>मिति र समय छान्नुहोस्<input id="reminderDueAt" type="datetime-local" required></label>
+            <button class="btn primary" type="submit">＋ रिमाइन्डर सुरक्षित गर्नुहोस्</button>
+          </form>
+          <div id="reminderList" class="reminder-list" aria-live="polite"></div>
+          <p class="reminder-note">सूचना अनुमति तपाईंले आफैँ दिनुपर्छ। एप बन्द वा उपकरणले background काम रोक्दा स्थानीय reminder ठ्याक्कै समयमा चल्ने ग्यारेन्टी हुँदैन; एप खुला हुँदा due reminder जाँच गरिन्छ।</p>
+        </section>
+        <div class="home-records-link"><button class="btn secondary" data-goto="records">मेरा पाइलाहरू खोल्नुहोस् →</button></div>
         <div class="section-heading"><div><p class="eyebrow">सुरु गर्नुहोस्</p><h2>तपाईंको सिर्जनात्मक संसार</h2></div></div>
         <div class="shortcut-grid">
           <button class="shortcut" data-goto="calendar"><span>▦</span><b>नेपाली पात्रो</b><small>मिति र व्यक्तिगत दिनहरू</small></button>
@@ -151,10 +195,14 @@
         </div>
       </section>
 
-      <section class="page" id="page-diary">
-        <div class="page-heading"><div><p class="eyebrow">निजी संसार</p><h1>मेरो डायरी</h1><p class="muted">मनका कुरा, दिनका कथा र जीवनका साना अध्याय।</p></div><button class="btn primary" id="newDiary">＋ नयाँ पाना</button></div>
-        <div class="toolbar"><input id="diarySearch" type="search" placeholder="डायरी खोज्नुहोस्..."><select id="diaryFilter"><option value="all">सबै पाना</option><option value="private">निजी</option><option value="public">सार्वजनिक</option><option value="draft">ड्राफ्ट</option></select></div>
-        <div id="diaryList" class="entry-list"></div>
+      <section class="page" id="page-records">
+        <div class="page-heading"><div><p class="eyebrow">GPS · स्थानका रेकर्ड</p><h1>मेरा पाइलाहरू</h1><p class="muted">GPS बाट प्राप्त भई नक्सामा सुरक्षित भएका तपाईंका स्थान र यात्राका पदचिह्न।</p></div><span class="privacy-pill">यस उपकरणमै सुरक्षित</span></div>
+        <div id="locationStats" class="location-stats" aria-live="polite"></div>
+        <section id="locationLatest" class="location-latest" aria-live="polite"></section>
+        <div class="records-map-heading"><div><p class="eyebrow">स्थान नक्सा</p><h2>मेरो GPS पदचिह्न</h2><p class="muted small">हरेक marker एउटा सफल GPS रेकर्ड हो। छानेर त्यो क्षणको विवरण हेर्नुहोस्।</p></div><span class="map-key"><i></i> GPS रेकर्ड</span></div>
+        <div id="locationMap" class="location-map map-first" role="region" aria-label="GPS स्थान इतिहासको नक्सा"></div>
+        <div class="section-heading records-history-heading"><div><p class="eyebrow">क्रमबद्ध अभिलेख</p><h2>स्थान इतिहास</h2><p class="muted small">नयाँ रेकर्ड पहिले; प्रत्येक स्थानको समय, निर्देशाङ्क, उचाइ, मौसम र पञ्चाङ्ग विवरण छुट्टाछुट्टै।</p></div></div>
+        <div id="locationHistoryList" class="location-history-list"></div>
       </section>
 
       <section class="page" id="page-calendar">
@@ -165,15 +213,29 @@
           <div class="calendar-days" id="calendarDays"></div>
           <p class="tiny muted" id="calendarNote">यो पात्रोको महिनागत ग्रिड AD मितिमा आधारित छ। आजको BS मिति र पञ्चाङ्ग गृहपृष्ठको “समयको अनुभूति” कार्डमा देखिन्छ।</p>
         </div>
-        <div class="season-strip"><div><span class="eyebrow">नेपालका छ ऋतु</span><h2>प्रकृतिको चक्र</h2></div><div class="season-chips" id="seasonChips"><span data-season="वसन्त">वसन्त <small>चैत–बैशाख</small></span><span data-season="ग्रीष्म">ग्रीष्म <small>जेठ–असार</small></span><span data-season="वर्षा">वर्षा <small>साउन–भदौ</small></span><span data-season="शरद">शरद <small>असोज–कात्तिक</small></span><span data-season="हेमन्त">हेमन्त <small>मंसिर–पुष</small></span><span data-season="शिशिर">शिशिर <small>माघ–फागुन</small></span></div></div>
+        <section class="calendar-live-details" aria-label="आजको पञ्चाङ्ग र मौसम">
+          <div class="calendar-live-heading"><div><p class="eyebrow">आजको विस्तृत विवरण</p><h2>पञ्चाङ्ग तथा मौसम</h2><p class="muted small" id="calendarDetailsMeta">आजको स्थान र समयअनुसार अद्यावधिक विवरण।</p></div></div>
+          <div class="calendar-detail-section"><h3>पञ्चाङ्ग</h3><div class="calendar-detail-grid" id="calendarPanchangGrid"></div></div>
+          <div class="calendar-detail-section"><h3>स्थान तथा मौसम</h3><div class="calendar-detail-grid" id="calendarWeatherGrid"></div></div>
+        </section>
+        <div class="season-strip"><div><span class="eyebrow">नेपालका छ ऋतु</span><h2>प्रकृतिको चक्र</h2></div><ul class="season-details-list" id="seasonDetails">
+          <li data-season="वसन्त"><div class="season-detail-title"><span>ऋतु · बसन्त</span><small>(चैत–बैशाख)</small></div><div><p>न धेरै जाडो न धेरै गर्मी हुने सन्तुलित र रमाइलो मौसम हो। रूखबिरुवामा नयाँ पालुवा पलाउँछन्, पाखाभरि लालीगुराँस फुल्छन्, चराचुरुङ्गीको चिरबिर बढ्छ र प्रकृति हरियाली देखिन्छ।</p><p class="season-advice"><b>सुझाव :</b> मौसम फेरिने बेला भएकाले हल्का सुतीका लुगा लगाउनुहोस्, परागकण र धुलोबाट हुने एलर्जीबाट बच्न मास्क प्रयोग गर्नुहोस् र बिहान–बेलुका व्यायाम गर्नुहोस्।</p></div></li>
+          <li data-season="ग्रीष्म"><div class="season-detail-title"><span>ऋतु · ग्रीष्म</span><small>(जेठ–असार)</small></div><div><p>तापक्रम निकै बढ्ने र चर्को घाम लाग्ने समय हो। तराईतिर तातो हावा (लु) चल्छ भने पहाडमा पनि गर्मी महसुस हुन्छ; हावाहुरी चल्ने र बाटोमा धुलो उड्ने भएकाले शीतलताको खाँचो हुन्छ।</p><p class="season-advice"><b>सुझाव :</b> दिनभरि प्रशस्त पानी, दही–मोही र झोलिलो खानेकुरा पिउनुहोस्, पातलो र खुकुलो सुतीको पहिरन लगाउनुहोस् तथा दिउँसोको चर्को घाममा छाता वा चस्मा प्रयोग गर्नुहोस्।</p></div></li>
+          <li data-season="वर्षा"><div class="season-detail-title"><span>ऋतु · वर्षा</span><small>(साउन–भदौ)</small></div><div><p>मनसुन सक्रिय भई दिनहुँजसो झरी पर्ने समय हो। आकाश कालो बादलले ढाकिन्छ, खोलानालामा पानीको सतह बढ्छ, पहाडमा पहिरोको जोखिम रहन्छ र खेतबारीमा धान रोपाइँको रौनक छाउँछ।</p><p class="season-advice"><b>सुझाव :</b> बाहिर निस्कँदा सधैं छाता वा रेनकोट बोक्नुहोस्, उमालेको वा शुद्ध पानी मात्र पिउनुहोस्, बासी खानेकुरा नखानुहोस् र बाढी–पहिरोको जोखिम भएका ठाउँमा यात्रा गर्दा सतर्क रहनुहोस्।</p></div></li>
+          <li data-season="शरद"><div class="season-detail-title"><span>ऋतु · शरद</span><small>(असोज–कात्तिक)</small></div><div><p>वर्षायाम सकिएर आकाश सफा र गाढा नीलो देखिने रमाइलो समय हो। हावा स्वच्छ चल्छ, न जाडो न गर्मी हुने सन्तुलित तापक्रम रहन्छ र घरआँगन सयपत्री फूल तथा दशैं–तिहार जस्ता चाडपर्वले भरिन्छ।</p><p class="season-advice"><b>सुझाव :</b> पदयात्रा र घुमफिरका लागि यो उत्तम समय हो, चाडपर्वमा चिल्लो–गुलियो र मासुको मात्रा सन्तुलित राख्नुहोस् तथा साँझपख हल्का बाक्लो लुगाको व्यवस्था गर्नुहोस्।</p></div></li>
+          <li data-season="हेमन्त"><div class="season-detail-title"><span>ऋतु · हेमन्त</span><small>(मंसिर–पौष)</small></div><div><p>चिसो बिस्तारै बढ्न सुरु हुने समय हो। बिहान र बेलुका बाक्लो कुहिरो तथा हुस्सुले गाउँबस्ती ढाक्छ, खेतमा पाकेको धान भित्र्याइन्छ भने दिउँसोको घाम निकै न्यानो र प्यारो लाग्छ।</p><p class="season-advice"><b>सुझाव :</b> बिहान–बेलुका न्यानो ज्याकेट वा स्वेटर लगाउनुहोस्, छाला सुक्खा हुन नदिन मोइस्चराइजर प्रयोग गर्नुहोस् र कुहिरो लागेका बेला सवारी चलाउँदा विशेष सावधानी अपनाउनुहोस्।</p></div></li>
+          <li data-season="शिशिर"><div class="season-detail-title"><span>ऋतु · शिशिर</span><small>(माघ–फागुन)</small></div><div><p>वर्षकै सबैभन्दा कठ्याङ्ग्रिने चिसो मौसम हो। उच्च पहाडी तथा हिमाली भेगमा हिमपात हुन्छ, तराईमा शीतलहर चल्छ र रूखका पुराना पातहरू झरेर प्रकृति शान्त देखिन्छ।</p><p class="season-advice"><b>सुझाव :</b> शरीर न्यानो राख्न बाक्लो ऊनी लुगा, टोपी र मोजा लगाउनुहोस्, तातो पानी, अदुवा–तुलसी चिया र झोलिलो खाना खानुहोस् तथा आगो वा हिटर ताप्दा कोठामा हावा ओहोरदोहोर हुन दिनुहोस्।</p></div></li>
+        </ul></div>
         <div class="section-heading"><div><p class="eyebrow">तपाईंको पात्रो</p><h2>व्यक्तिगत दिनहरू</h2></div><button class="btn secondary" id="addEvent">＋ दिन थप्नुहोस्</button></div>
         <div id="eventList" class="entry-list"></div>
       </section>
 
       <section class="page" id="page-poetry">
-        <div class="page-heading"><div><p class="eyebrow">साहित्यिक संसार</p><h1>कविता र लेख</h1><p class="muted">तपाईंका शब्दहरू—निजी पानाबाट सार्वजनिक साहित्यसम्म।</p></div><button class="btn primary" id="newPoem">＋ नयाँ सिर्जना</button></div>
-        <div class="privacy-info">सार्वजनिक बनाउँदा तपाईंले छानेको सिर्जना मात्र प्रकाशित हुन्छ। निजी डायरी आफैँ सार्वजनिक हुँदैन।</div>
-        <div id="poetryList" class="poetry-grid"></div>
+        <div class="page-heading"><div><p class="eyebrow">तपाईंका शब्द र अनुभूतिहरू</p><h1>मेरो डायरीका पानाहरू</h1><p class="muted">तपाईंले अहिलेसम्म लेखेका सबै डायरी पोस्टहरू। कुनै GPS नक्सा वा यात्रा रेकर्ड यहाँ देखाइँदैन।</p></div></div>
+        <div class="toolbar"><input id="diarySearch" type="search" placeholder="आफ्ना पानाहरू खोज्नुहोस्..."><select id="diaryFilter"><option value="all">सबै पाना</option><option value="private">निजी</option><option value="selected">छानिएका साथीहरू</option><option value="friends">साथीहरू</option><option value="public">सार्वजनिक</option><option value="draft">ड्राफ्ट</option></select></div>
+        <div class="creation-intro"><span>✧</span><p>हरेक लेखाइ एउटा छुट्टै पाना हो। पाना खोल्न ट्याप गर्नुहोस्, अनि अर्को/अघिल्लो पाना पल्टाएर पढ्नुहोस्।</p></div>
+        <div id="diaryList" class="entry-list creation-pages"></div>
+        <div id="poetryList" hidden></div>
       </section>
 
       <section class="page" id="page-letterpad">
@@ -189,7 +251,7 @@
             <div class="button-row"><button class="btn primary" id="printLetter">PDF / Print</button><button class="btn secondary" id="saveTemplate">ढाँचा सुरक्षित</button></div>
             <p class="tiny muted">Print विकल्पबाट मोबाइल वा कम्प्युटरमा PDF रूपमा सुरक्षित गर्न सकिन्छ।</p>
           </div>
-          <div class="preview-wrap"><div id="letterPreview" class="letter-preview a4"><div class="lp-art" id="lpArt"></div><div class="lp-content"><div class="lp-brand">kabijwe <span>~बिक्रमादित्य</span></div><h2 id="previewTitle">कविताको शीर्षक</h2><div id="previewBody" class="lp-poem">तपाईंका शब्दहरू यहाँ देखिनेछन्...</div><div id="previewSign" class="lp-sign">~बिक्रमादित्य</div></div></div></div>
+          <div class="preview-wrap"><div id="letterPreview" class="letter-preview a4"><div class="lp-art" id="lpArt"></div><div class="lp-content"><div class="lp-brand">kabijwe <span>~बिक्रमादित्य</span></div><div id="letterContextMeta" class="letter-context-meta context-stamp letter-context-stamp"></div><h2 id="previewTitle">कविताको शीर्षक</h2><div id="previewBody" class="lp-poem">तपाईंका शब्दहरू यहाँ देखिनेछन्...</div><div id="previewSign" class="lp-sign">~बिक्रमादित्य</div></div></div></div>
         </div>
         <div class="section-heading"><div><p class="eyebrow">तपाईंका डिजाइन</p><h2>सुरक्षित ढाँचाहरू</h2></div></div><div id="templateList" class="template-list"></div>
       </section>
@@ -204,35 +266,59 @@
         <div class="page-heading"><div><p class="eyebrow">तपाईंको नियन्त्रण</p><h1>सेटिङ्स</h1><p class="muted">आफ्नो डायरीलाई आफ्नै शैलीमा मिलाउनुहोस्।</p></div></div>
         <div class="settings-grid">
           <div class="settings-card"><h3>पहिचान</h3><label>वेबसाइटको नाम<input id="settingBrand" value="kabijwe"></label><label>हस्ताक्षर<input id="settingSignature" value="~बिक्रमादित्य"></label><button class="btn secondary" id="saveSettings">परिवर्तन सुरक्षित</button></div>
-          <div class="settings-card"><h3>रूप रङ</h3><label>मुख्य रङ<input type="color" id="settingAccent" value="#153b66"></label><label>देखावट<select id="settingTheme"><option value="light">उज्यालो</option><option value="dark">गाढा</option><option value="system">उपकरणअनुसार</option></select></label><button class="btn secondary" id="applyTheme">रूप लागू गर्नुहोस्</button></div>
+          <div class="settings-card"><h3>रूप रङ</h3><label>मुख्य रङ<input type="color" id="settingAccent" value="#153b66"></label><label>उज्यालो मोड · पृष्ठभूमि<input type="color" id="settingLightBg" value="#f5f5f3"></label><label>उज्यालो मोड · कार्ड<input type="color" id="settingLightCard" value="#ffffff"></label><label>गाढा मोड · पृष्ठभूमि<input type="color" id="settingDarkBg" value="#080b10"></label><label>गाढा मोड · कार्ड<input type="color" id="settingDarkCard" value="#171b20"></label><label>देखावट<select id="settingTheme"><option value="light">उज्यालो</option><option value="dark">गाढा</option><option value="system">उपकरणअनुसार</option></select></label><button class="btn secondary" id="applyTheme">रूप लागू गर्नुहोस्</button></div>
+          <div class="settings-card"><h3>डायरी पानाको रङ</h3><p class="muted small">डायरी खोल्दा पानाको पृष्ठभूमि, सामान्य अक्षर र बोल्ड अक्षरको रङ यहाँबाट बदल्न सक्नुहुन्छ।</p><label>पृष्ठभूमि<input type="color" id="settingDiaryBg" value="#000000"></label><label>सामान्य अक्षर<input type="color" id="settingDiaryText" value="#ffffff"></label><label>बोल्ड अक्षर<input type="color" id="settingDiaryBold" value="#e53935"></label><button class="btn secondary" id="applyDiaryColors">डायरीको रङ लागू गर्नुहोस्</button></div>
+          <div class="settings-card"><h3>अक्षरको आकार</h3><p class="muted small">सम्पूर्ण डायरीको अक्षर आफ्नो आँखालाई सहज हुने गरी मिलाउनुहोस्।</p><label>फन्ट साइज<select id="settingFontScale"><option value="small">सानो</option><option value="normal">सामान्य</option><option value="large">ठूलो</option><option value="xlarge">अझ ठूलो</option></select></label><button class="btn secondary" id="applyFontScale">अक्षरको आकार लागू गर्नुहोस्</button></div>
           <div class="settings-card"><h3>गोपनीयता</h3><p class="muted small">यो संस्करणमा सामग्री तपाईंको ब्राउजरको स्थानीय भण्डारणमा रहन्छ। यसमा अनलाइन खाता वा सर्भर-सिंक छैन।</p><div class="privacy-pill">🔒 निजी डायरी पूर्वनिर्धारित</div></div>
           <div class="settings-card"><h3>डाटा व्यवस्थापन</h3><p class="muted small">आफ्नो डायरीको प्रतिलिपि डाउनलोड वा पुनः आयात गर्नुहोस्।</p><div class="button-row"><button class="btn secondary" id="exportData">डाटा Export</button><label class="btn secondary import-btn">Import<input type="file" id="importData" accept="application/json"></label></div><button class="text-btn danger" id="clearData">सबै स्थानीय डाटा मेटाउनुहोस्</button></div>
         </div>
-        <div class="about-note"><b>Kabijwe — My Living Diary</b><p>एउटा डायरी, हजारौँ सम्झनाहरू।</p><small>Mobile-first progressive web app · प्रारम्भिक संस्करण</small></div>
+        <div class="about-note"><b>Mero diary — My Living Diary</b><p>एउटा डायरी, हजारौँ सम्झनाहरू।</p><small>Mobile-first progressive web app · प्रारम्भिक संस्करण</small></div>
       </section>
     </main>
   </div>
 
   <nav class="mobile-nav" aria-label="Mobile navigation">
     <button class="active" data-page="home"><span>⌂</span><small>गृह</small></button>
-    <button data-page="diary"><span>▤</span><small>डायरी</small></button>
+    <button data-page="records"><span>⌖</span><small>मेरा पाइलाहरू</small></button>
     <button data-page="calendar"><span>▦</span><small>पात्रो</small></button>
-    <button data-page="poetry"><span>✎</span><small>कविता</small></button>
+    <button data-page="poetry"><span>✎</span><small>सिर्जना</small></button>
     <button data-page="settings"><span>⚙</span><small>म</small></button>
   </nav>
 
-  <dialog id="editorDialog" class="modal">
+  <button type="button" class="home-diary-fab" id="homeDiaryFab" aria-label="आजको डायरी लेख्नुहोस्" title="आजको डायरी लेख्नुहोस्">
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L8 18l-4 1 1-4Z"/></svg>
+  </button>
+
+  <dialog id="postViewDialog" class="modal post-view-modal"><div class="post-view-shell"><div class="modal-head"><span class="eyebrow">डायरीका पानाहरू</span><button class="icon-btn" id="bookClose" aria-label="Close">×</button></div><div id="postViewContent"></div></div></dialog>
+
+  <dialog id="editorDialog" class="modal letterhead-editor-modal">
     <form method="dialog" id="entryForm">
       <div class="modal-head"><div><p class="eyebrow" id="editorEyebrow">नयाँ पाना</p><h2 id="editorHeading">डायरी लेख्नुहोस्</h2></div><button class="icon-btn" value="cancel" aria-label="Close">×</button></div>
-      <p id="editorContextNote" class="entry-context" style="margin:0 0 10px;font-size:11px;">सेभ गर्दा हालको मिति / तिथि / मौसम स्वतः रेकर्ड हुनेछ।</p>
+      <p id="editorContextNote" class="entry-context" style="margin:0 0 10px;font-size:11px;">समयको अनुभूति · यस पानासँग सुरक्षित गरिएको मिति, पञ्चाङ्ग, स्थान र मौसम</p>
+      <div id="editorContextStamp" class="context-stamp editor-context-stamp" aria-label="यस पानाको समय, पञ्चाङ्ग, स्थान र मौसम"></div>
+      <details id="entryContextDetails" class="post-letter-context editor-context-panel"><summary>समयको अनुभूति · विस्तृत विवरण आवश्यक परे खोल्नुहोस्</summary><div id="entryContextDetailsContent"></div></details>
       <input type="hidden" id="entryId">
       <label>शीर्षक<input id="entryTitle" placeholder="आजको दिन..." maxlength="120"></label>
       <div class="two-fields"><label>मिति<input id="entryDate" type="date"></label><label>मूड<select id="entryMood"><option>शान्त</option><option>खुसी</option><option>उत्साहित</option><option>सोचमग्न</option><option>उदास</option><option>कृतज्ञ</option></select></label></div>
-      <label>आफ्ना शब्दहरू<textarea id="entryContent" rows="8" placeholder="आजको कथा यहाँ लेख्नुहोस्..." required></textarea></label>
-      <div class="two-fields"><label>प्रकार<select id="entryType"><option value="diary">डायरी</option><option value="poem">कविता / लेख</option></select></label><label>गोपनीयता<select id="entryVisibility"><option value="private">निजी</option><option value="draft">ड्राफ्ट</option><option value="public">सार्वजनिक जस्तो चिन्ह लगाउने</option></select></label></div>
+      <label>आफ्ना शब्दहरू<textarea id="entryContent" rows="8" placeholder="आजको कथा यहाँ लेख्नुहोस्..."></textarea></label>
+      <div class="entry-media-pickers">
+        <label>▣ क्यामेराबाट फोटो<input id="entryPhotoCamera" type="file" accept="image/*" capture="environment"></label>
+        <label>▧ फोटो अपलोड<input id="entryPhoto" type="file" accept="image/*"></label>
+        <label>● भिडियो खिच्नुहोस्<input id="entryVideoCamera" type="file" accept="video/*" capture="environment"></label>
+        <label>▷ भिडियो अपलोड<input id="entryVideo" type="file" accept="video/*"></label>
+        <label>♫ अडियो अपलोड<input id="entryAudio" type="file" accept="audio/*"></label>
+      </div>
+      <section class="voice-recorder"><div class="voice-recorder-head"><b>🎙 आवाज रेकर्डर</b><span id="voiceStatus">रेकर्ड गर्न तयार</span></div>
+        <div class="voice-equalizer" id="voiceEqualizer" aria-label="रेकर्ड भइरहेको आवाजको तरंग"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="voice-progress"><span id="voiceProgress"></span></div><div class="voice-timer" id="voiceTimer">00:00</div>
+        <div class="voice-controls"><button type="button" class="btn secondary" id="voiceStart">रेकर्ड सुरु</button><button type="button" class="btn secondary" id="voicePause" disabled>पज</button><button type="button" class="btn secondary" id="voiceStop" disabled>रोक्नुहोस्</button><button type="button" class="btn primary" id="voiceSave" disabled>रेकर्ड सुरक्षित</button></div>
+        <p class="tiny muted">अरू व्यक्तिको आवाज रेकर्ड गर्नुअघि उहाँको स्पष्ट अनुमति लिनुहोस्। अनुमति बिना गोप्य रूपमा रेकर्ड नगर्नुहोस्।</p></section>
+      <div id="entryMediaPreview" class="entry-media-preview"></div>
+      <p class="tiny muted">मिडिया पोस्ट स्थानीय उपकरणमै सुरक्षित हुन्छन्। प्रति फाइल २ MB सम्मको फाइल छान्नुहोस्।</p>
+      <div class="two-fields"><label>प्रकार<select id="entryType"><option value="diary">डायरी</option><option value="poem">कविता / लेख</option></select></label><label>गोपनीयता<select id="entryVisibility"><option value="private">🔒 निजी — म मात्र</option><option value="selected">◉ छानिएका साथीहरू</option><option value="friends">♧ साथीहरू</option><option value="public">◎ सार्वजनिक</option></select></label></div>
+      <p id="privacyHelp" class="tiny muted privacy-help">निजी पोस्ट तपाईंको यस उपकरणमै रहन्छ।</p>
       <label>ट्याग<input id="entryTags" placeholder="यात्रा, सम्झना, जीवन..."></label>
       <div class="modal-actions"><button type="button" class="btn secondary" id="deleteEntry">मेटाउनुहोस्</button><button type="submit" class="btn primary">सुरक्षित गर्नुहोस्</button></div>
-      <p class="tiny muted">“सार्वजनिक” भनेको यस स्थानीय संस्करणमा सार्वजनिक रूपमा अनलाइन प्रकाशित भएको होइन; यो केवल प्रकाशनका लागि तयार भनेर चिन्ह हो।</p>
+      <p class="tiny muted">निजी: तपाईं मात्र · छानिएका साथी: तपाईंले रोजेका व्यक्ति · साथीहरू: साथी सूची · सार्वजनिक: सबैले हेर्न मिल्ने। हालको संस्करण स्थानीय मात्र भएकाले यी तहहरू अहिले पोस्टमा सुरक्षित हुने गोपनीयता छनोट हुन्; साथी सूची, वास्तविक अनुमति जाँच र अनलाइन प्रकाशन अर्को चरणमा जोड्नुपर्छ।</p>
     </form>
   </dialog>
 
@@ -244,6 +330,7 @@
     <form method="dialog" id="memoryForm"><div class="modal-head"><div><p class="eyebrow">सम्झनाको पाना</p><h2>सम्झना थप्नुहोस्</h2></div><button class="icon-btn" value="cancel">×</button></div><label>शीर्षक<input id="memoryTitle" required placeholder="त्यो सुन्दर दिन..."></label><label>कथा<textarea id="memoryText" rows="4" placeholder="यो क्षण किन विशेष छ?"></textarea></label><label>तस्वीर<input id="memoryPhoto" type="file" accept="image/*"></label><div class="button-row"><button type="button" class="btn secondary" id="captureLocation">मेरो स्थान थप्नुहोस्</button><span id="locationStatus" class="tiny muted"></span></div><div class="modal-actions"><span></span><button class="btn primary" type="submit">सम्झना सुरक्षित</button></div></form>
   </dialog>
   <div id="toast" class="toast" role="status"></div>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
   <script src="panchang.js"></script>
   <script src="app.js"></script>
 </body>

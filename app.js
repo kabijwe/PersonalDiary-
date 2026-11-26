@@ -5,21 +5,175 @@
   const state = load();
   let selectedCalendar = new Date(today.getFullYear(), today.getMonth(), 1);
   let selectedLocation = null, memoryImage = null, letterImage = null;
-  let currentContext = {adDate:"",bsDate:"",weekday:"",tithi:"",paksha:"",nakshatra:"",yoga:"",karana:"",lunarMonth:"",weatherTemp:"",weatherCondition:"",place:"",sunrise:"",sunset:"",season:"",capturedAt:0};
-  function getContextSnapshot(){return {adDate:$("#timeAdDate")?.textContent||currentContext.adDate||"",bsDate:$("#timeBsDate")?.textContent||currentContext.bsDate||"",weekday:$("#timeWeekday")?.textContent||currentContext.weekday||"",tithi:$("#pTithi")?.textContent||currentContext.tithi||"",paksha:$("#pPaksha")?.textContent||currentContext.paksha||"",nakshatra:[$("#pNakshatra")?.textContent,$("#pNakshatraPada")?.textContent].filter(x=>x&&x!=="—").join(" · ")||currentContext.nakshatra||"",yoga:$("#pYoga")?.textContent||currentContext.yoga||"",karana:$("#pKarana")?.textContent||currentContext.karana||"",lunarMonth:$("#pLunarMonth")?.textContent||currentContext.lunarMonth||"",weatherTemp:$("#weatherTemp")?.textContent||currentContext.weatherTemp||"",weatherCondition:$("#weatherCondition")?.textContent||currentContext.weatherCondition||"",place:$("#placeName")?.textContent||currentContext.place||"",sunrise:$("#sunriseTime")?.textContent||currentContext.sunrise||"",sunset:$("#sunsetTime")?.textContent||currentContext.sunset||"",season:$("#seasonName")?.textContent||currentContext.season||"",capturedAt:Date.now()};}
+  let currentContext = {};
+  state.locationHistory ||= [];
+  state.reminders ||= [];
+  function getContextSnapshot(at=Date.now()){
+    const now=at, p=nptP(now), read=id=>$("#"+id)?.textContent?.trim()||"";
+    const wx=lsGet("kabijwe.weather")||{};
+    const wxMatches=Number.isFinite(wx.lat)&&Number.isFinite(wx.lon)&&Math.abs(wx.lat-loc.lat)<0.05&&Math.abs(wx.lon-loc.lon)<0.05;
+    const exactClock=format24Clock(now);
+    const exactDate=nepaliNumber(`${pad2(p.d)} ${AD_MONTHS[p.m-1]} ${p.y}`);
+    const planets=PX?.planetaryPositions?PX.planetaryPositions(now):[];
+    return {
+      capturedAt:now,capturedAtISO:new Date(now).toISOString(),nepalTime:exactClock,adDate:exactDate,
+      bsDate:bsText()||read("timeBsDate"),weekday:WEEKDAYS[dayOfWeek(now)],weekNumber:`हप्ता ${nepaliNumber(isoWeekNumber(now))}`,
+      tithi:read("pTithi"),tithiEnd:read("pTithiEnd"),paksha:read("pPaksha"),
+      nakshatra:read("pNakshatra"),nakshatraPada:read("pNakshatraPada"),nakshatraEnd:read("pNakshatraEnd"),
+      yoga:read("pYoga"),yogaEnd:read("pYogaEnd"),karana:read("pKarana"),karanaEnd:read("pKaranaEnd"),
+      moonRashi:read("pMoonRashi"),sunRashi:read("pSunRashi"),lunarMonth:read("pLunarMonth"),ayana:read("pAyana"),
+      ghadiPala:read("pGhadiPala"),sunrise:read("sunriseTime"),sunset:read("sunsetTime"),
+      season:read("seasonName"),seasonDescription:read("seasonDesc"),planets,
+      place:loc.name||read("placeName"),locationMode:modeLabel(),latitude:Number.isFinite(loc.lat)?loc.lat:null,
+      longitude:Number.isFinite(loc.lon)?loc.lon:null,altitudeM:Number.isFinite(loc.elevation)?loc.elevation:(Number.isFinite(loc.altitude)?loc.altitude:null),accuracyM:Number.isFinite(loc.accuracy)?loc.accuracy:null,speedKmh:Number.isFinite(loc.speed)?loc.speed*3.6:null,
+      weatherTemp:wxMatches?read("weatherTemp"):"",apparentTemperature:wxMatches&&Number.isFinite(wx.apparent)?wx.apparent:null,
+      weatherCondition:wxMatches?read("weatherCondition"):"",humidity:wxMatches&&Number.isFinite(wx.hum)?wx.hum:null,
+      windKmh:wxMatches&&Number.isFinite(wx.wind)?wx.wind:null,cloudCover:wxMatches&&Number.isFinite(wx.cloud)?wx.cloud:null,
+      precipitation:wxMatches&&Number.isFinite(wx.precip)?wx.precip:null,weatherUpdated:wxMatches?read("weatherUpdated"):"",
+      weatherFetchedAt:wxMatches?(wx.fetched||null):null,weatherCode:wxMatches&&Number.isFinite(wx.code)?wx.code:null,
+      windDirection:wxMatches?wx.windDirection:null,windGustKmh:wxMatches?wx.gust:null,pressureHpa:wxMatches?wx.pressure:null,
+      dewPointC:wxMatches?wx.dewPoint:null,visibilityM:wxMatches?wx.visibility:null,tempMin:wxMatches?wx.tempMin:null,
+      tempMax:wxMatches?wx.tempMax:null,rainProbability:wxMatches?wx.rainProbability:null,usAqi:wxMatches?wx.aqi:null,
+      pm25:wxMatches?wx.pm25:null,uvIndex:wxMatches?wx.uv:null,elevationM:wxMatches?wx.elevation:null,timezone:wxMatches?wx.timezone:"Asia/Kathmandu",
+      sunrise:wxMatches?(wx.sunrise||read("sunriseTime")):read("sunriseTime"),sunset:wxMatches?(wx.sunset||read("sunsetTime")):read("sunsetTime"),suggestion:wxMatches?wx.suggestion:""
+    };
+  }
   function updateCurrentContextFromUI(){currentContext=getContextSnapshot();}
-  function formatContextLine(ctx){if(!ctx)return"";const parts=[];if(ctx.bsDate&&!/लोड|उपलब्ध छैन/.test(ctx.bsDate))parts.push(ctx.bsDate);if(ctx.tithi&&ctx.tithi!=="—"&&!/गणना/.test(ctx.tithi))parts.push(ctx.tithi);if(ctx.place&&!/अनुमति|लोड/.test(ctx.place))parts.push(ctx.place.split("·")[0].trim());if(ctx.weatherTemp&&ctx.weatherTemp!=="--°")parts.push(ctx.weatherTemp+(ctx.weatherCondition&&!/स्थान/.test(ctx.weatherCondition)?" · "+ctx.weatherCondition:""));return parts.filter(Boolean).join(" · ");}
-
+  function formatContextLine(ctx){if(!ctx)return"";const parts=[];if(ctx.bsDate&&!/लोड|उपलब्ध छैन/.test(ctx.bsDate))parts.push(ctx.bsDate);if(ctx.tithi&&ctx.tithi!=="—"&&!/गणना/.test(ctx.tithi))parts.push(ctx.tithi);if(ctx.place&&!/अनुमति|लोड/.test(ctx.place))parts.push(ctx.place);if(ctx.weatherTemp&&ctx.weatherTemp!=="--°")parts.push(ctx.weatherTemp+(ctx.weatherCondition&&!/स्थान/.test(ctx.weatherCondition)?" · "+ctx.weatherCondition:""));if(ctx.altitudeM!=null)parts.push("उचाइ "+Math.round(ctx.altitudeM)+" m");return parts.filter(Boolean).join(" · ");}
+  function contextStampHTML(ctx){
+    if(!ctx)return '<div class="context-stamp-row">समय, पञ्चाङ्ग, स्थान र मौसम विवरण उपलब्ध छैन।</div>';
+    const clean=x=>x===null||x===undefined||x===""||x==="—"?"":String(x);
+    const time=x=>{const s=clean(x);return s.includes("T")?nepaliNumber(s.slice(11,16)):s};
+    const date=[ctx.adDate,ctx.bsDate,ctx.weekday,ctx.weekNumber?"हप्ता "+ctx.weekNumber:""].filter(Boolean).join(" · ");
+    const panchang=[
+      ctx.tithi&&"तिथि "+[ctx.tithi,ctx.paksha,ctx.tithiEnd&&"समाप्ति "+ctx.tithiEnd].filter(Boolean).join(" "),
+      ctx.nakshatra&&"नक्षत्र "+[ctx.nakshatra,ctx.nakshatraPada,ctx.nakshatraEnd&&"समाप्ति "+ctx.nakshatraEnd].filter(Boolean).join(" "),
+      ctx.yoga&&"योग "+ctx.yoga+(ctx.yogaEnd?" · समाप्ति "+ctx.yogaEnd:""),
+      ctx.karana&&"करण "+ctx.karana+(ctx.karanaEnd?" · समाप्ति "+ctx.karanaEnd:""),
+      ctx.moonRashi&&"चन्द्र राशि "+ctx.moonRashi,ctx.sunRashi&&"सूर्य राशि "+ctx.sunRashi,
+      ctx.lunarMonth&&"चन्द्रमास "+ctx.lunarMonth,ctx.ayana&&"अयन "+ctx.ayana,
+      ctx.ghadiPala&&"घडी/पला "+ctx.ghadiPala,
+      (ctx.sunrise||ctx.sunset)&&"सूर्योदय/सूर्यास्त "+[time(ctx.sunrise),time(ctx.sunset)].filter(Boolean).join(" / "),
+      ctx.season&&"ऋतु "+ctx.season+(ctx.seasonDescription?" · "+ctx.seasonDescription:"")
+    ].filter(Boolean).join(" · ");
+    const planets=(ctx.planets||[]).map(g=>g.name+" "+g.rashi+" "+g.degreeText+(g.retrograde?" (वक्री)":" (मार्गी)")).join(" · ");
+    const coords=ctx.latitude!=null&&ctx.longitude!=null?nepaliNumber(Number(ctx.latitude).toFixed(5))+", "+nepaliNumber(Number(ctx.longitude).toFixed(5)):"";
+    const gps=[
+      ctx.place,ctx.locationMode,coords,ctx.altitudeM!=null?"उचाइ "+nepaliNumber(Math.round(ctx.altitudeM))+"m":"",
+      ctx.accuracyM!=null?"शुद्धता ±"+nepaliNumber(Math.round(ctx.accuracyM))+"m":"",
+      ctx.speedKmh!=null?"गति "+nepaliNumber(Number(ctx.speedKmh).toFixed(1))+" km/h":"",ctx.timezone
+    ].filter(Boolean).join(" · ");
+    const weather=[
+      [ctx.weatherTemp,ctx.weatherCondition].filter(Boolean).join(" "),
+      ctx.apparentTemperature!=null?"महसुस "+nepaliNumber(ctx.apparentTemperature)+"°":"",
+      Number.isFinite(ctx.tempMin)&&Number.isFinite(ctx.tempMax)?"न्यून/अधिक "+nepaliNumber(Math.round(ctx.tempMin))+"°/"+nepaliNumber(Math.round(ctx.tempMax))+"°":"",
+      ctx.humidity!=null?"आर्द्रता "+nepaliNumber(ctx.humidity)+"%":"",
+      ctx.windKmh!=null?"हावा "+nepaliNumber(ctx.windKmh)+" km/h"+(ctx.windDirection!=null?" · दिशा "+nepaliNumber(Math.round(ctx.windDirection))+"°":""):"",
+      ctx.windGustKmh!=null?"झोक्का "+nepaliNumber(ctx.windGustKmh)+" km/h":"",
+      ctx.precipitation!=null?"वर्षा "+nepaliNumber(ctx.precipitation)+"mm":"",
+      ctx.rainProbability!=null?"सम्भावना "+nepaliNumber(Math.round(ctx.rainProbability))+"%":"",
+      ctx.cloudCover!=null?"बादल "+nepaliNumber(ctx.cloudCover)+"%":"",
+      ctx.pressureHpa!=null?"चाप "+nepaliNumber(Math.round(ctx.pressureHpa))+"hPa":"",
+      ctx.dewPointC!=null?"शीत "+nepaliNumber(Math.round(ctx.dewPointC))+"°":"",
+      ctx.visibilityM!=null?"दृश्यता "+nepaliNumber((ctx.visibilityM/1000).toFixed(1))+"km":"",
+      ctx.usAqi!=null?"AQI "+nepaliNumber(Math.round(ctx.usAqi))+" ("+aqiCategory(ctx.usAqi)+")":"",
+      ctx.pm25!=null?"PM2.5 "+nepaliNumber(Math.round(ctx.pm25)):"",
+      ctx.uvIndex!=null?"UV "+nepaliNumber(Number(ctx.uvIndex).toFixed(1)):""
+    ].filter(Boolean).join(" · ");
+    return '<div class="context-stamp-top">'+
+      '<p class="context-disclaimer-line"><b>◷ समय</b> '+esc(ctx.nepalTime||"समय उपलब्ध छैन")+' · '+esc(date)+'</p>'+
+      '<p class="context-disclaimer-line"><b>☾ पञ्चाङ्ग</b> '+esc(panchang||"विवरण उपलब्ध छैन")+'</p>'+
+      '<p class="context-disclaimer-line"><b>✧ नवग्रह</b> '+esc(planets||"ग्रहस्थिति उपलब्ध छैन")+'</p>'+
+      '<p class="context-disclaimer-line"><b>☼ मौसम तथा वातावरण</b> '+esc(weather||"विवरण उपलब्ध छैन")+'</p></div>'+
+      '<div class="context-stamp-location"><p class="context-disclaimer-line"><b>⌖ स्थान तथा GPS</b> '+esc(gps||"GPS विवरण उपलब्ध छैन")+'</p></div>';
+  }
+  function contextLocationHTML(ctx){
+    if(!ctx)return "";
+    const coords=ctx.latitude!=null&&ctx.longitude!=null?nepaliNumber(Number(ctx.latitude).toFixed(6))+", "+nepaliNumber(Number(ctx.longitude).toFixed(6)):"";
+    const details=[ctx.place,ctx.locationMode,coords,ctx.altitudeM!=null?"उचाइ "+nepaliNumber(Math.round(ctx.altitudeM))+" मिटर":"",ctx.accuracyM!=null?"GPS शुद्धता ±"+nepaliNumber(Math.round(ctx.accuracyM))+" मिटर":"",ctx.speedKmh!=null?"गति "+nepaliNumber(Number(ctx.speedKmh).toFixed(1))+" km/h":"",ctx.timezone&&"समय क्षेत्र "+ctx.timezone].filter(Boolean).join(" · ");
+    return '<p class="context-disclaimer-line"><b>⌖ स्थान तथा GPS</b> '+esc(details)+'</p>';
+  }
+  function contextDetailsHTML(ctx){
+    if(!ctx)return '<p>विवरण उपलब्ध छैन।</p>';
+    const n=x=>x==null||x===""?"":nepaliNumber(x);
+    const clock=x=>{if(!x)return "";const s=String(x);return s.includes("T")?n(s.slice(11,16)):s};
+    const rows=[
+      ["नेपाल समय",ctx.nepalTime],["ग्रेगोरियन मिति",ctx.adDate],["विक्रम संवत्",ctx.bsDate],["बार / हप्ता",[ctx.weekday,ctx.weekNumber].filter(Boolean).join(" · ").replace(/हप्ता हप्ता/g,"हप्ता")],
+      ["तिथि / पक्ष / समाप्ति",[ctx.tithi,ctx.paksha,ctx.tithiEnd].filter(Boolean).join(" · ")],["नक्षत्र / पाद / समाप्ति",[ctx.nakshatra,ctx.nakshatraPada,ctx.nakshatraEnd].filter(Boolean).join(" · ")],
+      ["योग / समाप्ति",[ctx.yoga,ctx.yogaEnd].filter(Boolean).join(" · ")],["करण / समाप्ति",[ctx.karana,ctx.karanaEnd].filter(Boolean).join(" · ")],
+      ["चन्द्र राशि",ctx.moonRashi],["सूर्य राशि",ctx.sunRashi],["चन्द्रमास",ctx.lunarMonth],["अयन",ctx.ayana],
+      ...((ctx.planets||[]).map(g=>["ग्रह · "+g.name,[g.rashi,g.degreeText,g.retrograde?"वक्री":"मार्गी"].filter(Boolean).join(" · ")])),
+      ["घडी / पला",ctx.ghadiPala],["सूर्योदय / सूर्यास्त",[clock(ctx.sunrise),clock(ctx.sunset)].filter(Boolean).join(" / ")],["ऋतु",[ctx.season,ctx.seasonDescription].filter(Boolean).join(" · ")],
+      ["स्थान",ctx.place],["स्थानको स्रोत",ctx.locationMode],["अक्षांश / देशान्तर",ctx.latitude!=null&&ctx.longitude!=null?n(Number(ctx.latitude).toFixed(6))+", "+n(Number(ctx.longitude).toFixed(6)):""],
+      ["उचाइ",ctx.altitudeM!=null?n(Math.round(ctx.altitudeM))+" मिटर":""],["GPS शुद्धता",ctx.accuracyM!=null?"±"+n(Math.round(ctx.accuracyM))+" मिटर":""],["गति",ctx.speedKmh!=null?n(Number(ctx.speedKmh).toFixed(1))+" km/h":""],["समय क्षेत्र",ctx.timezone],
+      ["तापक्रम",ctx.weatherTemp],["महसुस हुने तापक्रम",ctx.apparentTemperature!=null?n(ctx.apparentTemperature)+"°C":""],["मौसम",ctx.weatherCondition],
+      ["न्यूनतम / अधिकतम",[ctx.tempMin,ctx.tempMax].every(Number.isFinite)?n(Math.round(ctx.tempMin))+"° / "+n(Math.round(ctx.tempMax))+"°":""],["आर्द्रता",ctx.humidity!=null?n(ctx.humidity)+"%":""],
+      ["हावाको गति / दिशा",ctx.windKmh!=null?n(ctx.windKmh)+" km/h"+(ctx.windDirection!=null?" · "+n(Math.round(ctx.windDirection))+"°":""):""],["हावाको झोक्का",ctx.windGustKmh!=null?n(ctx.windGustKmh)+" km/h":""],
+      ["वर्षा / सम्भावना",[ctx.precipitation!=null?n(ctx.precipitation)+" mm":"",ctx.rainProbability!=null?n(Math.round(ctx.rainProbability))+"% सम्भावना":""].filter(Boolean).join(" · ")],
+      ["बादल",ctx.cloudCover!=null?n(ctx.cloudCover)+"%":""],["चाप",ctx.pressureHpa!=null?n(Math.round(ctx.pressureHpa))+" hPa":""],["शीत बिन्दु",ctx.dewPointC!=null?n(Math.round(ctx.dewPointC))+"°":""],
+      ["दृश्यता",ctx.visibilityM!=null?n((ctx.visibilityM/1000).toFixed(1))+" km":""],["US AQI",ctx.usAqi!=null?n(Math.round(ctx.usAqi))+" ("+aqiCategory(ctx.usAqi)+")":""],
+      ["PM2.5",ctx.pm25!=null?n(Math.round(ctx.pm25))+" µg/m³":""],["UV Index",ctx.uvIndex!=null?n(Number(ctx.uvIndex).toFixed(1)):""],["आजको सुझाव",ctx.suggestion],
+      ["मौसम अद्यावधिक",ctx.weatherUpdated],["रेकर्ड गरिएको (नेपाल समय)",ctx.nepalTime],["रेकर्डको ISO समय",ctx.capturedAtISO]
+    ];
+    const panchangEnd=15+(ctx.planets||[]).length, locationEnd=panchangEnd+7;
+    const groups=[["समय तथा पञ्चाङ्ग",rows.slice(0,panchangEnd)],["स्थान तथा GPS",rows.slice(panchangEnd,locationEnd)],["मौसम तथा वातावरण",rows.slice(locationEnd)]];
+    return '<div class="context-disclaimer">'+groups.map(([heading,items])=>{const facts=items.filter(r=>r[1]!==""&&r[1]!=null);return facts.length?'<p class="context-disclaimer-line"><b>'+esc(heading)+' — </b>'+facts.map(r=>esc(r[0])+': '+esc(r[1])).join(' · ')+'</p>':''}).join("")+'</div>';
+  }
+  function contextSummaryHTML(ctx){
+    if(!ctx)return "";
+    return contextStampHTML(ctx);
+  }
   function load(){try{return JSON.parse(localStorage.getItem(KEY)) || {entries:[],events:[],memories:[],templates:[],settings:{}}}catch{return {entries:[],events:[],memories:[],templates:[],settings:{}}}}
-  function persist(){localStorage.setItem(KEY,JSON.stringify(state));}
+  function persist(){try{localStorage.setItem(KEY,JSON.stringify(state));return true;}catch(error){console.error("Mero diary local save failed:",error);try{toast("स्थानीय भण्डारण भरिएको वा रोकिएको छ। ठूलो media backup गरी ठाउँ खाली गर्नुहोस्।");}catch{}return false;}}
   function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,7)}
   function esc(s=""){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
   function dateText(d){return new Date(d+"T12:00:00").toLocaleDateString("ne-NP",{year:"numeric",month:"long",day:"numeric"})}
   function toast(msg){const el=$("#toast");el.textContent=msg;el.classList.add("show");setTimeout(()=>el.classList.remove("show"),2400)}
-  function showPage(name){$$(".page").forEach(p=>p.classList.toggle("active",p.id==="page-"+name));$$("[data-page]").forEach(b=>b.classList.toggle("active",b.dataset.page===name));$("#sidebar").classList.remove("open");$("#main").focus();if(name==="calendar")renderCalendar();if(name==="diary")renderDiary();if(name==="poetry")renderPoetry();if(name==="memories")renderMemories();if(name==="letterpad")renderTemplates()}
-  $$("[data-page]").forEach(b=>b.addEventListener("click",()=>showPage(b.dataset.page)));
-  $$("[data-goto]").forEach(b=>b.addEventListener("click",()=>showPage(b.dataset.goto)));
-  $("#menuToggle").addEventListener("click",()=>{const s=$("#sidebar");s.style.display=s.style.display==="flex"?"none":"flex";s.style.position="absolute";s.style.zIndex=40;s.style.top="60px";s.style.right="8px";s.style.width="230px";s.style.boxShadow="0 12px 35px #0002";});
+  function showPage(name){
+    if(name==="diary")name="poetry";
+    const target=$("#page-"+name);
+    if(!target){toast("यो मेनु उपलब्ध छैन।");return}
+    const diaryFab=$("#homeDiaryFab");if(diaryFab)diaryFab.hidden=name!=="home";
+    $$(".page").forEach(p=>p.classList.toggle("active",p===target));
+    $$("[data-page]").forEach(b=>b.classList.toggle("active",b.dataset.page===name));
+    const sidebar=$("#sidebar");sidebar.classList.remove("open");sidebar.style.display="";
+    if(name==="calendar"){renderCalendar();renderCalendarDetails();}
+    if(name==="records"){renderLocationHistory();setTimeout(()=>historyMap?.invalidateSize(),180)}
+    if(name==="poetry")renderDiary();
+    if(name==="memories")renderMemories();
+    if(name==="letterpad")renderTemplates();
+    $("#main").scrollTop=0;window.scrollTo({top:0,behavior:"instant"});
+  }
+  $$("[data-page],[data-goto]").forEach(nav=>{
+    nav.addEventListener("click",e=>{
+      e.preventDefault();e.stopPropagation();
+      showPage(nav.dataset.page||nav.dataset.goto);
+    });
+  });
+  $$("[data-record-target]").forEach(b=>b.addEventListener("click",()=>$("#"+b.dataset.recordTarget).scrollIntoView({behavior:"smooth",block:"start"})));
+  const sidebar=$("#sidebar"),menuToggle=$("#menuToggle");
+  menuToggle.setAttribute("aria-expanded","false");
+  menuToggle.addEventListener("click",e=>{
+    e.preventDefault();e.stopPropagation();
+    const opened=sidebar.classList.toggle("open");
+    menuToggle.setAttribute("aria-expanded",String(opened));
+  });
+  document.addEventListener("pointerdown",e=>{
+    if(!sidebar.classList.contains("open"))return;
+    if(sidebar.contains(e.target)||menuToggle.contains(e.target))return;
+    sidebar.classList.remove("open");
+    menuToggle.setAttribute("aria-expanded","false");
+  },true);
+  document.addEventListener("keydown",e=>{
+    if(e.key==="Escape"&&sidebar.classList.contains("open")){
+      sidebar.classList.remove("open");menuToggle.setAttribute("aria-expanded","false");
+    }
+  });
+  $("#panchangMore").addEventListener("click",()=>{
+    const panel=$("#panchangPanel"),expanded=panel.classList.toggle("expanded");
+    $("#panchangMore").setAttribute("aria-expanded",String(expanded));
+    $("#panchangMore").textContent=expanded?"कम विवरण देखाउनुहोस् ↑":"थप विवरण देखाउनुहोस् ↓";
+  });
   /* =====================================================================
      समयको अनुभूति — time card
      Data flow:
@@ -45,7 +199,7 @@
     {id:"bhr",name:"भरतपुर",lat:27.6833,lon:84.4333},{id:"jml",name:"जुम्ला",lat:29.2747,lon:82.1838},
     {id:"ilm",name:"इलाम",lat:26.9090,lon:87.9280},{id:"lmb",name:"लुम्बिनी",lat:27.4833,lon:83.2760}
   ];
-  const LS_LOC="kabijwe.location", LS_WX="kabijwe.weather", LS_BS="kabijwe.bsmonth.";
+  const LS_LOC="kabijwe.location", LS_SPEED="kabijwe.location.speed", LS_WX="kabijwe.weather", LS_BS="kabijwe.bsmonth.";
   const lsGet=k=>{try{return JSON.parse(localStorage.getItem(k))}catch{return null}};
   const lsSet=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch{}};
 
@@ -57,6 +211,7 @@
   function dayOfWeek(ms){const p=nptP(ms);return new Date(Date.UTC(p.y,p.m-1,p.d)).getUTCDay()}
   function periodWord(h){return h>=4&&h<12?"बिहान":h>=12&&h<16?"दिउँसो":h>=16&&h<19?"साँझ":"राति"}
   function clock12(ms){const p=nptP(ms),h12=p.hh%12||12;return {text:`${nepaliNumber(h12)}:${nepaliNumber(pad2(p.mm))}`,word:periodWord(p.hh)}}
+  function format24Clock(ms){const p=nptP(ms);return `${nepaliNumber(pad2(p.hh))}:${nepaliNumber(pad2(p.mm))}:${nepaliNumber(pad2(p.ss))}`;}
   function fmtClock(ms){if(ms==null)return "--:--";const c=clock12(ms);return `${c.text} ${c.word}`}
   const dayNo=ms=>{const p=nptP(ms);return Date.UTC(p.y,p.m-1,p.d)/864e5};
   // End times: add "भोलि/हिजो" when the date differs from today (Nepal time).
@@ -67,13 +222,15 @@
   }
   function isoWeekNumber(ms){const p=nptP(ms),d=new Date(Date.UTC(p.y,p.m-1,p.d));d.setUTCDate(d.getUTCDate()+4-(d.getUTCDay()||7));const y0=new Date(Date.UTC(d.getUTCFullYear(),0,1));return Math.ceil((((d-y0)/86400000)+1)/7)}
   function setText(id,v){const el=$("#"+id);if(el&&el.textContent!==v)el.textContent=v}
+  function setServiceState(id,message,state="info"){const el=$("#"+id);if(el){el.textContent=message;el.dataset.state=state;}}
 
   /* ---------- Location (GPS only on click; manual always available) ---------- */
   const DEFAULT_LOC=LOCATIONS[0];
   let loc={mode:"default",id:DEFAULT_LOC.id,name:DEFAULT_LOC.name,lat:DEFAULT_LOC.lat,lon:DEFAULT_LOC.lon};
   (function restoreLocation(){
-    const saved=lsGet(LS_LOC),hit=saved&&LOCATIONS.find(x=>x.id===saved.id);
-    if(hit)loc={mode:"manual",id:hit.id,name:hit.name,lat:hit.lat,lon:hit.lon};
+    const saved=lsGet(LS_LOC);
+    if(saved&&saved.mode==="gps"&&Number.isFinite(saved.lat)&&Number.isFinite(saved.lon)&&Math.abs(saved.lat)<=90&&Math.abs(saved.lon)<=180){const savedSpeed=Number.isFinite(saved.speed)?saved.speed:lsGet(LS_SPEED);loc={mode:"gps",id:"",name:saved.name||"GPS स्थान",lat:saved.lat,lon:saved.lon,altitude:Number.isFinite(saved.altitude)?saved.altitude:null,accuracy:Number.isFinite(saved.accuracy)?saved.accuracy:null,speed:Number.isFinite(savedSpeed)?savedSpeed:null,elevation:Number.isFinite(saved.elevation)?saved.elevation:null};if(Number.isFinite(loc.speed))lsSet(LS_SPEED,loc.speed);return;}
+    const hit=saved&&LOCATIONS.find(x=>x.id===saved.id);if(hit)loc={mode:"manual",id:hit.id,name:hit.name,lat:hit.lat,lon:hit.lon};
   })();
   function modeLabel(){return loc.mode==="gps"?"GPS बाट":loc.mode==="manual"?"हातले छानिएको":"पूर्वनिर्धारित (GPS होइन)"}
   function fillManualSelect(){
@@ -87,7 +244,7 @@
     const s=bsMonth?PX.seasonForBsMonth(bsMonth):null;
     setText("seasonName",s?`ऋतु · ${s.name}`:"ऋतु");
     setText("seasonDesc",s?s.desc:"नेपाली मिति पर्खँदै…");
-    $$("#seasonChips [data-season]").forEach(c=>c.classList.toggle("current",!!s&&c.dataset.season===s.name));
+    $$("#seasonDetails > [data-season], #seasonChips [data-season]").forEach(c=>c.classList.toggle("current",!!s&&c.dataset.season===s.name));
   }
 
   /* ---------- Bikram Sambat date ---------- */
@@ -124,11 +281,12 @@
   }
   async function loadBsDate(force=false){
     const now=Date.now(),key=nptKey(now),p=nptP(now),seq=++bsSeq;
+    setServiceState("bsServiceStatus","वि.सं. मिति जाँच हुँदैछ…","loading");
     if(!force&&key===bsKey&&bs&&bs.source!=="estimate")return;
     bsKey=key;
     // 1) instant answer from a cached month (so offline works after one online visit)
     const cached=readBsCache(p.y,p.m);
-    if(cached&&applyBsFromDays(cached,key,"cache")){bsFailed=false;renderDate();}
+    if(cached&&applyBsFromDays(cached,key,"cache")){bsFailed=false;renderDate();setServiceState("bsServiceStatus","वि.सं. cache बाट","success");}
     else {bs=null;renderDate();}
     // 2) live validated fetch (refreshes cache; also upgrades "cache" → "trisambat")
     try{
@@ -138,11 +296,12 @@
       // sanity check against the independent astronomical estimate: must be within ±2 days
       const est=PX.bsEstimate(now,12);
       if(est&&est.month===bs.month&&Math.abs(est.day-bs.day)>2)console.warn("BS cross-check differs",est,bs);
-      bsFailed=false;
+      bsFailed=false;setServiceState("bsServiceStatus","वि.सं. मिति सेवा सफल","success");
       if(p.d>=24){const n=new Date(Date.UTC(p.y,p.m,1));fetchBsMonth(n.getUTCFullYear(),n.getUTCMonth()+1).catch(()=>{})}
     }catch(e){
       if(seq!==bsSeq)return;
       console.warn("Bikram Sambat date:",e);
+      setServiceState("bsServiceStatus","वि.सं. सेवा असफल · "+(e.message||"नेटवर्क समस्या")+" · अनुमानित मिति","warning");
       if(!bs||bs.source==="estimate"){
         const est=PX.bsEstimate(now,12);
         bs=est?{year:est.year,month:est.month,day:est.day,source:"estimate"}:null;
@@ -155,13 +314,19 @@
   /* ---------- Date / clock rendering ---------- */
   function renderDate(){
     const now=Date.now(),p=nptP(now),c=clock12(now),wd=WEEKDAYS[dayOfWeek(now)];
-    setText("clock",`${c.text} ${c.word}`);
-    setText("timeWeekday",wd);
-    setText("timeAdDate",`${pad2(p.d)} ${AD_MONTHS[p.m-1]} ${p.y}`);
+    setText("clock",format24Clock(now));
+    const currentTithi=pan?.tithi;
+    setText("timeCardTitle",wd);
+    const endMs=currentTithi?.endMs;
+    const endClock=endMs?clock12(endMs):null;
+    const tithiEnd=endMs?` तिथि · समाप्ति · ${endClock.word} ${endClock.text}`:"";
+    const lunarMonth=currentTithi?(currentTithi.shukla?pan.lunarMonth.amanta:pan.lunarMonth.purnimanta):"";
+    setText("timeTithi",currentTithi?`${lunarMonth} ${currentTithi.paksha} ${currentTithi.name}${tithiEnd}`:"पञ्चाङ्ग गणना हुँदैछ…");
+    setText("timeAdDate",nepaliNumber(`${pad2(p.d)} ${AD_MONTHS[p.m-1]} ${p.y}`));
     setText("timeWeekNumber",`हप्ता ${nepaliNumber(isoWeekNumber(now))}`);
     const t=bsText();
     setText("timeBsDate",t||(bsFailed?"वि.सं. मिति उपलब्ध भएन":"नेपाली मिति लोड हुँदै…"));
-    setText("todayDay",wd);setText("todayAd",`${pad2(p.d)} ${AD_MONTHS[p.m-1]}`);
+    setText("todayDay",wd);setText("todayAd",nepaliNumber(`${pad2(p.d)} ${AD_MONTHS[p.m-1]}`));
     setText("todayBs",t||(bsFailed?"मिति उपलब्ध भएन":"नेपाली मिति लोड हुँदै…"));
     setText("todayNepali",`आजको दिन · ${t||wd}`);
     renderSeason(bs?bs.month:null);
@@ -182,19 +347,26 @@
       // the traditional "day's" tithi is the one prevailing at sunrise
       pan.atSunrise=solar.sunriseMs?PX.panchang(solar.sunriseMs):null;
       panError=null;
-    }catch(e){pan=null;panError=e;console.error("Panchang engine:",e)}
+    }catch(e){
+      // Keep the last valid Panchang on screen if a refresh calculation briefly fails.
+      // The next successful timed refresh or an explicit GPS update will replace it.
+      panError=e;console.error("Panchang engine:",e);
+    }
     renderPanchang();drawSun();renderGhadiPala();
   }
   function renderPanchang(){
-    const now=Date.now(),retry=$("#panchangRetry");
+    const now=Date.now();
     if(!pan){
-      setText("panchangStatus","गणना असफल");
-      setText("panchangFoot","पञ्चाङ्ग गणना गर्न सकिएन। फेरि प्रयास गर्नुहोस्।");
-      retry.hidden=false;return;
+      setServiceState("panchangServiceStatus","पञ्चाङ्ग गणना असफल","error");
+      return;
     }
     const t=pan.tithi,n=pan.nakshatra,y=pan.yoga,k=pan.karana;
     setText("pTithi",t.name);
     setText("pPaksha",t.paksha);
+    // Keep the live time-card line synchronized with the calculated current tithi.
+    const endClock=clock12(t.endMs);
+    const monthName=t.shukla?pan.lunarMonth.amanta:pan.lunarMonth.purnimanta;
+    setText("timeTithi",`${monthName} ${t.paksha} ${t.name} तिथि · समाप्ति · ${endClock.word} ${endClock.text}`);
     const sr=pan.atSunrise&&pan.atSunrise.tithi.number!==t.number?` · सूर्योदयमा ${pan.atSunrise.tithi.name}`:"";
     setText("pTithiEnd",`समाप्ति ${fmtEnd(t.endMs,now)}${sr}`);
     setText("pNakshatra",n.name);
@@ -208,13 +380,9 @@
     setText("pLunarMonth",t.shukla?lm.amanta:lm.purnimanta);
     setText("pLunarNote",t.shukla?"अमान्त = पूर्णिमान्त":`पूर्णिमान्त · अमान्त ${lm.amanta}`);
     setText("pAyana",pan.ayana);
-    setText("panchangStatus","गणना उपलब्ध (अफलाइन इन्जिन)");
-    let bsNote="";
-    if(bs&&bs.source==="estimate")bsNote=" वि.सं. मिति सेवा नपाइएकाले अनुमानित हो (±१ दिन फरक पर्न सक्छ)।";
-    else if(bs&&bs.source==="cache")bsNote=" वि.सं. मिति सुरक्षित प्रतिबाट देखाइएको छ।";
-    else if(!bs&&bsFailed)bsNote=" वि.सं. मिति उपलब्ध भएन।";
-    $("#panchangFoot").innerHTML=`पञ्चाङ्ग: Kabijwe को आफ्नै खगोलीय गणना (Meeus सूत्र, लाहिरी अयनांश), अफलाइन चल्छ · स्थान: ${esc(loc.name)} — ${esc(modeLabel())}। वि.सं. मिति: <a href="https://trisambat.com/developers?lang=ne" target="_blank" rel="noopener">Trisambat</a> (beta)।${bsNote} यो आधिकारिक पात्रो होइन।`;
-    retry.hidden=!(bsFailed);
+    setServiceState("panchangServiceStatus","पञ्चाङ्ग अफलाइन गणना सफल","success");
+    renderPanchangSummary();
+    // Retry control was removed; report BS availability in the status and date fields.
     updateCurrentContextFromUI();
   }
   function renderGhadiPala(){
@@ -222,93 +390,383 @@
     let g=null;
     try{g=PX.ghadiPala(Date.now(),loc.lat,loc.lon)}catch{}
     if(!g){el.textContent="—";setText("pGhadiNote","सूर्योदय गणना उपलब्ध छैन");return}
-    el.textContent=`${nepaliNumber(g.ghadi)} घडी · ${nepaliNumber(g.pala)} पला`;
+    const ghadiText=`${nepaliNumber(g.ghadi)} घडी · ${nepaliNumber(g.pala)} पला`;
+    el.textContent=ghadiText;setText("sunGhadiDetail",ghadiText);
     setText("pGhadiNote",`${g.which==="yesterday"?"हिजोको":"आजको"} सूर्योदय ${fmtClock(g.sunriseMs)} देखि · १ घडी = २४ मिनेट, १ पला = २४ सेकेन्ड`);
+    renderPanchangSummary();
   }
 
-  /* ---------- Sunrise → sunset arc (one smooth curve) ---------- */
+  function renderPanchangSummary(){
+    const el=$("#panchangSummaryText");if(!el||!pan)return;
+    const t=pan.tithi,n=pan.nakshatra,y=pan.yoga,k=pan.karana,lm=pan.lunarMonth;
+    const rows=[
+      ["नक्षत्र",n?.name? n.name+" · पाद "+nepaliNumber(n.pada)+" · समाप्ति "+fmtEnd(n.endMs,Date.now()):""],
+      ["योग",y?.name? y.name+" · समाप्ति "+fmtEnd(y.endMs,Date.now()):""],
+      ["करण",k?.name? k.name+" · समाप्ति "+fmtEnd(k.endMs,Date.now()):""],
+      ["चन्द्र राशि",pan.moonRashi?.name],
+      ["सूर्य राशि",pan.sunRashi?.name],
+      ["मास पद्धति",t?.shukla?"अमान्त = पूर्णिमान्त":(lm?.amanta?"पूर्णिमान्त · अमान्त "+lm.amanta:"")],
+      ["अयन",pan.ayana],
+      ["घडी · पला",$("#pGhadiPala")?.textContent?.trim()],
+    ].filter(([,value])=>value);
+    el.replaceChildren();
+    rows.forEach(([label,value])=>{
+      const row=document.createElement("span");row.className="panchang-row";
+      if(label){
+        const key=document.createElement("span");key.className="panchang-label";key.textContent=label;
+        row.append(key);
+      }
+      const detail=document.createElement("span");detail.className="panchang-value";detail.textContent=value;
+      row.append(detail);el.append(row);
+    });
+    renderCalendarDetails();
+  }
+
+  /* ---------- Live day/night solar cycle ---------- */
   function drawSun(){
-    const marker=$("#sunMarker");if(!marker)return;
-    if(!solar||solar.polar){setText("sunriseTime","--:--");setText("sunsetTime","--:--");setText("sunStatus",solar&&solar.polar?(solar.polar==="day"?"सूर्य अस्त हुँदैन":"सूर्य उदाउँदैन"):"गणना हुँदैछ…");marker.style.display="none";return}
-    setText("sunriseTime",fmtClock(solar.sunriseMs));setText("sunsetTime",fmtClock(solar.sunsetMs));
-    marker.style.display="";
-    const now=Date.now(),a=solar.sunriseMs,b=solar.sunsetMs,t=Math.max(0,Math.min(1,(now-a)/(b-a)));
-    // Same path as the SVG: M12 58 C70 58,90 14,160 14 C230 14,250 58,308 58
-    const P=[[12,58],[70,58],[90,14],[160,14],[230,14],[250,58],[308,58]],bez=(q,u)=>{const v=1-u;return [0,1].map(i=>v*v*v*q[0][i]+3*v*v*u*q[1][i]+3*v*u*u*q[2][i]+u*u*u*q[3][i])};
-    const [x,y]=t<=.5?bez(P.slice(0,4),t*2):bez(P.slice(3,7),(t-.5)*2);
-    marker.setAttribute("cx",x.toFixed(1));marker.setAttribute("cy",y.toFixed(1));
-    setText("sunStatus",now<a?"सूर्योदयअघि":now>b?"सूर्यास्तपछि":"अहिलेको समय");
+    if(!solar||solar.polar){
+      setText("sunriseTime","--:--");setText("sunsetTime","--:--");setText("sunriseDetail","उपलब्ध छैन");setText("sunsetDetail","उपलब्ध छैन");
+      setText("sunStatus",solar&&solar.polar?(solar.polar==="day"?"सूर्य अस्त हुँदैन":"सूर्य उदाउँदैन"):"गणना हुँदैछ…");
+      ["full-sun-path","elapsed-sun-path","sun-day-area"].forEach(id=>$("#"+id)?.setAttribute("d",""));
+      $("#sun-marker")?.setAttribute("visibility","hidden");
+      ["sunrise-marker","sunset-marker"].forEach(id=>$("#"+id)?.setAttribute("visibility","hidden"));
+      return;
+    }
+    const sunrise=fmtClock(solar.sunriseMs),sunset=fmtClock(solar.sunsetMs);
+    setText("sunriseTime",sunrise);setText("sunsetTime",sunset);setText("sunriseDetail",sunrise);setText("sunsetDetail",sunset);
+    setText("sunrise-graph-time",sunrise);setText("sunset-graph-time",sunset);
+    $("#sun-marker")?.setAttribute("visibility","visible");
+    drawFullSunCycle();
+    updateSolarPosition();
   }
+  // Reference-style smooth 24-hour solar arc; actual sunrise/sunset are exact horizon crossings.
+  function solarWaveGeometry(){
+    const peakY=60,troughY=210,midY=(peakY+troughY)/2,amplitude=(troughY-peakY)/2;
+    const horizonPhase=0.725;
+    const sunriseParts=nptP(solar.sunriseMs),sunsetParts=nptP(solar.sunsetMs);
+    const sunriseMins=sunriseParts.hh*60+sunriseParts.mm;
+    const sunsetMins=sunsetParts.hh*60+sunsetParts.mm;
+    const solarNoon=720;
+    const horizonY=midY-amplitude*Math.cos(Math.PI*horizonPhase);
+    const knotsT=[0,sunriseMins,solarNoon,sunsetMins,1440];
+    const knotsU=[-1,-horizonPhase,0,horizonPhase,1];
+    const slopes=[
+      (knotsU[1]-knotsU[0])/(knotsT[1]-knotsT[0]),
+      (knotsU[2]-knotsU[0])/(knotsT[2]-knotsT[0]),
+      (knotsU[3]-knotsU[1])/(knotsT[3]-knotsT[1]),
+      (knotsU[4]-knotsU[2])/(knotsT[4]-knotsT[2]),
+      (knotsU[4]-knotsU[3])/(knotsT[4]-knotsT[3])
+    ];
+    const phaseAt=mins=>{
+      const m=Math.max(0,Math.min(1440,mins));let i=0;
+      while(i<knotsT.length-2&&m>knotsT[i+1])i++;
+      const h=knotsT[i+1]-knotsT[i],t=(m-knotsT[i])/h,t2=t*t,t3=t2*t;
+      return (2*t3-3*t2+1)*knotsU[i]+(t3-2*t2+t)*h*slopes[i]
+        +(-2*t3+3*t2)*knotsU[i+1]+(t3-t2)*h*slopes[i+1];
+    };
+    const waveY=mins=>midY-amplitude*Math.cos(Math.PI*phaseAt(mins));
+    return {waveY,horizonY,sunriseMins,sunsetMins};
+  }
+  function drawFullSunCycle(){
+    if(!solar||solar.polar)return;
+    const startX=8,endX=792,width=endX-startX;
+    const {waveY,horizonY,sunriseMins,sunsetMins}=solarWaveGeometry();
+    // Reference geometry: the whole 24-hour cycle spans the graph width.
+    const xAt=m=>startX+(Math.max(0,Math.min(1440,m))/1440)*width;
+    const horizon=$("#sun-horizon-line");
+    if(horizon){horizon.setAttribute("x1",startX);horizon.setAttribute("x2",endX);horizon.setAttribute("y1",horizonY.toFixed(2));horizon.setAttribute("y2",horizonY.toFixed(2));}
+    const night=$("#sun-night-bg");
+    if(night){night.setAttribute("x",startX);night.setAttribute("width",width);night.setAttribute("y",horizonY.toFixed(2));night.setAttribute("height",(238-horizonY).toFixed(2));}
+    const clip=$("#sun-above-horizon-rect");
+    if(clip){clip.setAttribute("x",0);clip.setAttribute("width",800);clip.setAttribute("height",horizonY.toFixed(2));}
 
-  /* ---------- Weather (Open-Meteo) ---------- */
+    // Full-day wave (midnight to midnight), plus a separate daylight fill.
+    let fullD="",dayD="";
+    for(let i=0;i<=720;i++){
+      const mins=(i/720)*1440,x=xAt(mins),y=waveY(mins);
+      fullD+=(i===0?"M ":" L ")+x.toFixed(2)+","+y.toFixed(2);
+      if(i<=720*(sunsetMins-sunriseMins)/1440){
+        const dayM=sunriseMins+(i/720)*(sunsetMins-sunriseMins);
+        const dayX=xAt(dayM),dayY=waveY(dayM);
+        dayD+=(i===0?"M ":" L ")+dayX.toFixed(2)+","+dayY.toFixed(2);
+      }
+    }
+    // Re-sample the daylight arc independently so both intersections are exact.
+    dayD="";
+    for(let i=0;i<=360;i++){
+      const mins=sunriseMins+(i/360)*(sunsetMins-sunriseMins),x=xAt(mins),y=waveY(mins);
+      dayD+=(i===0?"M ":" L ")+x.toFixed(2)+","+y.toFixed(2);
+    }
+    $("#full-sun-path")?.setAttribute("d",fullD);
+    $("#sun-day-area")?.setAttribute("d",dayD+" L "+xAt(sunsetMins).toFixed(2)+" "+horizonY.toFixed(2)+" L "+xAt(sunriseMins).toFixed(2)+" "+horizonY.toFixed(2)+" Z");
+
+    const setMarker=(prefix,mins)=>{
+      const x=xAt(mins);
+      const dot=$("#"+prefix+"-dot"),tick=$("#"+prefix+"-tick");
+      if(dot){dot.setAttribute("cx",x.toFixed(2));dot.setAttribute("cy",horizonY.toFixed(2));}
+      if(tick){tick.setAttribute("x1",x.toFixed(2));tick.setAttribute("x2",x.toFixed(2));tick.setAttribute("y1",(horizonY-6).toFixed(2));tick.setAttribute("y2",(horizonY+6).toFixed(2));}
+      $("#"+prefix+"-marker")?.setAttribute("visibility","visible");
+    };
+    setMarker("sunrise",sunriseMins);setMarker("sunset",sunsetMins);
+
+    // Sunrise text sits to the left; sunset text sits to the right of each exact crossing.
+    const placeIntersectionLabel=(prefix,x,side)=>{
+      const time=$("#"+prefix+"-graph-time"),label=$("#"+prefix+"-graph-label");
+      const textX=side==="left"?Math.max(8,x-16):Math.min(792,x+16);
+      const anchor=side==="left"?"end":"start";
+      [time,label].forEach(el=>{
+        if(!el)return;
+        el.setAttribute("x",textX.toFixed(2));
+        el.setAttribute("text-anchor",anchor);
+      });
+      if(time)time.setAttribute("y",(horizonY-31).toFixed(2));
+      if(label)label.setAttribute("y",(horizonY-10).toFixed(2));
+    };
+    placeIntersectionLabel("sunrise",xAt(sunriseMins),"left");
+    placeIntersectionLabel("sunset",xAt(sunsetMins),"right");
+  }
+  function solarMinuteLabel(mins){
+    const h=Math.floor(mins/60)%24,m=Math.floor(mins%60),h12=h%12||12;
+    return nepaliNumber(h12)+":"+nepaliNumber(String(m).padStart(2,"0"))+" "+periodWord(h);
+  }
+  function updateSolarPosition(){
+    if(!solar||solar.polar)return;
+    const p=nptP(Date.now()),nowMins=p.hh*60+p.mm+p.ss/60;
+    const startX=8,endX=792,width=endX-startX;
+    const {waveY,sunriseMins,sunsetMins}=solarWaveGeometry();
+    const visibleMins=Math.max(0,Math.min(1440,nowMins));
+    const sunX=startX+(visibleMins/1440)*width,sunY=waveY(visibleMins);
+    const fullPath=$("#full-sun-path")?.getAttribute("d")||"";
+    $("#elapsed-sun-path")?.setAttribute("d",fullPath);
+    const progress=$("#sun-progress-rect");
+    if(progress){progress.setAttribute("x",startX);progress.setAttribute("width",Math.max(0,Math.min(width,sunX-startX)).toFixed(2));}
+    const marker=$("#sun-marker");
+    if(marker){marker.setAttribute("transform",`translate(${sunX.toFixed(2)} ${sunY.toFixed(2)})`);marker.setAttribute("visibility","visible");}
+    const daytime=nowMins>=sunriseMins&&nowMins<=sunsetMins;
+    setText("sunStatus",daytime?"अहिले दिनको समय":nowMins<sunriseMins?"सूर्योदय हुन बाँकी":"सूर्यास्त भइसकेको");
+    setText("sunLiveClock",solarMinuteLabel(nowMins));
+    const badge=$("#sunCardLiveText");if(badge)badge.textContent=solarMinuteLabel(nowMins);
+  }
+  /* ---------- Weather, air quality and reverse geocoding ---------- */
   const WX_TEXT={0:"सफा आकाश",1:"मुख्यतः सफा",2:"आंशिक बादल",3:"बादल लागेको",45:"कुहिरो",48:"बाक्लो कुहिरो",51:"हल्का झरी",53:"झरी",55:"घना झरी",56:"चिसो झरी",57:"चिसो झरी",61:"हल्का वर्षा",63:"वर्षा",65:"भारी वर्षा",66:"चिसो वर्षा",67:"चिसो वर्षा",71:"हल्का हिमपात",73:"हिमपात",75:"भारी हिमपात",77:"हिउँका कण",80:"छिटफुट वर्षा",81:"वर्षा",82:"भारी वर्षा",85:"हिउँ वर्षा",86:"भारी हिउँ वर्षा",95:"मेघगर्जन",96:"असिनासहित मेघगर्जन",99:"असिनासहित मेघगर्जन"};
+  const WIND_DIRECTIONS=["उत्तर","उत्तरपूर्व","पूर्व","दक्षिणपूर्व","दक्षिण","दक्षिणपश्चिम","पश्चिम","उत्तरपश्चिम"];
+  const windDirectionName=degrees=>Number.isFinite(degrees)?WIND_DIRECTIONS[Math.round(degrees/45)%8]:"";
+  const aqiCategory=value=>!Number.isFinite(value)?"":value<=50?"राम्रो":value<=100?"मध्यम":value<=150?"संवेदनशील समूहका लागि अस्वस्थ":value<=200?"अस्वस्थ":value<=300?"अत्यन्त अस्वस्थ":"खतरनाक";
+  function smartWeatherAdvice(w){
+    const advice=[];
+    if(Number.isFinite(w.aqi)&&w.aqi>100)advice.push("वायु प्रदूषणका कारण बाहिर निस्कँदा राम्रो फिट हुने मास्क लगाउनुहोस्");
+    if(Number.isFinite(w.uv)&&w.uv>=8)advice.push("UV उच्च छ, दिउँसोको चर्को घामबाट जोगिनुहोस्");
+    else if(Number.isFinite(w.uv)&&w.uv>=6)advice.push("बाहिर निस्कँदा टोपी र सनस्क्रिन प्रयोग गर्नुहोस्");
+    if(Number.isFinite(w.visibility)&&w.visibility<2)advice.push("दृश्यता कम भएकाले सवारी चलाउँदा सावधानी अपनाउनुहोस्");
+    if(Number.isFinite(w.rainProbability)&&w.rainProbability>=50)advice.push("बाहिर जाँदा छाता वा रेनकोट बोक्नुहोस्");
+    if(Number.isFinite(w.tempMax)&&w.tempMax>=32)advice.push("हल्का सुती लुगा लगाउनुहोस् र पर्याप्त पानी पिउनुहोस्");
+    else if(Number.isFinite(w.tempMin)&&w.tempMin<=10)advice.push("बिहान–बेलुका न्यानो लुगा लगाउनुहोस्");
+    return advice.length?advice.slice(0,2).join("। ")+"।":"मौसम अनुकूल छ, सामान्य सावधानीसहित दिनचर्या अघि बढाउनुहोस्।";
+  }
   let wxSeq=0;
   function showWeather(w,stale){
-    setText("weatherTemp",`${Math.round(w.temp)}°`);
+    setText("weatherTemp",Number.isFinite(w.temp)?nepaliNumber(Math.round(w.temp))+"°C":"--°");
     setText("weatherCondition",WX_TEXT[w.code]||"मौसम विवरण");
-    setText("weatherExtra",[Number.isFinite(w.hum)?`आर्द्रता ${nepaliNumber(Math.round(w.hum))}%`:"",Number.isFinite(w.wind)?`हावा ${nepaliNumber(Math.round(w.wind))} km/h`:""].filter(Boolean).join(" · "));
-    const when=w.time?`${nepaliNumber(w.time.slice(11,16))}`:fmtClock(w.fetched);
-    setText("weatherUpdated",stale?`⚠ पुरानो मौसम · ${when} को (इन्टरनेट/सेवा समस्या)`:`अद्यावधिक ${when}`);
+    const lines=[];
+    const addMetric=(label,value)=>lines.push({label,value});
+    if(Number.isFinite(w.tempMin)&&Number.isFinite(w.tempMax))addMetric("न्यूनतम / अधिकतम",nepaliNumber(Math.round(w.tempMin))+"° / "+nepaliNumber(Math.round(w.tempMax))+"°");
+    if(Number.isFinite(w.rainProbability))addMetric("वर्षा सम्भावना",nepaliNumber(Math.round(w.rainProbability))+"%");
+    if(Number.isFinite(w.apparent))addMetric("महसुस हुने",nepaliNumber(Math.round(w.apparent))+"°");
+    if(Number.isFinite(w.hum))addMetric("आर्द्रता",nepaliNumber(Math.round(w.hum))+"%");
+    if(Number.isFinite(w.wind))addMetric("हावा",nepaliNumber(Math.round(w.wind))+" km/h "+(windDirectionName(w.windDirection)||""));
+    if(Number.isFinite(w.gust))addMetric("झोक्का",nepaliNumber(Math.round(w.gust))+" km/h");
+    if(Number.isFinite(w.pressure))addMetric("चाप",nepaliNumber(Math.round(w.pressure))+" hPa");
+    if(Number.isFinite(w.dewPoint))addMetric("शीत बिन्दु",nepaliNumber(Math.round(w.dewPoint))+"°");
+    if(Number.isFinite(w.visibility))addMetric("दृश्यता",nepaliNumber((w.visibility/1000).toFixed(1))+" km");
+    if(Number.isFinite(w.aqi))addMetric("US AQI",nepaliNumber(Math.round(w.aqi))+" ("+aqiCategory(w.aqi)+")");
+    if(Number.isFinite(w.pm25))addMetric("PM२.५",nepaliNumber(Math.round(w.pm25))+" µg/m³");
+    if(Number.isFinite(w.uv))addMetric("UV",nepaliNumber(w.uv.toFixed(1)));
+    // Sunrise, sunset and day length are already shown in the dedicated solar-cycle section.
+    const extra=$("#weatherExtra");
+    if(extra)extra.innerHTML=lines.map((item,i)=>`<span class="weather-metric" data-index="${i}" data-label="${esc(item.label)}"><span class="weather-label">${esc(item.label)}</span><span class="weather-value">${esc(item.value)}</span></span>`).join("");
+    const suggestion=$("#weatherSuggestion");
+    if(suggestion){
+      suggestion.hidden=!w.suggestion;
+      suggestion.innerHTML=w.suggestion?`<span class="weather-suggestion-label">आजको सुझाव</span><span class="weather-suggestion-text">${esc(w.suggestion)}</span>`:"";
+    }
+    const when=w.time?nepaliNumber(w.time.slice(11,16)):fmtClock(w.fetched);
+    setText("weatherUpdated",stale?"⚠ पुरानो मौसम · "+when+" को (इन्टरनेट/सेवा समस्या)":"अद्यावधिक "+when);
+    renderCalendarDetails();
+  }
+  function nearestHourlyValue(hourly,field,clock){
+    if(!hourly?.time?.length||!Array.isArray(hourly[field]))return null;
+    let best=-1,delta=Infinity;
+    hourly.time.forEach((t,i)=>{const d=Math.abs(Date.parse(t+"+05:45")-Date.parse(String(clock).slice(0,16)+":00+05:45"));if(Number.isFinite(d)&&d<delta){delta=d;best=i;}});
+    return best>=0&&delta<=90*60e3&&Number.isFinite(hourly[field][best])?hourly[field][best]:null;
   }
   async function loadWeather(){
     const seq=++wxSeq,{lat,lon}=loc;
     if(!Number.isFinite(lat)||!Number.isFinite(lon)||Math.abs(lat)>90||Math.abs(lon)>180){setText("weatherCondition","स्थानको निर्देशाङ्क मान्य छैन");return}
     setText("weatherCondition","मौसम लोड हुँदैछ…");
+    setServiceState("weatherServiceStatus","मौसम लोड हुँदैछ…","loading");
     try{
-      const d=await fetchJson(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m&timezone=Asia%2FKathmandu`,{timeout:10000,retries:1});
+      const base=`latitude=${lat}&longitude=${lon}&timezone=Asia%2FKathmandu`;
+      const [d,air]=await Promise.all([
+        fetchJson("https://api.open-meteo.com/v1/forecast?"+base+"&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m,wind_direction_10m,wind_gusts_10m,cloud_cover,precipitation,surface_pressure,dew_point_2m,visibility&daily=temperature_2m_min,temperature_2m_max,precipitation_probability_max,sunrise,sunset,uv_index_max&forecast_days=1",{timeout:12000,retries:1}),
+        fetchJson("https://air-quality-api.open-meteo.com/v1/air-quality?"+base+"&current=us_aqi,pm2_5,uv_index&hourly=uv_index&forecast_days=1",{timeout:12000,retries:0}).catch(e=>{console.warn("Air quality:",e);return null;})
+      ]);
       if(seq!==wxSeq)return;
-      const c=d&&d.current;
+      const c=d?.current,day=d?.daily,ac=air?.current;
       if(!c||!Number.isFinite(c.temperature_2m))throw Error("weather fields missing");
-      const w={temp:c.temperature_2m,hum:c.relative_humidity_2m,wind:c.wind_speed_10m,code:c.weather_code,time:c.time,fetched:Date.now(),lat,lon};
-      lsSet(LS_WX,w);showWeather(w,false);
+      const w={temp:c.temperature_2m,hum:c.relative_humidity_2m,apparent:c.apparent_temperature,wind:c.wind_speed_10m,
+        windDirection:c.wind_direction_10m,gust:c.wind_gusts_10m,cloud:c.cloud_cover,precip:c.precipitation,code:c.weather_code,
+        pressure:c.surface_pressure,dewPoint:c.dew_point_2m,visibility:c.visibility,
+        tempMin:day?.temperature_2m_min?.[0],tempMax:day?.temperature_2m_max?.[0],
+        rainProbability:day?.precipitation_probability_max?.[0],sunrise:day?.sunrise?.[0],sunset:day?.sunset?.[0],
+        aqi:ac?.us_aqi,pm25:ac?.pm2_5,uv:ac?.uv_index??nearestHourlyValue(air?.hourly,"uv_index",c.time)??day?.uv_index_max?.[0],
+        elevation:d.elevation,timezone:d.timezone||"Asia/Kathmandu",time:c.time,fetched:Date.now(),lat,lon};
+      w.suggestion=smartWeatherAdvice(w);
+      if(Number.isFinite(w.elevation)){loc.elevation=w.elevation;if(loc.mode==="gps")lsSet(LS_LOC,{mode:"gps",lat:loc.lat,lon:loc.lon,name:loc.name,altitude:loc.altitude,accuracy:loc.accuracy,speed:loc.speed,elevation:loc.elevation,updatedAt:Date.now()});}
+      lsSet(LS_WX,w);showWeather(w,false);renderLocation();
+      setServiceState("weatherServiceStatus",Number.isFinite(w.aqi)?"मौसम र वायु गुणस्तर अद्यावधिक":"मौसम अद्यावधिक · वायु गुणस्तर उपलब्ध भएन","success");
+      const history=state.locationHistory.find(x=>x.id===loc.historyId);if(history){
+        history.weather={temp:w.temp,apparent:w.apparent,humidity:w.hum,windKmh:w.wind,condition:WX_TEXT[w.code]||"मौसम विवरण",updatedAt:w.fetched};
+        history.context={...(history.context||{}),...getContextSnapshot(),weatherTemp:nepaliNumber(Math.round(w.temp))+"°C",
+          apparentTemperature:w.apparent,weatherCondition:WX_TEXT[w.code]||"मौसम विवरण",humidity:w.hum,windKmh:w.wind,
+          windDirection:w.windDirection,windGustKmh:w.gust,pressureHpa:w.pressure,dewPointC:w.dewPoint,visibilityM:w.visibility,
+          tempMin:w.tempMin,tempMax:w.tempMax,rainProbability:w.rainProbability,usAqi:w.aqi,pm25:w.pm25,uvIndex:w.uv,
+          elevationM:w.elevation,timezone:w.timezone,sunrise:w.sunrise,sunset:w.sunset,weatherUpdated:"अद्यावधिक "+(w.time?nepaliNumber(w.time.slice(11,16)):format24Clock(w.fetched))};
+        persist();renderLocationHistory();
+      }
     }catch(e){
       if(seq!==wxSeq)return;
       console.warn("Weather:",e);
       const old=lsGet(LS_WX);
-      if(old&&Math.abs(old.lat-lat)<.05&&Math.abs(old.lon-lon)<.05&&Date.now()-old.fetched<6*3600e3)showWeather(old,true);
-      else{setText("weatherTemp","--°");setText("weatherCondition",navigator.onLine===false?"इन्टरनेट छैन — मौसम उपलब्ध छैन":"मौसम सेवा अहिले उपलब्ध छैन");setText("weatherExtra","");setText("weatherUpdated","")}
+      if(old&&Math.abs(old.lat-lat)<.05&&Math.abs(old.lon-lon)<.05&&Date.now()-old.fetched<6*3600e3){
+        showWeather(old,true);setServiceState("weatherServiceStatus","पुरानो मौसम · "+(e.message||"सेवा असफल"),"warning");
+      }else{
+        setText("weatherTemp","--°");setText("weatherCondition",navigator.onLine===false?"इन्टरनेट छैन — मौसम उपलब्ध छैन":"मौसम सेवा अहिले उपलब्ध छैन");
+        setText("weatherExtra","");setText("weatherUpdated","");
+        setServiceState("weatherServiceStatus","मौसम सेवा असफल · "+(e.message||"नेटवर्क समस्या"),"error");
+      }
     }
     updateCurrentContextFromUI();
+    const active=state.locationHistory.find(x=>x.id===loc.historyId);
+    if(active&&active.source==="gps"&&active.status==="updated"){
+      active.context={...(active.context||{}),...getContextSnapshot(active.timestamp),place:loc.name};active.weather=active.weather||null;persist();renderLocationHistory();
+    }
   }
   async function reverseName(lat,lon,seq){
+    setServiceState("placeServiceStatus","ठेगाना खोज्दै…","loading");
     try{
-      const g=await fetchJson(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lon}&zoom=10&accept-language=ne,en`,{timeout:8000,retries:0});
-      const a=g.address||{},name=[a.suburb||a.village||a.town||a.city||a.municipality||a.county,a.state].filter(Boolean).join(", ");
-      if(seq===locSeq&&name){loc.name=name;renderLocation();refreshPanchang()}
-    }catch{}
+      const g=await fetchJson(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lon}&localityLanguage=ne,en`,{timeout:9000,retries:1});
+      const admin=Array.isArray(g.localityInfo?.administrative)?g.localityInfo.administrative:[];
+      const ward=admin.find(x=>/ward|वडा/i.test((x.description||"")+" "+(x.name||"")));
+      const locality=g.locality||g.localityInfo?.informative?.find(x=>/neighbourhood|suburb|hamlet|village/i.test((x.description||"")+" "+(x.name||"")) )?.name;
+      const cityRaw=g.city||g.locality||g.localityInfo?.administrative?.find(x=>/municipality|city|district/i.test((x.description||"")+" "+(x.name||"")) )?.name;
+      const cityMap={"Kathmandu":"काठमाडौँ","Lalitpur":"ललितपुर","Bhaktapur":"भक्तपुर","Pokhara":"पोखरा","Biratnagar":"विराटनगर","Dhangadhi":"धनगढी"};
+      const city=cityMap[cityRaw]||cityRaw;
+      const provinceRaw=g.principalSubdivision||"";
+      const provinceMap={"Koshi Province":"कोशी","Koshi":"कोशी","Madhesh Province":"मधेश","Madhesh":"मधेश","Bagmati Province":"बागमती","Bagmati":"बागमती","Gandaki Province":"गण्डकी","Gandaki":"गण्डकी","Lumbini Province":"लुम्बिनी","Lumbini":"लुम्बिनी","Karnali Province":"कर्णाली","Karnali":"कर्णाली","Sudurpashchim Province":"सुदूरपश्चिम","Sudurpashchim":"सुदूरपश्चिम","Sudurpaschim Province":"सुदूरपश्चिम","Sudurpaschim":"सुदूरपश्चिम"};
+      const province=provinceMap[provinceRaw]||provinceRaw.replace(/ Province$/,"");
+      const parts=[ward?.name,locality,city,province].filter((x,i,a)=>x&&a.indexOf(x)===i);
+      const name=parts.join(", ")||g.locality||g.city||"GPS स्थान";
+      if(seq===locSeq&&name){
+        loc.name=name;lsSet(LS_LOC,{mode:"gps",lat:loc.lat,lon:loc.lon,name:loc.name,altitude:loc.altitude,accuracy:loc.accuracy,speed:loc.speed,elevation:loc.elevation,updatedAt:Date.now()});
+        const h=state.locationHistory.find(x=>x.id===loc.historyId);if(h){h.place=name;h.context={...(h.context||{}),place:name,locationMode:"GPS बाट"};persist();renderLocationHistory();}
+        renderLocation();refreshPanchang();setServiceState("placeServiceStatus",ward?"ठेगाना र वडा पहिचान सफल":"स्थान र प्रदेश पहिचान सफल · वडा उपलब्ध नभएमा","success");updateCurrentContextFromUI();
+      }else if(seq===locSeq)setServiceState("placeServiceStatus","निर्देशाङ्क प्राप्त भयो · ठेगाना उपलब्ध भएन","warning");
+    }catch(e){if(seq===locSeq)setServiceState("placeServiceStatus","ठेगाना सेवा असफल · "+(e.message||"नेटवर्क समस्या"),"error");}
   }
 
   /* ---------- Applying a location ---------- */
   let locSeq=0;
   function renderLocation(){
-    setText("placeName",loc.mode==="gps"&&loc.name==="GPS स्थान"?`GPS स्थान (${loc.lat.toFixed(3)}, ${loc.lon.toFixed(3)})`:loc.name);
+    setText("placeName",loc.name||"स्थान उपलब्ध छैन");
     setText("locationMode",modeLabel());
+    const altitude=Number.isFinite(loc.elevation)?loc.elevation:loc.altitude;
+    const alt=$("#locationAltitude");if(alt){alt.textContent=Number.isFinite(loc.elevation)?"▲ उचाइ: "+nepaliNumber(Math.round(loc.elevation))+" मिटर":Number.isFinite(loc.altitude)?"▲ GPS उचाइ: "+nepaliNumber(Math.round(loc.altitude))+" मिटर":"▲ उचाइ: उपलब्ध छैन";alt.classList.toggle("altitude-known",Number.isFinite(altitude));}
+    const coords=Number.isFinite(loc.lat)&&Number.isFinite(loc.lon)?"निर्देशाङ्क "+nepaliNumber(loc.lat.toFixed(6))+", "+nepaliNumber(loc.lon.toFixed(6)):"निर्देशाङ्क: उपलब्ध छैन";
+    const accuracy=Number.isFinite(loc.accuracy)?"सटीकता ±"+nepaliNumber(Math.round(loc.accuracy))+" मिटर":"";
+    const speed=Number.isFinite(loc.speed)?"गति "+nepaliNumber((loc.speed*3.6).toFixed(1))+" km/h":"";
+    setText("locationCoordinates",coords);
+    setText("locationAccuracy",[accuracy,speed,"समय क्षेत्र Asia/Kathmandu"].filter(Boolean).join(" · "));
     const badge=$("#locationMode");if(badge)badge.dataset.mode=loc.mode;
   }
-  function applyLocation(next,{persist=false}={}){
+  function recordLocationAttempt(){
+    if(!Array.isArray(state.locationHistory))state.locationHistory=[];
+    const stamp=Date.now(),record={id:uid(),timestamp:stamp,timestampISO:new Date(stamp).toISOString(),source:"gps",
+      status:"pending",place:"GPS स्थान अनुरोध",latitude:null,longitude:null,altitudeM:null,accuracyM:null,weather:null,context:getContextSnapshot(stamp)};
+    state.locationHistory.push(record);persist();return record.id;
+  }
+  function finishLocationAttempt(id,patch){
+    const record=state.locationHistory.find(x=>x.id===id);if(!record)return;
+    Object.assign(record,patch);
+    if(patch.status==="updated"){
+      const capturedAt=Date.now();
+      record.timestamp=capturedAt;record.timestampISO=new Date(capturedAt).toISOString();
+      record.context=getContextSnapshot(capturedAt);
+    }
+    persist();try{renderLocationHistory();}catch(error){console.warn("Location history render:",error);}
+  }
+  function recordLocationUpdate(){
+    if(!Array.isArray(state.locationHistory))state.locationHistory=[];
+    const stamp=Date.now(),record={id:uid(),timestamp:stamp,timestampISO:new Date(stamp).toISOString(),source:loc.mode,
+      status:"updated",place:loc.name,latitude:loc.lat,longitude:loc.lon,altitudeM:Number.isFinite(loc.altitude)?loc.altitude:null,
+      accuracyM:Number.isFinite(loc.accuracy)?loc.accuracy:null,weather:null,context:getContextSnapshot(stamp)};
+    state.locationHistory.push(record);loc.historyId=record.id;persist();renderLocationHistory();
+  }
+  function applyLocation(next,{persist=false,historyId=null}={}){
     loc=next;locSeq++;
-    if(persist&&loc.mode==="manual")lsSet(LS_LOC,{id:loc.id});
+    if(loc.mode==="gps")lsSet(LS_LOC,{mode:"gps",lat:loc.lat,lon:loc.lon,name:loc.name,altitude:loc.altitude,accuracy:loc.accuracy,speed:loc.speed,elevation:loc.elevation,updatedAt:Date.now()});else if(persist&&loc.mode==="manual")lsSet(LS_LOC,{mode:"manual",id:loc.id});
+    if(loc.mode==="gps"&&historyId){finishLocationAttempt(historyId,{status:"updated",place:loc.name,latitude:loc.lat,longitude:loc.lon,
+      altitudeM:Number.isFinite(loc.altitude)?loc.altitude:null,accuracyM:Number.isFinite(loc.accuracy)?loc.accuracy:null});loc.historyId=historyId;}
+    else if(loc.mode==="gps"||loc.mode==="manual")recordLocationUpdate();
     fillManualSelect();renderLocation();refreshPanchang();loadWeather();
     if(loc.mode==="gps")reverseName(loc.lat,loc.lon,locSeq);
   }
-  $("#manualPlace").addEventListener("change",e=>{
+  const manualPlace=$("#manualPlace");
+  if(manualPlace)manualPlace.addEventListener("change",e=>{
     const hit=LOCATIONS.find(x=>x.id===e.target.value);if(!hit)return;
     applyLocation({mode:"manual",id:hit.id,name:hit.name,lat:hit.lat,lon:hit.lon},{persist:true});
     toast(`स्थान: ${hit.name} (हातले छानिएको)`);
   });
   $("#timeLocationBtn").addEventListener("click",()=>{
     const btn=$("#timeLocationBtn"),label=btn.querySelector(".loc-text");
-    if(!navigator.geolocation){toast("यो ब्राउजरमा स्थान सेवा छैन। तलबाट स्थान छान्नुहोस्।");return}
-    btn.disabled=true;label.textContent="स्थान पर्खँदै…";
-    navigator.geolocation.getCurrentPosition(p=>{
-      btn.disabled=false;label.textContent="GPS स्थान पुनः लिनुहोस्";
-      applyLocation({mode:"gps",id:"",name:"GPS स्थान",lat:p.coords.latitude,lon:p.coords.longitude});
-    },err=>{
-      btn.disabled=false;label.textContent="मेरो GPS स्थान प्रयोग गर्नुहोस्";
-      toast(err.code===1?"GPS अनुमति दिइएन। हालको स्थान नै प्रयोग भइरहेको छ — चाहे तलबाट हातले स्थान छान्नुहोस्।":"GPS स्थान प्राप्त भएन। तलबाट हातले स्थान छान्न सक्नुहुन्छ।");
-    },{enableHighAccuracy:true,timeout:15000,maximumAge:300000});
+    const status=(message,state="info")=>setServiceState("gpsServiceStatus",message,state);
+    if(btn.disabled)return;
+    if(!navigator.geolocation){status("यो browser मा GPS सुविधा उपलब्ध छैन","error");toast("Browser ले स्थान सेवा उपलब्ध गराएन।");return;}
+    if(!window.isSecureContext){status("GPS रोकिएको · मोबाइलमा HTTPS चाहिन्छ (HTTP LAN सुरक्षित होइन)","error");toast("मोबाइलमा GPS चलाउन HTTPS आवश्यक छ। http://10.x.x.x बाट GPS चल्दैन; localhost भने अपवाद हो।");return;}
+    btn.disabled=true;if(label)label.textContent="GPS खोजिँदैछ…";
+    status("GPS अनुरोध सुरु भयो · फोनको Location खुला राख्नुहोस्","loading");
+    let attemptId=null,completed=false;
+    try{attemptId=recordLocationAttempt();}catch(err){console.warn("GPS history start:",err);}
+    const finishButton=()=>{btn.disabled=false;if(label)label.textContent="मेरो GPS स्थान पुनः लिनुहोस्";};
+    const fail=(err)=>{
+      if(completed)return;completed=true;finishButton();
+      const code=err?.code,denied=code===1,timeout=code===3;
+      const unavailable=code===2;
+      const message=denied?"स्थान अनुमति अस्वीकृत":timeout?"GPS संकेत आउन समय लाग्यो":unavailable?"फोन/Browser ले स्थान पत्ता लगाउन सकेन":"फोनको स्थान उपलब्ध भएन";
+      try{if(attemptId)finishLocationAttempt(attemptId,{status:denied?"denied":"failed",note:message,code:code||null});}catch(e){console.warn("GPS history update:",e);}
+      status(denied?"अनुमति अस्वीकृत · Browser Site settings मा Location Allow गर्नुहोस्":timeout?"समय सकियो · Location खोल्नुहोस् र खुला ठाउँमा पुनः प्रयास गर्नुहोस्":unavailable?"स्थान उपलब्ध भएन · GPS/Location सेवा र नेटवर्क जाँच्नुहोस्":"GPS उपलब्ध भएन · Location setting जाँच्नुहोस्","error");
+      toast(denied?"Browser Site settings र Android App permissions मा Location Allow गर्नुहोस्।":timeout?"GPS संकेत कमजोर छ। फोनको Location खोल्नुहोस् र खुला ठाउँमा प्रयास गर्नुहोस्।":unavailable?"फोनको Location/GPS खोल्नुहोस्, इन्टरनेट जडान जाँच्नुहोस् र फेरि प्रयास गर्नुहोस्।":"फोनको Location सेवा जाँचेर फेरि प्रयास गर्नुहोस्।");
+    };
+    const success=(position)=>{
+      if(completed)return;
+      const c=position?.coords,lat=c?.latitude,lon=c?.longitude;
+      if(!Number.isFinite(lat)||!Number.isFinite(lon)||Math.abs(lat)>90||Math.abs(lon)>180){fail({code:2});return;}
+      if(!attemptId){try{attemptId=recordLocationAttempt();}catch(err){console.warn("GPS record creation:",err);}}
+      completed=true;finishButton();
+      const next={mode:"gps",id:"",name:"GPS स्थान",lat,lon,altitude:Number.isFinite(c.altitude)?c.altitude:null,accuracy:Number.isFinite(c.accuracy)?c.accuracy:null,speed:Number.isFinite(c.speed)?c.speed:(Number.isFinite(loc.speed)?loc.speed:null)};if(Number.isFinite(next.speed))lsSet(LS_SPEED,next.speed);
+      try{applyLocation(next,{historyId:attemptId});}
+      catch(err){console.error("GPS location apply:",err);loc=next;renderLocation();try{refreshPanchang();}catch{}try{loadWeather();}catch{}}
+      status("GPS सफल · शुद्धता ±"+nepaliNumber(Math.round(c.accuracy||0))+" मिटर","success");
+      toast("GPS स्थान प्राप्त भयो। मौसम र पञ्चाङ्ग अद्यावधिक हुँदैछन्।");
+    };
+    const fallback=(err)=>{
+      if(err?.code===1){fail(err);return;}
+      status("GPS संकेत कमजोर · नेटवर्क-सहायित स्थान खोजिँदैछ","loading");
+      try{navigator.geolocation.getCurrentPosition(success,fail,{enableHighAccuracy:false,timeout:20000,maximumAge:60000});}
+      catch(e){fail(e);}
+    };
+    try{navigator.geolocation.getCurrentPosition(success,fallback,{enableHighAccuracy:true,timeout:18000,maximumAge:0});}
+    catch(err){fail(err);}
   });
-  $("#panchangRetry").addEventListener("click",()=>{setText("panchangStatus","पुनः प्रयास हुँदैछ…");loadBsDate(true);loadWeather()});
   window.addEventListener("online",()=>{loadBsDate(true);loadWeather()});
 
   /* ---------- Main loop ---------- */
@@ -324,15 +782,113 @@
   refreshPanchang();loadBsDate();loadWeather();tick();
   setInterval(tick,1000);
   setInterval(()=>loadWeather(),20*60*1000);
-  function previewEntries(){const list=state.entries.slice().sort((a,b)=>b.updated-a.updated).slice(0,3);$("#recentEntries").innerHTML=list.length?list.map(e=>{const ctx=formatContextLine(e.context);return `<article class="entry-card"><div class="entry-meta"><span>${dateText(e.date)}</span><span>${e.visibility==="private"?"🔒 निजी":e.visibility==="public"?"◉ प्रकाशनका लागि":"ड्राफ्ट"}</span></div>${ctx?`<div class="entry-context">${esc(ctx)}</div>`:""}<h3>${esc(e.title||"शीर्षकविहीन पाना")}</h3><p>${esc(e.content.slice(0,130))}</p></article>`}).join(""):`<div class="empty-state">तपाईंको पहिलो डायरी यहाँ देखिनेछ।</div>`}
-  function openEditor(entry=null){$("#entryForm").reset();$("#entryId").value=entry?.id||"";$("#entryTitle").value=entry?.title||"";$("#entryDate").value=entry?.date||nptISO();$("#entryMood").value=entry?.mood||"शान्त";$("#entryContent").value=entry?.content||"";$("#entryType").value=entry?.type||"diary";$("#entryVisibility").value=entry?.visibility||"private";$("#entryTags").value=entry?.tags||"";$("#editorHeading").textContent=entry?"पाना सम्पादन":"नयाँ पाना";$("#deleteEntry").style.visibility=entry?"visible":"hidden";$("#editorDialog").showModal()}
-  $("#newDiary").onclick=()=>openEditor();$("#newPoem").onclick=()=>{openEditor();$("#entryType").value="poem"};
-  $("#entryForm").addEventListener("submit",e=>{e.preventDefault();const id=$("#entryId").value;const old=state.entries.find(x=>x.id===id);const ctx=getContextSnapshot();const item={id:id||uid(),title:$("#entryTitle").value.trim(),date:$("#entryDate").value||nptISO(),mood:$("#entryMood").value,content:$("#entryContent").value.trim(),type:$("#entryType").value,visibility:$("#entryVisibility").value,tags:$("#entryTags").value,created:old?.created||Date.now(),updated:Date.now(),context:old?.context||ctx};if(!item.content){toast("कृपया केही शब्द लेख्नुहोस्।");return}if(old){Object.assign(old,item);if(!old.context)old.context=ctx;}else state.entries.push(item);persist();$("#editorDialog").close();renderAll();toast("तपाईंको पाना सुरक्षित भयो · मिति/तिथि/मौसम रेकर्ड।")});
+  function previewEntries(){const list=state.entries.slice().sort((a,b)=>b.updated-a.updated);$("#recentEntries").innerHTML=list.length?list.map(e=>{const ctx=formatContextLine(e.context);return `<article class="entry-card post-tap-card" data-entry-open="${e.id}" tabindex="0" role="button"><div class="entry-meta"><span>${dateText(e.date)}</span><span>${e.visibility==="private"?"🔒 निजी":e.visibility==="public"?"◉ प्रकाशनका लागि":"ड्राफ्ट"}</span></div>${ctx?`<div class="entry-context">${esc(ctx)}</div>`:""}<h3>${esc(e.title||"शीर्षकविहीन पाना")}</h3><p>${esc(e.content.slice(0,130))}</p><small class="tap-hint">Letterhead · खोल्न ट्याप गर्नुहोस्</small></article>`}).join(""):`<div class="empty-state">तपाईंको पहिलो डायरी यहाँ देखिनेछ।</div>`;$("#recentEntries").querySelectorAll("[data-entry-open]").forEach(card=>{const open=()=>openPostView(state.entries.find(e=>e.id===card.dataset.entryOpen));card.onclick=open;card.onkeydown=ev=>{if(ev.key==="Enter"||ev.key===" "){ev.preventDefault();open()}}})}
+
+  let pendingEntryMedia=[];
+  function readMediaFile(file){return new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve({name:file.name,type:file.type,data:r.result,size:file.size});r.onerror=()=>reject(new Error("फाइल पढ्न सकिएन"));r.readAsDataURL(file)})}
+  function mediaMarkup(media=[]){return media.map(m=>m.type?.startsWith("image/")?'<img src="'+m.data+'" alt="'+esc(m.name||"डायरी तस्वीर")+'">':m.type?.startsWith("audio/")?'<audio controls preload="metadata" src="'+m.data+'"></audio>':m.type?.startsWith("video/")?'<video controls playsinline preload="metadata" src="'+m.data+'"></video>':'').join("")}
+  function updateMediaPreview(){const el=$("#entryMediaPreview");if(el)el.innerHTML=mediaMarkup(pendingEntryMedia)}
+  function openEditor(entry=null){$("#entryForm").reset();pendingEntryMedia=(entry?.media||[]).slice();$("#entryId").value=entry?.id||"";$("#entryTitle").value=entry?.title||"";$("#entryDate").value=entry?.date||nptISO();$("#entryMood").value=entry?.mood||"शान्त";$("#entryContent").value=entry?.content||"";$("#entryType").value=entry?.type||"diary";$("#entryVisibility").value=entry?.visibility||"private";$("#privacyHelp").textContent=privacyHelpText($("#entryVisibility").value);$("#entryTags").value=entry?.tags||"";$("#editorEyebrow").textContent=entry?"LETTERHEAD · सम्पादन":"LETTERHEAD · नयाँ पोस्ट";$("#editorHeading").textContent=entry?(entry.title||"डायरीको पोस्ट"):"नयाँ पोस्ट";const editorContext=entry?.context||getContextSnapshot();const stamp=$("#editorContextStamp");if(stamp)stamp.innerHTML=contextStampHTML(editorContext);const detail=$("#entryContextDetailsContent");if(detail)detail.innerHTML=contextDetailsHTML(editorContext);const detailPanel=$("#entryContextDetails");if(detailPanel)detailPanel.open=false;$("#deleteEntry").style.visibility=entry?"visible":"hidden";updateMediaPreview();$("#editorDialog").showModal()}
+  $("#homeDiaryFab").addEventListener("click",()=>{
+    openEditor();
+    $("#entryTitle").value="आजको डायरी";
+    $("#editorEyebrow").textContent="आजको डायरी";
+    $("#editorHeading").textContent="आजको डायरी";
+  });
+  // Diary creation and media capture are handled only by the diary editor opened from the fixed FAB.
+  ["entryPhotoCamera","entryPhoto","entryVideoCamera","entryVideo","entryAudio"].forEach(id=>$("#"+id).addEventListener("change",async e=>{const file=e.target.files?.[0];if(!file)return;if(file.size>2*1024*1024){toast("प्रति मिडिया फाइल २ MB सम्म मात्र छान्नुहोस्।");e.target.value="";return}try{const item=await readMediaFile(file);const kind=item.type.split("/")[0];const next=pendingEntryMedia.filter(x=>!x.type?.startsWith(kind+"/"));if(next.reduce((n,x)=>n+(x.size||0),0)+item.size>3*1024*1024){toast("एउटा पोस्टमा मिडिया जम्मा ३ MB सम्म राख्नुहोस्।");e.target.value="";return}pendingEntryMedia=next;pendingEntryMedia.push(item);updateMediaPreview()}catch(err){toast(err.message)}}));
+  let voiceRecorder=null,voiceChunks=[],voiceBlob=null,voiceStream=null,voiceElapsed=0,voiceStartAt=0,voiceTimerHandle=null,voiceAudioContext=null,voiceAnalyser=null,voiceVisualFrame=0;
+  function voiceTime(ms){const t=Math.floor(ms/1000);return String(Math.floor(t/60)).padStart(2,"0")+":"+String(t%60).padStart(2,"0")}
+  function voiceUpdate(label){$("#voiceStatus").textContent=label;$("#voiceTimer").textContent=voiceTime(voiceElapsed);$("#voiceProgress").style.width=Math.min(100,voiceElapsed/90000*100)+"%"}
+  function animateVoice(){if(!voiceAnalyser)return;const bins=new Uint8Array(voiceAnalyser.frequencyBinCount);voiceAnalyser.getByteFrequencyData(bins);const bars=$("#voiceEqualizer i");bars.forEach((bar,i)=>{const v=bins[Math.floor(i*bins.length/Math.max(1,bars.length))]||0;bar.style.height=(4+Math.round(v/255*31))+"px"});voiceVisualFrame=requestAnimationFrame(animateVoice)}
+  function startVoiceVisualizer(stream){const AudioCtx=window.AudioContext||window.webkitAudioContext;if(!AudioCtx)return;try{voiceAudioContext=new AudioCtx();voiceAnalyser=voiceAudioContext.createAnalyser();voiceAnalyser.fftSize=128;voiceAnalyser.smoothingTimeConstant=.78;voiceAudioContext.createMediaStreamSource(stream).connect(voiceAnalyser);voiceAudioContext.resume?.();animateVoice()}catch{voiceAnalyser=null}}
+  function stopVoiceVisualizer(){cancelAnimationFrame(voiceVisualFrame);voiceVisualFrame=0;voiceAnalyser=null;$(".voice-equalizer i").forEach(bar=>bar.style.height="4px");if(voiceAudioContext){voiceAudioContext.close().catch(()=>{});voiceAudioContext=null}}
+  $("#voiceStart").onclick=()=>{if(!navigator.mediaDevices?.getUserMedia||!window.MediaRecorder){toast("यो ब्राउजरमा आवाज रेकर्ड सुविधा उपलब्ध छैन।");return}if(!confirm("माइक्रोफोनबाट रेकर्ड गर्न अनुमति दिनुहुन्छ? अरू व्यक्तिको आवाज रेकर्ड गर्नुअघि उहाँको स्पष्ट अनुमति लिनुहोस्।"))return;navigator.mediaDevices.getUserMedia({audio:true}).then(stream=>{voiceStream=stream;voiceChunks=[];voiceBlob=null;voiceElapsed=0;voiceStartAt=Date.now();startVoiceVisualizer(stream);voiceRecorder=new MediaRecorder(stream);voiceRecorder.ondataavailable=ev=>{if(ev.data?.size)voiceChunks.push(ev.data)};voiceRecorder.onstop=()=>{voiceBlob=new Blob(voiceChunks,{type:voiceRecorder.mimeType||"audio/webm"});voiceStream?.getTracks().forEach(t=>t.stop());voiceStream=null;stopVoiceVisualizer();clearInterval(voiceTimerHandle);$("#voiceStart").disabled=false;$("#voicePause").disabled=true;$("#voiceStop").disabled=true;$("#voicePause").textContent="पज";$("#voiceSave").disabled=voiceBlob.size>2*1024*1024;voiceUpdate(voiceBlob.size>2*1024*1024?"रेकर्ड २ MB भन्दा ठूलो भयो":"रोकियो · सुरक्षित गर्न तयार")};voiceRecorder.start(400);$("#voiceStart").disabled=true;$("#voicePause").disabled=false;$("#voiceStop").disabled=false;$("#voiceSave").disabled=true;voiceTimerHandle=setInterval(()=>{if(voiceRecorder?.state==="recording"){voiceElapsed+=Date.now()-voiceStartAt;voiceStartAt=Date.now();voiceUpdate("रेकर्ड हुँदैछ")}if(voiceElapsed>=90000&&voiceRecorder?.state==="recording")voiceRecorder.stop()},250);voiceUpdate("रेकर्ड हुँदैछ")}).catch(err=>{toast(err.name==="NotAllowedError"?"माइक्रोफोन अनुमति दिइएन।":"माइक्रोफोन सुरु हुन सकेन।");$("#voiceStatus").textContent="रेकर्ड सुरु भएन"})};
+  $("#voicePause").onclick=()=>{if(!voiceRecorder)return;if(voiceRecorder.state==="recording"){voiceElapsed+=Date.now()-voiceStartAt;voiceRecorder.pause();cancelAnimationFrame(voiceVisualFrame);clearInterval(voiceTimerHandle);$("#voicePause").textContent="फेरि सुरु";voiceUpdate("पज गरिएको")}else if(voiceRecorder.state==="paused"){voiceRecorder.resume();voiceAudioContext?.resume?.();animateVoice();voiceStartAt=Date.now();$("#voicePause").textContent="पज";voiceTimerHandle=setInterval(()=>{if(voiceRecorder?.state==="recording"){voiceElapsed+=Date.now()-voiceStartAt;voiceStartAt=Date.now();voiceUpdate("रेकर्ड हुँदैछ")}},250)}};
+  $("#voiceStop").onclick=()=>{if(voiceRecorder&&voiceRecorder.state!=="inactive"){if(voiceRecorder.state==="recording")voiceElapsed+=Date.now()-voiceStartAt;voiceRecorder.stop()}};
+  $("#voiceSave").onclick=()=>{if(!voiceBlob)return;if(pendingEntryMedia.reduce((n,x)=>n+(x.size||0),0)+voiceBlob.size>3*1024*1024){toast("एउटा पोस्टमा मिडिया जम्मा ३ MB सम्म राख्न सकिन्छ।");return}const fr=new FileReader();fr.onload=()=>{pendingEntryMedia.push({name:"voice-"+Date.now()+".webm",type:voiceBlob.type,data:fr.result,size:voiceBlob.size});updateMediaPreview();voiceBlob=null;$("#voiceSave").disabled=true;voiceUpdate("आवाज पोस्टमा जोडियो");toast("आवाज पोस्टमा जोडियो।")};fr.readAsDataURL(voiceBlob)};
+  $("#entryForm").addEventListener("submit",async e=>{e.preventDefault();const id=$("#entryId").value;const old=state.entries.find(x=>x.id===id);const ctx=getContextSnapshot();const title=$("#entryTitle").value.trim();const content=$("#entryContent").value.trim();if(!title&&!content&&!pendingEntryMedia.length){toast("शीर्षक, शब्द वा मिडिया मध्ये केही थप्नुहोस्।");return}const item={id:id||uid(),title:title||"मिडिया पोस्ट",date:$("#entryDate").value||nptISO(),mood:$("#entryMood").value,content,type:$("#entryType").value,visibility:$("#entryVisibility").value,tags:$("#entryTags").value,media:pendingEntryMedia,created:old?.created||Date.now(),updated:Date.now(),context:old?.context||ctx};try{if(old)Object.assign(old,item);else state.entries.push(item);persist()}catch(err){toast("स्थानीय भण्डारण भरिएको छ। सानो मिडिया फाइल छानेर पुनः प्रयास गर्नुहोस्।");return}$("#editorDialog").close();renderAll();toast("पोस्ट सुरक्षित भयो · My Records → डायरी।")});
   $("#deleteEntry").onclick=()=>{const id=$("#entryId").value;if(id&&confirm("यो पाना मेटाउने?")){state.entries=state.entries.filter(e=>e.id!==id);persist();$("#editorDialog").close();renderAll();toast("पाना मेटाइयो।")}};
-  function renderDiary(){const q=$("#diarySearch").value.toLowerCase(),f=$("#diaryFilter").value;let arr=state.entries.filter(e=>(f==="all"||e.visibility===f)&&[e.title,e.content,e.tags,e.context?.tithi,e.context?.bsDate,e.context?.place].join(" ").toLowerCase().includes(q)).sort((a,b)=>b.updated-a.updated);$("#diaryList").innerHTML=arr.length?arr.map(e=>{const ctxLine=formatContextLine(e.context);return `<div class="entry-row"><div><div class="entry-meta">${dateText(e.date)} · ${esc(e.mood)} · ${e.visibility==="private"?"🔒 निजी":e.visibility==="public"?"प्रकाशनका लागि":"ड्राफ्ट"}</div>${ctxLine?`<div class="entry-context">${esc(ctxLine)}</div>`:""}<h3>${esc(e.title||"शीर्षकविहीन पाना")}</h3><p>${esc(e.content.slice(0,150))}</p></div><div class="row-actions"><button class="small-btn" data-edit="${e.id}">खोल्नुहोस्</button></div></div>`}).join(""):`<div class="empty-state">यहाँ अझै कुनै पाना छैन। नयाँ पाना सुरु गर्नुहोस्।</div>`;$$("[data-edit]").forEach(b=>b.onclick=()=>openEditor(state.entries.find(e=>e.id===b.dataset.edit)))}
+  let activeBookEntries=[],activeBookIndex=0,bookTouchX=0;
+  function bookMetaLine(ctx){if(!ctx)return "";const a=[];if(ctx.nepalTime)a.push("◷ "+ctx.nepalTime);if(ctx.adDate)a.push("▦ "+ctx.adDate);if(ctx.bsDate)a.push("वि.सं. "+ctx.bsDate);if(ctx.weekday)a.push(ctx.weekday);if(ctx.tithi)a.push("☾ "+ctx.tithi+(ctx.paksha?" "+ctx.paksha:""));if(ctx.nakshatra)a.push("✧ "+ctx.nakshatra+(ctx.nakshatraPada?" "+ctx.nakshatraPada:""));if(ctx.yoga)a.push("✺ "+ctx.yoga);if(ctx.karana)a.push("करण "+ctx.karana);if(ctx.moonRashi)a.push("चन्द्र "+ctx.moonRashi);if(ctx.sunRashi)a.push("सूर्य "+ctx.sunRashi);if(ctx.lunarMonth)a.push(ctx.lunarMonth);if(ctx.ayana)a.push(ctx.ayana);if(ctx.ghadiPala)a.push("घडी "+ctx.ghadiPala);if(ctx.sunrise||ctx.sunset)a.push("☀ "+[ctx.sunrise,ctx.sunset].filter(Boolean).join("/"));if(ctx.season)a.push(ctx.season);if(ctx.place)a.push("⌖ "+ctx.place);if(ctx.latitude!=null&&ctx.longitude!=null)a.push(Number(ctx.latitude).toFixed(4)+","+Number(ctx.longitude).toFixed(4));if(ctx.altitudeM!=null)a.push("उचाइ "+Math.round(ctx.altitudeM)+"m");if(ctx.accuracyM!=null)a.push("±"+Math.round(ctx.accuracyM)+"m");if(ctx.weatherTemp||ctx.weatherCondition)a.push("☼ "+[ctx.weatherTemp,ctx.weatherCondition].filter(Boolean).join(" "));if(ctx.humidity!=null)a.push("आर्द्रता "+ctx.humidity+"%");if(ctx.windKmh!=null)a.push("हावा "+ctx.windKmh+"km/h");return a.join(" · ")}
+  function renderBookPage(){
+    const e=activeBookEntries[activeBookIndex];if(!e)return;state.settings=state.settings||{};const p=state.settings.bookStyle||{paper:"cream",font:"normal",showMeta:true,showIcons:true,design:"classic"};
+    let meta=bookMetaLine(e.context);if(p.showIcons===false)meta=meta.replace(/[◷▦☾✧✺⌖☼↗]/g,"");
+    const paper=p.paper||"cream",font=p.font||"normal",design=p.design||"classic",media=mediaMarkup(e.media||[]),ctx=e.context||{};
+    const title=esc(e.title||"आजको डायरी"),body=esc(e.content||"").replace(/\n/g,"<br>");
+    const n=x=>x==null||x===""?"":nepaliNumber(x), val=(label,value)=>value!=null&&value!==""?label+" "+value:"";
+    const top1=[val("समय",ctx.nepalTime),ctx.bsDate,ctx.adDate,ctx.weekday,ctx.weekNumber!=null?"हप्ता "+n(ctx.weekNumber):""].filter(Boolean).join(" · ");
+    const top2=[val("तिथि",ctx.tithi),ctx.paksha,val("नक्षत्र",ctx.nakshatra),ctx.nakshatraPada,val("योग",ctx.yoga),val("करण",ctx.karana),val("चन्द्र राशि",ctx.moonRashi),val("सूर्य राशि",ctx.sunRashi),ctx.lunarMonth,val("अयन",ctx.ayana)].filter(Boolean).join(" · ");
+    const top3=[val("घडी/पला",ctx.ghadiPala)].filter(Boolean).join(" · ");
+    const planets=(ctx.planets||[]).map(g=>[g.name,g.rashi,g.degreeText,g.retrograde?"वक्री":"मार्गी"].filter(Boolean).join(" · ")).filter(Boolean).join(" / ");
+    const topMeta='<div class="book-top-meta">'+[top1,top2,top3].filter(Boolean).map(x=>'<div>'+esc(x)+'</div>').join("")+'</div>';
+    const weatherItems=[val("तापक्रम",ctx.weatherTemp),ctx.weatherCondition,val("महसुस हुने",ctx.apparentTemperature!=null?n(ctx.apparentTemperature)+"°C":""),ctx.tempMin!=null&&ctx.tempMax!=null?"न्यूनतम/अधिकतम "+n(Math.round(ctx.tempMin))+"°/"+n(Math.round(ctx.tempMax))+"°":"",val("आर्द्रता",ctx.humidity!=null?n(ctx.humidity)+"%":""),ctx.windKmh!=null?"हावा "+n(ctx.windKmh)+" km/h"+(ctx.windDirection!=null?" "+n(Math.round(ctx.windDirection))+"°":""):"",val("झोक्का",ctx.windGustKmh!=null?n(ctx.windGustKmh)+" km/h":""),[ctx.precipitation!=null?n(ctx.precipitation)+" mm":"",ctx.rainProbability!=null?"वर्षा सम्भावना "+n(Math.round(ctx.rainProbability))+"%":""].filter(Boolean).join(" · "),val("बादल",ctx.cloudCover!=null?n(ctx.cloudCover)+"%":""),val("चाप",ctx.pressureHpa!=null?n(Math.round(ctx.pressureHpa))+" hPa":""),val("शीतबिन्दु",ctx.dewPointC!=null?n(Math.round(ctx.dewPointC))+"°":""),val("दृश्यता",ctx.visibilityM!=null?n((ctx.visibilityM/1000).toFixed(1))+" km":""),val("US AQI",ctx.usAqi!=null?n(Math.round(ctx.usAqi))+" ("+aqiCategory(ctx.usAqi)+")":""),val("PM2.5",ctx.pm25!=null?n(Number(ctx.pm25).toFixed(1))+" µg/m³":""),val("UV",ctx.uvIndex!=null?n(Number(ctx.uvIndex).toFixed(1)):"")].filter(Boolean);
+    const gpsItems=[ctx.place,ctx.latitude!=null&&ctx.longitude!=null?n(Number(ctx.latitude).toFixed(6))+"°"+(ctx.latitude>=0?"N":"S")+", "+n(Number(ctx.longitude).toFixed(6))+"°"+(ctx.longitude>=0?"E":"W"):"",ctx.altitudeM!=null?n(Math.round(ctx.altitudeM))+" m": "",ctx.accuracyM!=null?"GPS ±"+n(Math.round(ctx.accuracyM))+" m":"",ctx.timezone].filter(Boolean);
+    const dotJoin=a=>a.map(x=>esc(x)).join(' <span class="book-inline-dot">•</span> ');
+    const nepaliSolarTime=value=>{if(!value)return "";const raw=String(value),match=raw.match(/(?:T|^)(\d{1,2}):(\d{2})/);if(!match)return raw;const h=Number(match[1]),m=match[2],h12=h%12||12;return periodWord(h)+" "+nepaliNumber(h12)+":"+nepaliNumber(m)};
+    const seasonName=ctx.season?String(ctx.season).replace(/^ऋतु\s*[·:：]?\s*/,"").trim():"";
+    const sunriseSunsetSeason=[ctx.sunrise?"सूर्योदय "+nepaliSolarTime(ctx.sunrise):"",ctx.sunset?"सूर्यास्त "+nepaliSolarTime(ctx.sunset):"",seasonName?"ऋतु "+seasonName:""].filter(Boolean);
+    const weatherHeadline=[ctx.weatherTemp?"तापक्रम "+ctx.weatherTemp:"",ctx.weatherCondition||""].filter(Boolean);
+    const placeWeather=[ctx.place?'<b>स्थान तथा GPS</b> '+esc(ctx.place):"",weatherHeadline.length?'<b>मौसम तथा वातावरण</b> '+dotJoin(weatherHeadline):""].filter(Boolean);
+    const detailFooter=sunriseSunsetSeason.length?'<div class="book-footer-row book-sun-season">'+dotJoin(sunriseSunsetSeason)+'</div>':"";
+    const navagrahaFooter=planets?'<div class="book-footer-row book-navagraha"><b>नवग्रह</b> '+esc(planets)+'</div>':"";
+    const placeWeatherLine=placeWeather.length?'<div class="book-footer-row book-place-weather">'+placeWeather.join(' <span class="book-inline-dot">•</span> ')+'</div>':"";
+    const darkFooter='<div class="book-footer-rule"></div><div class="book-dark-footer">'+detailFooter+navagrahaFooter+placeWeatherLine+'</div>';
+    const dark=design==="dark";
+    $("#postViewContent").innerHTML=
+      '<div class="book-stage"><article class="book-page paper-'+esc(paper)+' font-'+esc(font)+' book-style-'+esc(design)+'" id="activeBookPage">'+
+      '<div class="book-binding"></div><div class="book-head"><span><b>KABIJWE</b> · व्यक्तिगत डायरी</span><span>~ बिक्रमादित्य</span></div>'+
+      (p.showMeta!==false?topMeta:"")+
+      '<div class="book-rule"></div>'+
+      '<h1 class="book-title">'+title+'</h1><div class="book-content">'+body+'</div><div class="book-media">'+media+'</div>'+
+      (p.showMeta!==false?darkFooter:'')+
+      '<div class="book-page-number">'+(activeBookIndex+1)+' / '+activeBookEntries.length+'</div></article></div>'+
+      '<div class="book-navigation"><button class="btn secondary" id="bookPrev" '+(activeBookIndex===0?"disabled":"")+ '>‹ अघिल्लो पाना</button><span>'+(activeBookIndex+1)+' / '+activeBookEntries.length+'</span><button class="btn secondary" id="bookNext" '+(activeBookIndex===activeBookEntries.length-1?"disabled":"")+ '>अर्को पाना ›</button></div>'+
+      '<div class="book-actions"><button class="btn secondary" id="bookEdit">✎ सम्पादन</button><button class="btn secondary" id="bookCustomize">Aa पाना सजाउनुहोस्</button></div>'+
+      '<details class="book-customize" id="bookCustomizePanel"><summary>Letterhead अनुकूलन</summary><label>पानाको रङ<select id="bookPaper"><option value="cream" '+(paper==="cream"?"selected":"")+ '>पुरानो डायरी क्रिम</option><option value="white" '+(paper==="white"?"selected":"")+ '>सफा सेतो</option><option value="blue" '+(paper==="blue"?"selected":"")+ '>हल्का निलो</option><option value="rose" '+(paper==="rose"?"selected":"")+ '>हल्का गुलाबी</option></select></label>'+
+      '<label>डायरी डिजाइन<select id="bookDesign"><option value="classic" '+(design==="classic"?"selected":"")+ '>क्लासिक Letterpad</option><option value="dark" '+(design==="dark"?"selected":"")+ '>Minimalist Dark Letterpad</option></select></label><label>अक्षर आकार<select id="bookFont"><option value="small" '+(font==="small"?"selected":"")+ '>सानो</option><option value="normal" '+(font==="normal"?"selected":"")+ '>सामान्य</option><option value="large" '+(font==="large"?"selected":"")+ '>ठूलो</option></select></label>'+
+      '<label class="book-check"><input id="bookShowMeta" type="checkbox" '+(p.showMeta!==false?"checked":"")+ '> समयको विवरण देखाउने</label><label class="book-check"><input id="bookShowIcons" type="checkbox" '+(p.showIcons!==false?"checked":"")+ '> विवरणसँग आइकन देखाउने</label></details>';
+    $("#bookPrev").onclick=()=>changeBookPage(-1);$("#bookNext").onclick=()=>changeBookPage(1);
+    $("#bookEdit").onclick=()=>{const item=e;$("#postViewDialog").close();openEditor(item)};
+    $("#bookCustomize").onclick=()=>{const d=$("#bookCustomizePanel");d.open=!d.open};
+    const save=()=>{state.settings.bookStyle={paper:$("#bookPaper").value,font:$("#bookFont").value,design:$("#bookDesign").value,showMeta:$("#bookShowMeta").checked,showIcons:$("#bookShowIcons").checked};persist();renderBookPage()};
+    ["bookPaper","bookFont","bookDesign","bookShowMeta","bookShowIcons"].forEach(id=>$("#"+id).addEventListener("change",save));
+    const page=$("#activeBookPage");$("#postViewDialog .post-view-shell").scrollTop=0;page.addEventListener("touchstart",ev=>{bookTouchX=ev.changedTouches[0].clientX},{passive:true});page.addEventListener("touchend",ev=>{const dx=ev.changedTouches[0].clientX-bookTouchX;if(Math.abs(dx)>65)changeBookPage(dx<0?1:-1)},{passive:true});
+  }
+  let bookTurnBusy=false;function changeBookPage(n){const next=activeBookIndex+n;if(bookTurnBusy||next<0||next>=activeBookEntries.length)return;bookTurnBusy=true;const page=$("#activeBookPage");if(page){page.classList.add(n>0?"page-turn-next":"page-turn-prev");}setTimeout(()=>{activeBookIndex=next;renderBookPage();bookTurnBusy=false;},290)}
+  function openPostView(entry){if(!entry)return;activeBookEntries=state.entries.slice().sort((a,b)=>a.date.localeCompare(b.date)||a.created-b.created);activeBookIndex=Math.max(0,activeBookEntries.findIndex(x=>x.id===entry.id));renderBookPage();$("#postViewDialog").showModal()}
+  $("#bookClose").onclick=()=>$("#postViewDialog").close();
+  function privacyHelpText(value){return ({private:"निजी: तपाईं मात्र। यो उपकरणको स्थानीय डाटामा सुरक्षित हुन्छ।",selected:"छानिएका साथी: रोजिएका व्यक्तिका लागि। साथी छनोट/सेयर सुविधा जोडिएपछि मात्र वास्तविक पहुँच खुल्नेछ।",friends:"साथीहरू: तपाईंका साथीहरूका लागि। हाल यो स्थानीय गोपनीयता लेबल मात्र हो।",public:"सार्वजनिक: सबैका लागि। अनलाइन प्रकाशन वा सेयर गर्न छुट्टै सुविधा आवश्यक हुन्छ।"})[value]||"ड्राफ्ट पोस्ट हाल स्थानीय रूपमा सुरक्षित हुन्छ।"}
+  $("#entryVisibility").addEventListener("change",e=>{$("#privacyHelp").textContent=privacyHelpText(e.target.value)});
+  function visibilityLabel(value){return ({private:"🔒 निजी",selected:"◉ छानिएका साथी",friends:"♧ साथीहरू",public:"◎ सार्वजनिक",draft:"ड्राफ्ट · पुरानो"})[value]||"🔒 निजी"}
+  function updateDiaryPagesCount(){const el=$("#diaryPagesCount");if(el){const n=state.entries.length;el.textContent=nepaliNumber(n)+" "+(n===1?"पाना":"पाना");}}
+  function renderDiary(){const q=$("#diarySearch").value.toLowerCase(),f=$("#diaryFilter").value;let arr=state.entries.filter(e=>(f==="all"||e.visibility===f)&&[e.title,e.content,e.tags,e.context?.tithi,e.context?.bsDate,e.context?.place].join(" ").toLowerCase().includes(q)).sort((x,y)=>y.updated-x.updated);$("#diaryList").innerHTML=arr.length?arr.map(e=>{const ctxLine=formatContextLine(e.context),count=e.media?.length||0,icons=(e.media||[]).map(m=>m.type?.startsWith("image/")?"▧ फोटो":m.type?.startsWith("video/")?"▷ भिडियो":m.type?.startsWith("audio/")?"♫ आवाज":"फाइल").join(" · ");return `<article class="entry-row post-tap-row" data-entry-open="${e.id}" tabindex="0" role="button"><div><div class="entry-meta"><span>▤ ${dateText(e.date)}</span><span>◷ ${esc(e.context?.nepalTime||"")}</span><span>${visibilityLabel(e.visibility)}</span><span>${icons||"✎ टेक्स्ट"}</span></div>${ctxLine?`<div class="entry-context">${esc(ctxLine)}</div>`:""}<h3>${esc(e.title||"शीर्षकविहीन पोस्ट")}</h3><p>${esc(e.content.slice(0,150))}</p></div><span class="tap-hint">Letterhead मा हेर्नुहोस् ↗</span></article>`}).join(""):`<div class="empty-state">यहाँ अझै कुनै पोस्ट छैन। नयाँ पोस्ट सुरु गर्नुहोस्।</div>`;$$("#diaryList [data-entry-open]").forEach(card=>{const open=()=>openPostView(state.entries.find(e=>e.id===card.dataset.entryOpen));card.onclick=open;card.onkeydown=ev=>{if(ev.key==="Enter"||ev.key===" "){ev.preventDefault();open()}}})}
+  updateDiaryPagesCount();
+  $("#diaryPagesCard").addEventListener("click",()=>showPage("poetry"));
   $("#diarySearch").oninput=renderDiary;$("#diaryFilter").onchange=renderDiary;
-  $("#saveQuick").onclick=()=>{const content=$("#quickEntry").value.trim();if(!content){toast("पहिले आफ्ना शब्दहरू लेख्नुहोस्।");return}const ctx=getContextSnapshot();state.entries.push({id:uid(),title:"आजको डायरी",date:nptISO(),mood:"शान्त",content,type:"diary",visibility:"private",tags:"",created:Date.now(),updated:Date.now(),context:ctx});persist();$("#quickEntry").value="";renderAll();toast("आजको डायरी सुरक्षित भयो · मिति/तिथि रेकर्ड।")};
-  function renderPoetry(){const arr=state.entries.filter(e=>e.type==="poem");$("#poetryList").innerHTML=arr.length?arr.map(e=>{const ctx=formatContextLine(e.context);return `<article class="poem-card"><div class="entry-meta">${dateText(e.date)} · ${e.visibility==="private"?"निजी":e.visibility==="public"?"प्रकाशनका लागि":"ड्राफ्ट"}</div>${ctx?`<div class="entry-context">${esc(ctx)}</div>`:""}<h3>${esc(e.title||"शीर्षकविहीन सिर्जना")}</h3><p class="poem-preview">${esc(e.content.slice(0,280))}</p><button class="small-btn" data-edit="${e.id}">सम्पादन</button></article>`}).join(""):`<div class="empty-state">तपाईंका कविता र लेखहरू यहाँ सङ्ग्रहित हुनेछन्।</div>`;$$("[data-edit]").forEach(b=>b.onclick=()=>openEditor(state.entries.find(e=>e.id===b.dataset.edit)))}
+  function renderPoetry(){const arr=state.entries.filter(e=>e.type==="poem").sort((a,b)=>b.updated-a.updated);$("#poetryList").innerHTML=arr.length?arr.map(e=>{const ctx=formatContextLine(e.context);return `<article class="poem-card post-tap-card" data-entry-open="${e.id}" tabindex="0" role="button"><div class="entry-meta">${dateText(e.date)} · ${e.visibility==="private"?"निजी":e.visibility==="public"?"प्रकाशनका लागि":"ड्राफ्ट"}</div>${ctx?`<div class="entry-context">${esc(ctx)}</div>`:""}<h3>${esc(e.title||"शीर्षकविहीन सिर्जना")}</h3><p class="poem-preview">${esc(e.content.slice(0,280))}</p><small class="tap-hint">Letterhead · खोल्न ट्याप गर्नुहोस्</small></article>`}).join(""):`<div class="empty-state">तपाईंका कविता र लेखहरू यहाँ सङ्ग्रहित हुनेछन्।</div>`;$$("#poetryList [data-entry-open]").forEach(card=>{const open=()=>openPostView(state.entries.find(e=>e.id===card.dataset.entryOpen));card.onclick=open;card.onkeydown=ev=>{if(ev.key==="Enter"||ev.key===" "){ev.preventDefault();open()}}})}
+  function renderCalendarDetails(){
+    const copyGrid=(sourceId,targetId)=>{
+      const source=sourceId==="panchangPanel"?$("#panchangPanel .panchang-grid"):$("#"+sourceId),target=$("#"+targetId);
+      if(!source||!target)return;
+      const cards=Array.from(source.children).map(node=>{
+        const clone=node.cloneNode(true);
+        if(clone.removeAttribute)clone.removeAttribute("id");
+        clone.querySelectorAll?.("[id]").forEach(el=>el.removeAttribute("id"));
+        return clone;
+      });
+      target.replaceChildren(...cards);
+    };
+    copyGrid("panchangPanel","calendarPanchangGrid");
+    copyGrid("weatherExtra","calendarWeatherGrid");
+    const meta=$("#calendarDetailsMeta");
+    if(meta){
+      const date=$("#timeBsDate")?.textContent?.trim()||"आज";
+      const place=$("#placeName")?.textContent?.trim()||"स्थान उपलब्ध छैन";
+      const updated=$("#weatherUpdated")?.textContent?.trim()||"मौसम विवरण पर्खँदै";
+      meta.textContent=date+" · "+place+" · "+updated;
+    }
+  }
   function renderCalendar(){const y=selectedCalendar.getFullYear(),m=selectedCalendar.getMonth(),first=new Date(y,m,1).getDay(),days=new Date(y,m+1,0).getDate();$("#calendarMonth").textContent=selectedCalendar.toLocaleDateString("ne-NP",{month:"long",year:"numeric"});$("#calendarAd").textContent=selectedCalendar.toLocaleDateString("en-US",{month:"long",year:"numeric"});let html="";for(let i=0;i<first;i++)html+="<button disabled></button>";for(let d=1;d<=days;d++){const iso=`${y}-${String(m+1).padStart(2,"0")}-${String(d).padStart(2,"0")}`,isToday=iso===nptISO(),has=state.events.some(e=>e.date===iso);html+=`<button class="${isToday?"today":""} ${has?"has-event":""}" data-date="${iso}">${d}</button>`}$("#calendarDays").innerHTML=html;$$("[data-date]").forEach(b=>b.onclick=()=>{const date=b.dataset.date;const events=state.events.filter(e=>e.date===date);toast(events.length?events.map(e=>e.title).join(" · "):dateText(date))});$("#eventList").innerHTML=state.events.length?state.events.slice().sort((a,b)=>a.date.localeCompare(b.date)).map(e=>`<div class="entry-row"><div><div class="entry-meta">${dateText(e.date)}</div><h3>${esc(e.title)}</h3><p>${esc(e.note||"")}</p></div><button class="small-btn" data-remove-event="${e.id}">हटाउनुहोस्</button></div>`).join(""):`<div class="empty-state">आफ्ना विशेष दिनहरू यहाँ थप्नुहोस्।</div>`;$$("[data-remove-event]").forEach(b=>b.onclick=()=>{state.events=state.events.filter(e=>e.id!==b.dataset.removeEvent);persist();renderCalendar()})}
   $("#prevMonth").onclick=()=>{selectedCalendar.setMonth(selectedCalendar.getMonth()-1);renderCalendar()};$("#nextMonth").onclick=()=>{selectedCalendar.setMonth(selectedCalendar.getMonth()+1);renderCalendar()};
   $("#addEvent").onclick=()=>{$("#eventForm").reset();$("#eventDialog").showModal()};$("#eventForm").onsubmit=e=>{e.preventDefault();state.events.push({id:uid(),title:$("#eventTitle").value,date:$("#eventDate").value,note:$("#eventNote").value});persist();$("#eventDialog").close();renderCalendar();toast("विशेष दिन सुरक्षित भयो।")};
@@ -341,21 +897,130 @@
   $("#memoryPhoto").onchange=e=>{const f=e.target.files[0];if(!f)return;if(f.size>2*1024*1024){toast("कृपया २ MB भन्दा सानो तस्वीर छान्नुहोस्।");e.target.value="";return}const r=new FileReader();r.onload=()=>memoryImage=r.result;r.readAsDataURL(f)};
   $("#captureLocation").onclick=()=>{if(!navigator.geolocation){toast("यो उपकरणमा स्थान सेवा उपलब्ध छैन।");return}$("#locationStatus").textContent="अनुमति पर्खँदै...";navigator.geolocation.getCurrentPosition(p=>{selectedLocation={lat:p.coords.latitude,lon:p.coords.longitude};$("#locationStatus").textContent="स्थान सुरक्षित: "+p.coords.latitude.toFixed(3)+", "+p.coords.longitude.toFixed(3)},()=>{$("#locationStatus").textContent="स्थान अनुमति प्राप्त भएन।"},{enableHighAccuracy:true,timeout:10000})};
   $("#memoryForm").onsubmit=e=>{e.preventDefault();state.memories.push({id:uid(),title:$("#memoryTitle").value,text:$("#memoryText").value,date:nptISO(),image:memoryImage,place:selectedLocation?`${selectedLocation.lat.toFixed(5)}, ${selectedLocation.lon.toFixed(5)}`:""});persist();$("#memoryDialog").close();renderMemories();toast("सम्झना सुरक्षित भयो।")};
-  function updateLetter(){const title=$("#lpTitle").value||"कविताको शीर्षक";$("#previewTitle").textContent=title;$("#previewBody").textContent=$("#lpBody").value||"तपाईंका शब्दहरू यहाँ देखिनेछन्...";$("#previewSign").textContent=$("#lpSignature").value;$("#letterPreview").style.color=$("#lpColor").value;$("#letterPreview").style.background=$("#lpPaper").value;$("#letterPreview").className="letter-preview "+$("#lpSize").value;const ctxLine=formatContextLine(getContextSnapshot());let meta=$("#letterContextMeta");if(!meta){meta=document.createElement("div");meta.id="letterContextMeta";meta.className="letter-context-meta";const preview=$("#letterPreview");if(preview)preview.insertBefore(meta,preview.firstChild);}meta.textContent=ctxLine||"";}
+  function updateLetter(){const title=$("#lpTitle").value||"कविताको शीर्षक";$("#previewTitle").textContent=title;$("#previewBody").textContent=$("#lpBody").value||"तपाईंका शब्दहरू यहाँ देखिनेछन्...";$("#previewSign").textContent=$("#lpSignature").value;$("#letterPreview").style.color=$("#lpColor").value;$("#letterPreview").style.background=$("#lpPaper").value;$("#letterPreview").className="letter-preview "+$("#lpSize").value;const ctxLine=formatContextLine(getContextSnapshot());let meta=$("#letterContextMeta");if(!meta){meta=document.createElement("div");meta.id="letterContextMeta";meta.className="letter-context-meta";const preview=$("#letterPreview");if(preview)preview.insertBefore(meta,preview.firstChild);}meta.innerHTML=contextStampHTML(getContextSnapshot());}
   ["lpTitle","lpBody","lpSignature","lpColor","lpPaper","lpSize"].forEach(id=>$("#"+id).addEventListener("input",updateLetter));
   $("#lpImage").onchange=e=>{const f=e.target.files[0];if(!f)return;if(f.size>3*1024*1024){toast("तस्वीर ३ MB भन्दा सानो हुनुपर्छ।");return}const r=new FileReader();r.onload=()=>{letterImage=r.result;$("#lpArt").innerHTML=`<img src="${letterImage}" alt="Letterpad artwork">`};r.readAsDataURL(f)};
   $("#printLetter").onclick=()=>{updateLetter();document.body.classList.add("print-letter");window.print();setTimeout(()=>document.body.classList.remove("print-letter"),500)};
   $("#saveTemplate").onclick=()=>{const ctx=getContextSnapshot();state.templates.push({id:uid(),name:$("#lpTitle").value||"मेरो ढाँचा",title:$("#lpTitle").value,body:$("#lpBody").value,signature:$("#lpSignature").value,color:$("#lpColor").value,paper:$("#lpPaper").value,size:$("#lpSize").value,image:letterImage,context:ctx,created:Date.now()});persist();renderTemplates();toast("ढाँचा सुरक्षित भयो · मिति/तिथि समावेश।")};
+  let historyMap=null,historyLayer=null;
+  function renderLocationMap(rows){
+    const el=$("#locationMap");if(!el)return;
+    const points=rows.filter(x=>Number.isFinite(x.latitude)&&Number.isFinite(x.longitude));
+    if(!window.L){el.innerHTML='<p class="muted small">नक्सा लोड हुन इन्टरनेट चाहिन्छ। '+points.map(p=>'<a target="_blank" rel="noopener" href="https://www.openstreetmap.org/?mlat='+p.latitude+'&mlon='+p.longitude+'#map=16/'+p.latitude+'/'+p.longitude+'">स्थान नक्सामा खोल्नुहोस् ↗</a>').join(" · ")+'</p>';return}
+    if(!historyMap){historyMap=L.map(el).setView(points.length?[points[0].latitude,points[0].longitude]:[28.3,84.0],points.length?10:7);L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:'© OpenStreetMap'}).addTo(historyMap);historyLayer=L.featureGroup().addTo(historyMap)}
+    historyLayer.clearLayers();
+    points.forEach((p,i)=>{const title=esc(p.place||"स्थान रेकर्ड"),when=esc(p.context?.nepalTime||new Date(p.timestamp).toLocaleString("ne-NP",{timeZone:"Asia/Kathmandu",hour12:false})),date=esc(p.context?.bsDate||""),coord=p.latitude.toFixed(6)+", "+p.longitude.toFixed(6),details=p.context?contextDetailsHTML(p.context):"";
+      const marker=L.marker([p.latitude,p.longitude]).addTo(historyLayer);marker.bindPopup('<b>Landmark '+(i+1)+' · '+title+'</b><br>'+when+'<br>'+date+'<br>'+coord+'<br><details><summary>सबै विवरण</summary>'+details+'</details>');
+    });
+    if(points.length){historyMap.fitBounds(historyLayer.getBounds().pad(.18));setTimeout(()=>historyMap.invalidateSize(),120)}
+  }
+  function renderLocationHistory(){
+    const list=$("#locationHistoryList");if(!list)return;
+    const all=(state.locationHistory||[]).filter(h=>h.source==="gps");
+    const rows=all.filter(h=>Number.isFinite(h.latitude)&&Number.isFinite(h.longitude)).slice().sort((a,b)=>b.timestamp-a.timestamp);
+    const count=rows.length,latest=rows[0]||null,first=rows[rows.length-1]||null;
+    const stats=$("#locationStats");
+    if(stats)stats.innerHTML=[
+      ["कुल GPS स्थान",count],
+      ["पछिल्लो रेकर्ड",latest?(latest.context?.nepalTime||"सुरक्षित"):"—"],
+      ["पहिलो रेकर्ड",first?(first.context?.bsDate||first.context?.adDate||"सुरक्षित"):"—"]
+    ].map(([k,v])=>'<article class="location-stat"><small>'+esc(k)+'</small><b>'+esc(v)+'</b></article>').join("");
+    const latestBox=$("#locationLatest");
+    if(latestBox)latestBox.innerHTML=latest?'<div class="latest-place-head"><div><small>पछिल्लो GPS स्थान</small><h2>'+esc(latest.place||"GPS स्थान")+'</h2><p>'+esc([latest.context?.bsDate,latest.context?.adDate,latest.context?.weekday,latest.context?.nepalTime].filter(Boolean).join(" · "))+'</p></div><span class="gps-live-mark">GPS</span></div><div class="latest-place-grid"><span><small>अक्षांश · देशान्तर</small><b>'+latest.latitude.toFixed(6)+', '+latest.longitude.toFixed(6)+'</b></span><span><small>समुद्री सतहबाट उचाइ</small><b>'+(latest.altitudeM!=null?Math.round(latest.altitudeM)+" मिटर":"GPS ले उपलब्ध गराएन")+'</b></span><span><small>GPS शुद्धता</small><b>'+(latest.accuracyM!=null?"±"+Math.round(latest.accuracyM)+" मिटर":"उपलब्ध भएन")+'</b></span><span><small>तापक्रम · अवस्था</small><b>'+esc([latest.context?.weatherTemp,latest.context?.weatherCondition].filter(Boolean).join(" · ")||"उपलब्ध भएन")+'</b></span><span><small>महसुस हुने तापक्रम</small><b>'+esc(latest.context?.apparentTemperature!=null?latest.context.apparentTemperature+" °C":"उपलब्ध भएन")+'</b></span><span><small>आर्द्रता · हावा</small><b>'+esc([latest.context?.humidity!=null?"आर्द्रता "+latest.context.humidity+"%":"",latest.context?.windKmh!=null?"हावा "+latest.context.windKmh+" km/h":""].filter(Boolean).join(" · ")||"उपलब्ध भएन")+'</b></span></div><details class="history-context-details latest-context-details"><summary>यस GPS स्थानको सम्पूर्ण विवरण हेर्नुहोस्</summary>'+(latest.context?contextDetailsHTML(latest.context):'<p class="muted">विस्तृत विवरण उपलब्ध छैन।</p>')+'</details>':'<div class="empty-state">अहिलेसम्म सफल GPS रेकर्ड छैन। गृहपृष्ठको GPS बटन थिचेपछि स्थान यहाँ सुरक्षित हुनेछ।</div>';
+    renderLocationMap(rows);
+    list.innerHTML=rows.length?rows.map((h,i)=>{
+      const stamp=h.context?.nepalTime||new Date(h.timestamp).toLocaleString("ne-NP",{timeZone:"Asia/Kathmandu",hour12:false,second:"2-digit"});
+      const date=h.context?.bsDate||h.context?.adDate||"";
+      const details=h.context?contextDetailsHTML(h.context):'<p class="muted">यस पुरानो रेकर्डमा विस्तृत समय-स्न्यापसट उपलब्ध छैन।</p>';
+      const weather=[h.context?.weatherTemp,h.context?.weatherCondition,h.context?.humidity!=null?"आर्द्रता "+h.context.humidity+"%":"",h.context?.windKmh!=null?"हावा "+h.context.windKmh+" km/h":""].filter(Boolean).join(" · ");
+      return '<article class="location-history-item"><div class="history-index">'+String(count-i).padStart(2,"0")+'</div><div class="history-record-main"><div class="history-record-top"><div><b>'+esc(h.place||"अज्ञात स्थान")+'</b><small>'+esc([stamp,date,h.context?.weekday].filter(Boolean).join(" · "))+'</small></div><span class="history-source">GPS</span></div><div class="history-record-meta"><span>⌖ '+h.latitude.toFixed(6)+', '+h.longitude.toFixed(6)+'</span><span>'+(h.altitudeM!=null?"उचाइ "+Math.round(h.altitudeM)+" m":"उचाइ उपलब्ध भएन")+'</span><span>'+(h.accuracyM!=null?"शुद्धता ±"+Math.round(h.accuracyM)+" m":"शुद्धता उपलब्ध भएन")+'</span></div>'+(weather?'<p class="history-weather">'+esc(weather)+'</p>':"")+'<details class="history-context-details"><summary>समय, पञ्चाङ्ग र मौसमको पूरा विवरण</summary>'+details+'</details></div></article>';
+    }).join(""):'<p class="empty-state">GPS बाट स्थान सुरक्षित भएपछि यहाँ तपाईंका पाइलाहरू क्रमबद्ध रूपमा देखिनेछन्।</p>';
+  }
   function renderTemplates(){$("#templateList").innerHTML=state.templates.length?state.templates.map(t=>`<button class="template-chip" data-template="${t.id}">${esc(t.name)}</button>`).join(""):`<span class="muted tiny">अहिलेसम्म कुनै ढाँचा सुरक्षित छैन।</span>`;$$("[data-template]").forEach(b=>b.onclick=()=>{const t=state.templates.find(x=>x.id===b.dataset.template);$("#lpTitle").value=t.title;$("#lpBody").value=t.body;$("#lpSignature").value=t.signature;$("#lpColor").value=t.color;$("#lpPaper").value=t.paper;$("#lpSize").value=t.size;letterImage=t.image;$("#lpArt").innerHTML=letterImage?`<img src="${letterImage}" alt="">`:"";updateLetter()})}
-  $("#settingBrand").value=state.settings.brand||"kabijwe";$("#settingSignature").value=state.settings.signature||"~बिक्रमादित्य";$("#settingAccent").value=state.settings.accent||"#153b66";$("#settingTheme").value=state.settings.theme||"light";
-  $("#saveSettings").onclick=()=>{state.settings.brand=$("#settingBrand").value;state.settings.signature=$("#settingSignature").value;persist();toast("पहिचानका सेटिङ्स सुरक्षित भए।")};
-  function applyTheme(){const t=$("#settingTheme").value;document.body.classList.toggle("dark",t==="dark"||(t==="system"&&matchMedia("(prefers-color-scheme: dark)").matches));document.documentElement.style.setProperty("--accent",$("#settingAccent").value);persist();state.settings.theme=t;state.settings.accent=$("#settingAccent").value;persist()}
+  if(!state.settings.brand||state.settings.brand.toLowerCase()==="kabijwe")state.settings.brand="Mero diary";if(!state.settings.signature)state.settings.signature="~ बिक्रमादित्य";$("#settingBrand").value=state.settings.brand;$("#settingSignature").value=state.settings.signature;$("#settingAccent").value="#e21e1e";$("#settingLightBg").value="#ffffff";$("#settingLightCard").value="#ffffff";$("#settingDarkBg").value="#000000";$("#settingDarkCard").value="#000000";$("#settingTheme").value=state.settings.theme||"light";$("#settingFontScale").value=state.settings.fontScale||"normal";$("#settingDiaryBg").value=state.settings.diaryBg||"#000000";$("#settingDiaryText").value=state.settings.diaryText||"#ffffff";$("#settingDiaryBold").value=state.settings.diaryBold||"#e53935";document.documentElement.dataset.fontScale=state.settings.fontScale||"normal";
+  function syncBrand(){ const brand=state.settings.brand||"Mero diary";const signature=state.settings.signature||"~ बिक्रमादित्य";$("#brandName").textContent=brand;$("#brandSignature").textContent=signature;const identity=signature.replace(/^[~\s]+/,"").trim()||brand.trim();const initial=/^[\u0915-\u0939][\u093c\u093e-\u094c\u094d]*/u.exec(identity)?.[0]||[...identity][0]||"ब";$("#brandMark").textContent=initial;const svg=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128"><rect width="128" height="128" rx="28" fill="#080b10"/><text x="64" y="91" font-size="82" font-weight="700" text-anchor="middle" fill="#ffffff" font-family="Noto Sans Devanagari, sans-serif">${initial}</text></svg>`;const favicon=document.querySelector("link[rel=icon]");if(favicon)favicon.href="data:image/svg+xml;charset=utf-8,"+encodeURIComponent(svg); }
+  function applyPalette(){const root=document.documentElement.style;root.setProperty("--user-light-bg",$("#settingLightBg").value);root.setProperty("--user-light-card",$("#settingLightCard").value);root.setProperty("--user-dark-bg",$("#settingDarkBg").value);root.setProperty("--user-dark-card",$("#settingDarkCard").value);root.setProperty("--accent",$("#settingAccent").value);state.settings.lightBg=$("#settingLightBg").value;state.settings.lightCard=$("#settingLightCard").value;state.settings.darkBg=$("#settingDarkBg").value;state.settings.darkCard=$("#settingDarkCard").value;state.settings.accent=$("#settingAccent").value;syncBrand();persist();}
+  $("#saveSettings").onclick=()=>{state.settings.brand=$("#settingBrand").value.trim()||"Mero diary";state.settings.signature=$("#settingSignature").value.trim()||"~ बिक्रमादित्य";syncBrand();persist();toast("पहिचानका सेटिङ्स सुरक्षित भए।")};
+  function applyTheme(){const t=$("#settingTheme").value;document.body.classList.toggle("dark",t==="dark"||(t==="system"&&matchMedia("(prefers-color-scheme: dark)").matches));state.settings.theme=t;applyPalette();persist();toast("रूप रङ लागू भए।")}
+  applyPalette();syncBrand();
+  $("#applyFontScale").onclick=()=>{const size=$("#settingFontScale").value;state.settings.fontScale=size;document.documentElement.dataset.fontScale=size;persist();toast("अक्षरको आकार सुरक्षित भयो।")};
+  function applyDiaryColors(){const root=document.documentElement.style;const bg=$("#settingDiaryBg").value||"#000000",textColor=$("#settingDiaryText").value||"#ffffff",bold=$("#settingDiaryBold").value||"#e53935";root.setProperty("--diary-page-bg",bg);root.setProperty("--diary-page-text",textColor);root.setProperty("--diary-page-bold",bold);state.settings.diaryBg=bg;state.settings.diaryText=textColor;state.settings.diaryBold=bold;persist();if($("#activeBookPage"))renderBookPage();toast("डायरी पानाको रङ सुरक्षित भयो।")}
+  $("#applyDiaryColors").onclick=applyDiaryColors;
+  ["settingDiaryBg","settingDiaryText","settingDiaryBold"].forEach(id=>$("#"+id).addEventListener("change",applyDiaryColors));
   $("#applyTheme").onclick=applyTheme;$("#themeToggle").onclick=()=>{document.body.classList.toggle("dark");$("#settingTheme").value=document.body.classList.contains("dark")?"dark":"light";state.settings.theme=$("#settingTheme").value;persist()};
-  if(state.settings.theme==="dark")document.body.classList.add("dark");
+  if(state.settings.theme==="dark"||(state.settings.theme==="system"&&matchMedia("(prefers-color-scheme: dark)").matches))document.body.classList.add("dark");applyPalette();syncBrand();
   $("#exportData").onclick=()=>{const blob=new Blob([JSON.stringify(state,null,2)],{type:"application/json"}),url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download="kabijwe-backup.json";a.click();URL.revokeObjectURL(url);toast("डाटा Export भयो।")};
   $("#importData").onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);if(!d||!Array.isArray(d.entries))throw Error();if(!confirm("हालको स्थानीय डाटा बदल्ने?"))return;Object.assign(state,d);persist();renderAll();toast("डाटा Import भयो।")}catch{toast("यो Backup फाइल मान्य छैन।")}};r.readAsText(f)};
   $("#clearData").onclick=()=>{if(confirm("सबै स्थानीय डायरी, सम्झना र ढाँचा स्थायी रूपमा मेटाउने?")){localStorage.removeItem(KEY);location.reload()}};
-  function renderAll(){previewEntries();renderDiary();renderPoetry();renderCalendar();renderMemories();renderTemplates()}
+  function renderAll(){updateDiaryPagesCount();renderDiary();renderPoetry();renderCalendar();renderMemories();renderTemplates();renderLocationHistory()}
+
+  // Local-first reminders. They live inside the main state object and are included in JSON backups.
+  let reminderAlertTimer = null;
+  function renderReminders(){
+    const list=$("#reminderList"), alertBox=$("#reminderAlert");
+    if(!list||!alertBox)return;
+    const pending=(state.reminders||[]).filter(r=>!r.dismissed).sort((a,b)=>new Date(a.dueAt)-new Date(b.dueAt));
+    list.innerHTML=pending.length?pending.map(r=>{
+      const due=new Date(r.dueAt), overdue=due.getTime()<=Date.now();
+      return '<article class="reminder-item'+(overdue?' is-due':'')+'" data-reminder-id="'+esc(r.id)+'"><div class="reminder-item-copy"><b>'+esc(r.title)+'</b><span>'+esc(due.toLocaleString("ne-NP",{dateStyle:"medium",timeStyle:"short"}))+'</span>'+(r.context?'<div class="context-stamp reminder-context-stamp">'+contextStampHTML(r.context)+'</div>':'<small>पुरानो रिमाइन्डर · समय-स्न्यापसट उपलब्ध छैन</small>')+(r.fired?'<small>सूचना पठाइएको</small>':'')+'</div><button type="button" class="small-btn reminder-dismiss" data-reminder-dismiss="'+esc(r.id)+'">हटाउनुहोस्</button></article>';
+    }).join(""):'<p class="muted small">अहिलेसम्म कुनै रिमाइन्डर छैन।</p>';
+    const dueNow=(state.reminders||[]).filter(r=>r.fired&&!r.dismissed&&r.dueAt&&new Date(r.dueAt).getTime()<=Date.now());
+    if(dueNow.length){
+      alertBox.hidden=false;
+      alertBox.innerHTML='<b>सम्झनुपर्ने कुरा</b>'+dueNow.map(r=>'<p>'+esc(r.title)+'</p>').join('')+'<button type="button" class="reminder-alert-close" id="dismissDueReminders">ठीक छ</button>';
+    }else{alertBox.hidden=true;alertBox.textContent="";}
+  }
+  function notifyReminder(reminder){
+    const title="Mero diary · रिमाइन्डर";
+    const options={body:reminder.title,tag:"kabijwe-reminder-"+reminder.id,renotify:false,data:{reminderId:reminder.id},icon:"./icons/icon.svg",badge:"./icons/icon.svg"};
+    if(navigator.serviceWorker){
+      navigator.serviceWorker.ready.then(reg=>{
+        if(reg.active)reg.active.postMessage({type:"SHOW_REMINDER_NOTIFICATION",title,options});
+        else if(reg.showNotification)reg.showNotification(title,options);
+      }).catch(()=>{});
+    }
+  }
+  function checkDueReminders(){
+    const now=Date.now();let changed=false;
+    (state.reminders||[]).forEach(r=>{
+      if(!r.dismissed&&!r.fired&&Number.isFinite(new Date(r.dueAt).getTime())&&new Date(r.dueAt).getTime()<=now){
+        r.fired=true;r.firedAt=new Date(now).toISOString();changed=true;notifyReminder(r);
+      }
+    });
+    if(changed){persist();renderReminders();}
+  }
+  const reminderDueInput=$("#reminderDueAt");if(reminderDueInput&&!reminderDueInput.value){const now=new Date(Date.now()-new Date().getTimezoneOffset()*60000);reminderDueInput.value=now.toISOString().slice(0,16);}
+  $("#reminderForm")?.addEventListener("submit",e=>{
+    e.preventDefault();
+    const title=$("#reminderTitle").value.trim(), dueAt=$("#reminderDueAt").value;
+    if(!title||!dueAt){toast("रिमाइन्डरको विवरण र समय भर्नुहोस्।");return;}
+    const due=new Date(dueAt);
+    if(!Number.isFinite(due.getTime())){toast("मिति र समय मान्य छैन।");return;}
+    state.reminders.push({id:uid(),title,dueAt:due.toISOString(),createdAt:new Date().toISOString(),context:getContextSnapshot(),fired:false,dismissed:false});
+    persist();e.target.reset();renderReminders();checkDueReminders();toast("रिमाइन्डर सुरक्षित भयो।");
+  });
+  $("#enableReminderNotifications")?.addEventListener("click",async()=>{
+    if(!("Notification" in window)){toast("यो browser मा notification उपलब्ध छैन।");return;}
+    try{
+      const permission=await Notification.requestPermission();
+      toast(permission==="granted"?"सूचना अनुमति सक्रिय भयो।":permission==="denied"?"सूचना अनुमति अस्वीकार भयो।":"सूचना अनुमति दिइएन।");
+    }catch{toast("सूचना अनुमति लिन सकिएन।");}
+  });
+  $("#reminderList")?.addEventListener("click",e=>{
+    const btn=e.target.closest("[data-reminder-dismiss]");if(!btn)return;
+    const id=btn.dataset.reminderDismiss;
+    state.reminders=state.reminders.filter(r=>r.id!==id);persist();renderReminders();
+  });
+  $("#reminderAlert")?.addEventListener("click",e=>{
+    if(e.target.id!=="dismissDueReminders")return;
+    state.reminders.forEach(r=>{if(r.fired)r.dismissed=true;});persist();renderReminders();
+  });
+  renderReminders();
+  checkDueReminders();
+  window.setInterval(checkDueReminders,15000);
+  document.addEventListener("visibilitychange",()=>{if(!document.hidden)checkDueReminders();});
+
+  window.setInterval(updateSolarPosition,1000);
   updateLetter();renderAll();
   if("serviceWorker" in navigator && location.protocol!=="file:")navigator.serviceWorker.register("./sw.js").catch(()=>{});
 })();

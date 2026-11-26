@@ -21,12 +21,14 @@ For PWA installation and service-worker offline caching, use localhost or HTTPS 
 
 ## Included in this starter
 - Responsive mobile and desktop interface
-- Diary entries with private/draft/public-intent labels, search and filtering
+- Diary entries with private/draft/public-intent labels, search and filtering; every post opens as a full Letterhead reading page with its saved context snapshot
 - Poetry and writing collection
 - Personal calendar events (Gregorian calendar view)
 - Six-season overview (rough Gregorian-month approximation)
 - Live Nepal clock and a single sunrise-to-sunset curve with a moving current-time marker
-- Optional, user-initiated GPS location, reverse-geocoded place name and current weather via Open-Meteo
+- Optional, user-initiated GPS location, reverse-geocoded place name, GPS altitude/accuracy when supplied by the device, and current weather via Open-Meteo
+- Expanded immutable per-post time-context snapshots: Nepal time, AD/BS date, weekday/week, Panchang fields and end times, rashis, lunar month, ayana, ghadi-pala, sunrise/sunset, season, coordinates, altitude/accuracy, temperature, feels-like temperature, humidity, wind and weather update time
+- Timestamped local location history for each successful GPS fix and manual place change, including coordinates and later-enriched place/weather details; records are exportable with the local JSON backup
 - Letterpad Studio with live preview, image, colours, page size, saved templates and print-to-PDF
 - Memories with optional image and explicit geolocation permission
 - Local JSON export/import
@@ -39,10 +41,10 @@ This is a functional **local-first prototype**, not a deployed production servic
 - There is no server, user authentication, encrypted private storage, public publishing backend, cloud backup or multi-user access control.
 - A "public" entry is only marked as intended for publication; it is not actually published to the internet.
 - The calendar currently displays Gregorian dates. It does **not** claim BS conversion. A verified Bikram Sambat calendar dataset/library must be integrated and tested before displaying accurate BS dates.
-- Season display is a rough Gregorian-month approximation, not an authoritative Nepali season calendar.
-- The time card requests GPS only after the user taps its location button. Sunrise/sunset use an approximate NOAA solar calculation for the returned coordinates; weather comes from Open-Meteo and place names from OpenStreetMap Nominatim. These external services require an internet connection.
-- Weather and reverse-geocoding requests send the chosen coordinates to Open-Meteo and OpenStreetMap respectively. Do not enable location unless you are comfortable sharing it with those services.
-- Geolocation is requested only when the user taps "मेरो स्थान थप्नुहोस्". The saved memory stores coordinates as text; it does not expose a live map.
+- Season boundaries follow the traditional two-BS-month Nepali grouping; descriptive text is educational, not a local weather forecast.
+- The time card requests GPS only after the user taps its location button. Sunrise/sunset use an approximate NOAA solar calculation for the returned coordinates; weather comes from Open-Meteo and place names from BigDataCloud reverse geocoding. These external services require an internet connection.
+- Weather and reverse-geocoding requests send the chosen coordinates to Open-Meteo and BigDataCloud respectively. Do not enable location unless you are comfortable sharing it with those services.
+- Time-card GPS is requested only after the user taps its GPS button. Every GPS button request is timestamped, including denied, failed or unsupported attempts; successful GPS fixes and each manual place change also store coordinates in local location history. GPS altitude/accuracy are stored only if the device/browser supplies them. A historical map-plotting screen is a planned follow-up, not included yet.
 - Letterpad print-to-PDF uses the browser/device print dialog. Font rendering depends on installed/available fonts and internet access for Google Fonts.
 - Photos are embedded in browser storage as data URLs and limited to 2 MB for memory images / 3 MB for letterpad artwork. Browser storage can be cleared by the operating system or user.
 
@@ -51,7 +53,7 @@ Use Settings → Export regularly. Keep backup JSON files somewhere safe. Do not
 
 ## Next production milestones
 1. Inspect and integrate the existing `~/Documents/kabijwe` project rather than replacing its backend blindly.
-2. Add backend, authentication, server-side authorization, encrypted/private media and cloud sync.
+2. Keep storage strictly local-first; add local backup/restore validation and storage safeguards (no cloud sync or cloud-provider backups).
 3. Integrate a verified BS/AD conversion dataset and festival data.
 4. Implement authoritative Nepali season boundaries.
 5. Add weather/maps APIs with protected server-side keys, caching and offline fallbacks.
@@ -78,10 +80,11 @@ Open the hosted HTTPS URL on your phone, then use the browser menu's **Add to Ho
 | Ghadi–pala | local: 1 ghadi = 24 min, 1 pala = 24 s, counted from the most recent sunrise (before today's sunrise it continues from yesterday's) | |
 | Bikram Sambat date | [Trisambat](https://trisambat.com/developers?lang=ne) month file `/api/v1/ad/{YYYY}/{MM}.json` (beta, attribution required) | Response is validated (month 1–12, day 1–32, BS year = AD+56/57), cached 30 days per month in localStorage, retried with timeout. If unavailable and not cached, a local sankranti-based **estimate** is shown, labelled "अनुमानित" (may be ±1 day). |
 | Seasons | Traditional Nepali reckoning by BS month: वसन्त चैत–बैशाख, ग्रीष्म जेठ–असार, वर्षा साउन–भदौ, शरद असोज–कात्तिक, हेमन्त मंसिर–पुष, शिशिर माघ–फागुन | |
-| Weather | Open-Meteo (timeout, timestamp; stale cache labelled "पुरानो") | |
-| Place name (GPS only) | OpenStreetMap Nominatim | |
+| Weather | Open-Meteo Forecast API | Current conditions, daily minimum/maximum, rain probability, wind direction/gusts, pressure, dew point, visibility and sunrise/sunset. |
+| Air quality / UV | Open-Meteo Air Quality API | US AQI, PM2.5 and hourly UV; shown when the service provides data. |
+| Place name (GPS only) | BigDataCloud free client-side reverse geocoding | No key; called only for the live GPS fix requested by the user. Locality, city and province; ward only if returned. |
 
-**Location & privacy**: GPS is requested only when the user presses the GPS button. No background tracking. If denied, the previous location stays and a manual list of Nepali towns is available; the card always says whether the place is GPS, manual, or the Kathmandu default. Only manual choices are remembered (`kabijwe.location`).
+**Location & privacy**: GPS is requested only when the user presses the GPS button. No background tracking. If denied, the previous location stays and a manual list of Nepali towns is available; the card always says whether the place is GPS, manual, or the Kathmandu default. The latest successful GPS fix or manual choice is remembered locally (`kabijwe.location`); there is no background tracking.
 
 **Limitations (honest list)**
 - Trisambat's live response could not be fetched from the build environment; the parser follows the schema used by the earlier working build (`days[].ad`, `days[].bs.{year,month,day}`) and is covered by a mocked test only. Verify on your phone once online.
@@ -92,30 +95,37 @@ Open the hosted HTTPS URL on your phone, then use the browser menu's **Add to Ho
 
 Tests: `node tests/engine.test.js`, `node tests/ui.test.js` (needs Playwright). See `TEST_REPORT.md`.
 
-## नयाँ सुविधा — Auto Context Snapshot (मिति / तिथि / मौसम)
+## डायरी Letterhead र समयको अनुभूति snapshot
 
-जब तपाईं नयाँ डायरी पोस्ट, कविता वा Letterpad ढाँचा सुरक्षित गर्नुहुन्छ, त्यसबेलाको:
+हरेक डायरी/कविता पोस्ट सुरक्षित गर्दा त्यसबेलाको context object पोस्टमै snapshot का रूपमा राखिन्छ। डायरी सूची, गृहपृष्ठका हालका पोस्ट र कविता सूचीबाट पोस्ट खोल्दा Letterhead पढ्ने दृश्य खुल्छ; त्यसमा लेख, हस्ताक्षर र उपलब्ध समय/पञ्चाङ्ग/स्थान/मौसम विवरण देखिन्छ। Print/PDF पनि यही पोस्ट Letterhead बाट गर्न सकिन्छ। पुराना पोस्टमा पहिले सुरक्षित भएका सीमित विवरण मात्र देखिन्छन्; पुरानो डेटा अनुमान गरेर भरिँदैन।
 
-- वि.सं. मिति
-- तिथि / पक्ष
-- स्थान
-- मौसम (तापक्रम + अवस्था)
-- सूर्योदय / सूर्यास्त (उपलब्ध भएमा)
+Snapshot मा नेपाल समय, AD/BS मिति, बार/हप्ता, तिथि/पक्ष/समाप्ति, नक्षत्र/पाद/समाप्ति, योग/करण, चन्द्र/सूर्य राशि, चन्द्रमास, अयन, घडी-पला, सूर्योदय/सूर्यास्त, ऋतु, स्थानको नाम/स्रोत/निर्देशाङ्क, GPS altitude/accuracy (उपलब्ध भएमा), तापक्रम, महसुस हुने तापक्रम, मौसम अवस्था, आर्द्रता, हावाको गति र मौसम अद्यावधिक समय समावेश हुन्छन्। उपलब्ध नभएका मानहरू खाली वा स्पष्ट रूपमा अनुपलब्ध देखाइन्छन्।
 
-स्वतः `context` फिल्डमा snapshot को रूपमा सुरक्षित हुन्छ।
+### स्थान इतिहास
 
-यो जानकारी:
-- डायरी सूची र हालका पोस्ट कार्डमा देखिन्छ
-- Letterpad प्रिभ्यु र प्रिन्टमा माथि सानो मेटा लाइनको रूपमा आउँछ
-- JSON export मा पनि रहन्छ
-
-**नोट:** Snapshot त्यसबेलाको UI बाट लिइन्छ। राम्रो नतिजाका लागि पहिले “मेरो स्थान, मौसम र पञ्चाङ्ग हेर्नुहोस्” बटन थिचेर डेटा लोड गर्नुहोस्।
+हरेक सफल GPS fix र हातले छानेको स्थान परिवर्तनलाई छुट्टै timestamp, latitude/longitude, स्रोत, उपलब्ध altitude/accuracy सहित स्थानीय `locationHistory` मा राखिन्छ। reverse-geocoding वा मौसम पछि आएमा सोही location record मा विवरण थपिन्छ; event को मूल timestamp जस्ताको तस्तै रहन्छ। इतिहास JSON export मा समावेश हुन्छ। भविष्यको चरणमा यही रेकर्डहरूलाई नक्सामा plot गर्ने UI थपिनेछ। GPS ले altitude नदिएमा मान अनुमान गरिँदैन।
 
 ### API स्रोतहरू
 - **Bikram Sambat + तिथि**: [Trisambat](https://trisambat.com) (`/api/v1/ad/{year}/{month}.json`) — attribution आवश्यक, beta feed।
 - **विस्तृत पञ्चाङ्ग** (तिथि, नक्षत्र, योग, करण, राशि): `panchang.js` को स्थानीय खगोलीय गणना।
 - **मौसम**: Open-Meteo
-- **स्थान नाम**: OpenStreetMap Nominatim
+- **स्थान नाम**: BigDataCloud free client-side reverse geocoding (only for a fresh GPS fix after the user presses the GPS button; no API key).
 - **सूर्योदय/सूर्यास्त**: `panchang.js` (छानिएको स्थानको निर्देशाङ्कबाट)।
 
 Production मा API licensing जाँच गर्नुहोस्।
+
+
+## Local HTTPS for phone GPS (LAN only)
+
+The repository includes `https-local.sh` and `https_server.py`. On Kali/Linux, install `mkcert` and `libnss3-tools` first, then run:
+
+```bash
+cd ~/Projects/PersonalDiary
+bash https-local.sh
+```
+
+The helper detects the current LAN IPv4 address, creates a local certificate for localhost and that LAN IP, and binds the HTTPS server only to the detected LAN interface at `https://<LAN-IP>:8443`. Certificates and private keys are kept in the ignored `.certs/` folder and must never be committed or shared.
+
+For phone GPS, the phone must trust the local mkcert root certificate. Find it with `mkcert -CAROOT` (file `rootCA.pem`), transfer that public root certificate to the phone over USB, then install it as a CA certificate (Firefox desktop: Settings → Privacy & Security → Certificates → View Certificates → Authorities → Import; Android: Settings → Security → Encryption & credentials → Install a certificate → CA certificate; iOS: install the downloaded profile and enable full trust under Certificate Trust Settings). Browser menus differ by device. If the LAN IP changes, stop the server and rerun the helper to regenerate the certificate. Keep the server on a trusted private Wi-Fi network.
+
+This HTTPS helper is for local LAN use; it does not publish the diary or expose a cloud backend. A self-signed certificate that the phone does not trust will still cause browser warnings and may block geolocation.

@@ -282,17 +282,49 @@
   // Traditional Nepali reckoning, two BS months per season:
   //   वसन्त चैत–बैशाख · ग्रीष्म जेठ–असार · वर्षा साउन–भदौ · शरद असोज–कात्तिक · हेमन्त मंसिर–पुष · शिशिर माघ–फागुन
   const SEASONS = [
-    { name: "वसन्त", months: [12, 1],  desc: "फूल फुल्ने, नयाँ पालुवा पलाउने र न्यानो हुँदै जाने समय।" },
-    { name: "ग्रीष्म", months: [2, 3], desc: "घाम चर्कने, दिन लामो हुने र गर्मी बढ्ने समय।" },
-    { name: "वर्षा", months: [4, 5],  desc: "मनसुनको झरी, हरियाली र खेतीपातीको समय।" },
-    { name: "शरद",  months: [6, 7],   desc: "खुला आकाश, सफा हिमाल र चाडपर्वको समय।" },
-    { name: "हेमन्त", months: [8, 9], desc: "चिसो बढ्दै जाने, बिहान कुहिरो लाग्ने र न्यानो घामको समय।" },
-    { name: "शिशिर", months: [10, 11], desc: "कठ्यांग्रिने जाडो र पातहरू झर्ने समय।" }
+    { name: "वसन्त", months: [12, 1],  desc: "न धेरै जाडो न धेरै गर्मी हुने सन्तुलित र रमाइलो मौसम हो; नयाँ पालुवा पलाउँछन् र लालीगुराँस फुल्छन्।" },
+    { name: "ग्रीष्म", months: [2, 3], desc: "तापक्रम बढ्ने र चर्को घाम लाग्ने समय हो; तराईमा तातो हावा चल्न सक्छ।" },
+    { name: "वर्षा", months: [4, 5],  desc: "मनसुन सक्रिय भई झरी पर्ने, खोलानालामा पानी बढ्ने र धान रोपाइँ हुने समय हो।" },
+    { name: "शरद",  months: [6, 7],   desc: "वर्षायामपछि आकाश सफा, हावा स्वच्छ र दशैं–तिहारले घरआँगन रमाइलो हुने समय हो।" },
+    { name: "हेमन्त", months: [8, 9], desc: "चिसो बढ्न थाल्ने, बिहान कुहिरो लाग्ने र दिउँसो न्यानो घाम लाग्ने समय हो।" },
+    { name: "शिशिर", months: [10, 11], desc: "वर्षकै कठ्याङ्ग्रिने चिसो, हिमाली भेगमा हिमपात र तराईमा शीतलहर हुने समय हो।" }
   ];
   function seasonForBsMonth(m) { return SEASONS.find(s => s.months.includes(m)) || null; }
 
+
+  /* Approximate geocentric Navagraha positions from J2000 orbital elements.
+     For diary context only; not a precision ephemeris. */
+  function planetaryPositions(ms){
+    const jd=jdTT(ms),T=(jd-2451545)/36525,ay=lahiriAyanamsa(jd);
+    const E={
+      बुध:[.38709927,.00000037,.20563593,.00001906,7.00497902,-.00594749,252.25032350,149472.67411175,77.45779628,.16047689,48.33076593,-.12534081],
+      शुक्र:[.72333566,.00000390,.00677672,-.00004107,3.39467605,-.00078890,181.97909950,58517.81538729,131.60246718,.00268329,76.67984255,-.27769418],
+      पृथ्वी:[1.00000261,.00000562,.01671123,-.00004392,-.00001531,-.01294668,100.46457166,35999.37244981,102.93768193,.32327364,0,0],
+      मङ्गल:[1.52371034,.00001847,.09339410,.00007882,1.84969142,-.00813131,-4.55343205,19140.30268499,-23.94362959,.44441088,49.55953891,-.29257343],
+      बृहस्पति:[5.20288700,-.00011607,.04838624,-.00013253,1.30439695,-.00183714,34.39644051,3034.74612775,14.72847983,.21252668,100.47390909,.20469106],
+      शनि:[9.53667594,-.00125060,.05386179,-.00050991,2.48599187,.00193609,49.95424423,1222.49362201,92.59887831,-.41897216,113.66242448,-.28867794]
+    };
+    const xyz=(e,t)=>{
+      const [a0,ad,e0,ed,i0,id,L0,Ld,p0,pd,n0,nd]=e;
+      const aa=a0+ad*t,ec=e0+ed*t,inc=(i0+id*t)*RAD,peri=p0+pd*t,node=n0+nd*t;
+      const M=((L0+Ld*t-peri)%360+360)%360*RAD;let Ecc=M;
+      for(let k=0;k<8;k++)Ecc-=(Ecc-ec*Math.sin(Ecc)-M)/(1-ec*Math.cos(Ecc));
+      const xv=aa*(Math.cos(Ecc)-ec),yv=aa*Math.sqrt(1-ec*ec)*Math.sin(Ecc),w=(peri-node)*RAD,O=node*RAD;
+      return {x:xv*(Math.cos(O)*Math.cos(w)-Math.sin(O)*Math.sin(w)*Math.cos(inc))-yv*(Math.cos(O)*Math.sin(w)+Math.sin(O)*Math.cos(w)*Math.cos(inc)),y:xv*(Math.sin(O)*Math.cos(w)+Math.cos(O)*Math.sin(w)*Math.cos(inc))+yv*(Math.cos(O)*Math.cos(w)*Math.cos(inc)-Math.sin(O)*Math.sin(w)),z:xv*Math.sin(w)*Math.sin(inc)+yv*Math.cos(w)*Math.sin(inc)};
+    };
+    const earth=xyz(E.पृथ्वी,T),earthNext=xyz(E.पृथ्वी,T+1/36525),rashis=["मेष","वृष","मिथुन","कर्कट","सिंह","कन्या","तुला","वृश्चिक","धनु","मकर","कुम्भ","मीन"],out=[];
+    const add=(name,lon,dist,retro=false)=>{const sid=((lon-ay)%360+360)%360,deg=sid%30;out.push({name,longitude:sid,rashi:rashis[Math.floor(sid/30)],degree:deg,degreeText:Math.floor(deg)+"° "+Math.floor(deg%1*60)+"′",distanceAU:Number.isFinite(dist)?dist:null,retrograde:retro});};
+    const ll=longitudes(ms);add("सूर्य",ll.sun,null);add("चन्द्र",ll.moon,null);
+    for(const name of ["बुध","शुक्र","मङ्गल","बृहस्पति","शनि"]){
+      const g=xyz(E[name],T),gn=xyz(E[name],T+1/36525),dx=g.x-earth.x,dy=g.y-earth.y,dz=g.z-earth.z;
+      const lon=Math.atan2(dy,dx)/RAD,next=Math.atan2(gn.y-earthNext.y,gn.x-earthNext.x)/RAD,delta=((next-lon+540)%360)-180;
+      add(name,lon,Math.sqrt(dx*dx+dy*dy+dz*dz),delta<0);
+    }
+    const rahu=((125.04452-1934.136261*T-ay)%360+360)%360;add("राहु",rahu,null,true);add("केतु",rahu+180,null,true);
+    return out;
+  }
   return {
-    longitudes, panchang, sunTimes, ghadiPala, bsEstimate, lunarMonth, sankrantiBefore,
+    longitudes, panchang, planetaryPositions, sunTimes, ghadiPala, bsEstimate, lunarMonth, sankrantiBefore,
     seasonForBsMonth, SEASONS, BS_MONTH, RASHI, nptDateParts, nptMidnightMs, elongation,
     _internals: { sunApparentLongitude, moonApparentLongitude, lahiriAyanamsa, sunAltitude, nextBoundary, prevBoundary }
   };
