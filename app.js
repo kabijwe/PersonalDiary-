@@ -826,7 +826,8 @@
     const gpsItems=[ctx.place,ctx.latitude!=null&&ctx.longitude!=null?n(Number(ctx.latitude).toFixed(6))+"°"+(ctx.latitude>=0?"N":"S")+", "+n(Number(ctx.longitude).toFixed(6))+"°"+(ctx.longitude>=0?"E":"W"):"",ctx.altitudeM!=null?n(Math.round(ctx.altitudeM))+" m": "",ctx.accuracyM!=null?"GPS ±"+n(Math.round(ctx.accuracyM))+" m":"",ctx.timezone].filter(Boolean);
     const dotJoin=a=>a.map(x=>esc(x)).join(' <span class="book-inline-dot">•</span> ');
     const sunriseSunsetSeason=[ctx.sunrise?"सूर्योदय "+ctx.sunrise:"",ctx.sunset?"सूर्यास्त "+ctx.sunset:"",ctx.season?"ऋतु "+ctx.season:""].filter(Boolean);
-    const placeWeather=[ctx.place?'<b>स्थान तथा GPS</b> '+esc(ctx.place):"",weatherItems.length?'<b>मौसम तथा वातावरण</b> '+dotJoin(weatherItems.slice(0,2)):""].filter(Boolean);
+    const weatherHeadline=[ctx.weatherTemp?"तापक्रम "+ctx.weatherTemp:"",ctx.weatherCondition||""].filter(Boolean);
+    const placeWeather=[ctx.place?'<b>स्थान तथा GPS</b> '+esc(ctx.place):"",weatherHeadline.length?'<b>मौसम तथा वातावरण</b> '+dotJoin(weatherHeadline):""].filter(Boolean);
     const detailFooter=sunriseSunsetSeason.length?'<div class="book-footer-row book-sun-season">'+dotJoin(sunriseSunsetSeason)+'</div>':"";
     const placeWeatherLine=placeWeather.length?'<div class="book-footer-row book-place-weather">'+placeWeather.join(' <span class="book-inline-dot">•</span> ')+'</div>':"";
     const darkFooter='<div class="book-footer-rule"></div><div class="book-dark-footer">'+detailFooter+placeWeatherLine+'</div>';
