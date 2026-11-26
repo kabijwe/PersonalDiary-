@@ -821,7 +821,7 @@
     const top2=[val("तिथि",ctx.tithi),ctx.paksha,val("नक्षत्र",ctx.nakshatra),ctx.nakshatraPada,val("योग",ctx.yoga),val("करण",ctx.karana),val("चन्द्र राशि",ctx.moonRashi),val("सूर्य राशि",ctx.sunRashi),ctx.lunarMonth,val("अयन",ctx.ayana)].filter(Boolean).join(" · ");
     const top3=[val("घडी/पला",ctx.ghadiPala)].filter(Boolean).join(" · ");
     const planets=(ctx.planets||[]).map(g=>[g.name,g.rashi,g.degreeText,g.retrograde?"वक्री":"मार्गी"].filter(Boolean).join(" · ")).filter(Boolean).join(" / ");
-    const topMeta='<div class="book-top-meta">'+[top1,top2,top3,planets?("नवग्रह "+planets):""].filter(Boolean).map(x=>'<div>'+esc(x)+'</div>').join("")+'</div>';
+    const topMeta='<div class="book-top-meta">'+[top1,top2,top3].filter(Boolean).map(x=>'<div>'+esc(x)+'</div>').join("")+'</div>';
     const weatherItems=[val("तापक्रम",ctx.weatherTemp),ctx.weatherCondition,val("महसुस हुने",ctx.apparentTemperature!=null?n(ctx.apparentTemperature)+"°C":""),ctx.tempMin!=null&&ctx.tempMax!=null?"न्यूनतम/अधिकतम "+n(Math.round(ctx.tempMin))+"°/"+n(Math.round(ctx.tempMax))+"°":"",val("आर्द्रता",ctx.humidity!=null?n(ctx.humidity)+"%":""),ctx.windKmh!=null?"हावा "+n(ctx.windKmh)+" km/h"+(ctx.windDirection!=null?" "+n(Math.round(ctx.windDirection))+"°":""):"",val("झोक्का",ctx.windGustKmh!=null?n(ctx.windGustKmh)+" km/h":""),[ctx.precipitation!=null?n(ctx.precipitation)+" mm":"",ctx.rainProbability!=null?"वर्षा सम्भावना "+n(Math.round(ctx.rainProbability))+"%":""].filter(Boolean).join(" · "),val("बादल",ctx.cloudCover!=null?n(ctx.cloudCover)+"%":""),val("चाप",ctx.pressureHpa!=null?n(Math.round(ctx.pressureHpa))+" hPa":""),val("शीतबिन्दु",ctx.dewPointC!=null?n(Math.round(ctx.dewPointC))+"°":""),val("दृश्यता",ctx.visibilityM!=null?n((ctx.visibilityM/1000).toFixed(1))+" km":""),val("US AQI",ctx.usAqi!=null?n(Math.round(ctx.usAqi))+" ("+aqiCategory(ctx.usAqi)+")":""),val("PM2.5",ctx.pm25!=null?n(Number(ctx.pm25).toFixed(1))+" µg/m³":""),val("UV",ctx.uvIndex!=null?n(Number(ctx.uvIndex).toFixed(1)):"")].filter(Boolean);
     const gpsItems=[ctx.place,ctx.latitude!=null&&ctx.longitude!=null?n(Number(ctx.latitude).toFixed(6))+"°"+(ctx.latitude>=0?"N":"S")+", "+n(Number(ctx.longitude).toFixed(6))+"°"+(ctx.longitude>=0?"E":"W"):"",ctx.altitudeM!=null?n(Math.round(ctx.altitudeM))+" m": "",ctx.accuracyM!=null?"GPS ±"+n(Math.round(ctx.accuracyM))+" m":"",ctx.timezone].filter(Boolean);
     const dotJoin=a=>a.map(x=>esc(x)).join(' <span class="book-inline-dot">•</span> ');
@@ -829,8 +829,9 @@
     const weatherHeadline=[ctx.weatherTemp?"तापक्रम "+ctx.weatherTemp:"",ctx.weatherCondition||""].filter(Boolean);
     const placeWeather=[ctx.place?'<b>स्थान तथा GPS</b> '+esc(ctx.place):"",weatherHeadline.length?'<b>मौसम तथा वातावरण</b> '+dotJoin(weatherHeadline):""].filter(Boolean);
     const detailFooter=sunriseSunsetSeason.length?'<div class="book-footer-row book-sun-season">'+dotJoin(sunriseSunsetSeason)+'</div>':"";
+    const navagrahaFooter=planets?'<div class="book-footer-row book-navagraha"><b>नवग्रह</b> '+esc(planets)+'</div>':"";
     const placeWeatherLine=placeWeather.length?'<div class="book-footer-row book-place-weather">'+placeWeather.join(' <span class="book-inline-dot">•</span> ')+'</div>':"";
-    const darkFooter='<div class="book-footer-rule"></div><div class="book-dark-footer">'+detailFooter+placeWeatherLine+'</div>';
+    const darkFooter='<div class="book-footer-rule"></div><div class="book-dark-footer">'+detailFooter+navagrahaFooter+placeWeatherLine+'</div>';
     const dark=design==="dark";
     $("#postViewContent").innerHTML=
       '<div class="book-stage"><article class="book-page paper-'+esc(paper)+' font-'+esc(font)+' book-style-'+esc(design)+'" id="activeBookPage">'+
@@ -838,7 +839,7 @@
       (p.showMeta!==false?topMeta:"")+
       '<div class="book-rule"></div>'+
       '<h1 class="book-title">'+title+'</h1><div class="book-content">'+body+'</div><div class="book-media">'+media+'</div>'+
-      '<div class="book-sign">~ बिक्रमादित्य</div>'+(p.showMeta!==false?darkFooter:'')+
+      (p.showMeta!==false?darkFooter:'')+
       '<div class="book-page-number">'+(activeBookIndex+1)+' / '+activeBookEntries.length+'</div></article></div>'+
       '<div class="book-navigation"><button class="btn secondary" id="bookPrev" '+(activeBookIndex===0?"disabled":"")+ '>‹ अघिल्लो पाना</button><span>'+(activeBookIndex+1)+' / '+activeBookEntries.length+'</span><button class="btn secondary" id="bookNext" '+(activeBookIndex===activeBookEntries.length-1?"disabled":"")+ '>अर्को पाना ›</button></div>'+
       '<div class="book-actions"><button class="btn secondary" id="bookEdit">✎ सम्पादन</button><button class="btn secondary" id="bookCustomize">Aa पाना सजाउनुहोस्</button></div>'+
