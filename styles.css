@@ -4311,3 +4311,34 @@ body .book-page.page-turn-prev{animation:pageTurnPrev .28s cubic-bezier(.35,.7,.
  .book-style-classic .book-content{font-size:14px!important;line-height:1.75!important;min-height:190px!important;padding-bottom:32px!important}
  .book-style-classic .book-dark-footer{font-size:8.2px!important;line-height:1.55!important;padding-top:7px!important}
 }
+
+
+/* Final classic letterpad footer: keep every available location/weather detail
+   together immediately above the page number, in normal document flow. */
+.book-style-classic{
+ display:flex!important;flex-direction:column!important;
+ min-height:65vh!important;overflow:visible!important;
+}
+.book-style-classic .book-content{flex:1 0 auto!important}
+.book-style-classic .book-media{flex:0 0 auto!important}
+.book-style-classic .book-sign{margin-top:18px!important}
+.book-style-classic .book-footer-rule{flex:0 0 1.5px!important}
+.book-style-classic .book-dark-footer{
+ flex:0 0 auto!important;padding:8px 0 0!important;margin:0!important;
+ background:transparent!important;color:#2c261f!important;
+ font:400 9.5px/1.6 "Noto Serif Devanagari",Georgia,serif!important;
+}
+.book-style-classic .book-footer-row{display:block!important;margin:0 0 3px!important;overflow-wrap:anywhere!important}
+.book-style-classic .book-footer-row b{color:#7a0000!important;font-weight:700!important}
+.book-style-classic .book-inline-dot{color:#9e0000!important;margin:0 4px!important;font-weight:800!important}
+.book-style-classic .book-page-number{
+ position:static!important;display:block!important;flex:0 0 auto!important;
+ margin:7px 0 0!important;padding:0!important;text-align:right!important;
+ color:#2c261f!important;font-size:11px!important;font-weight:600!important;
+ opacity:1!important;border:0!important;
+}
+@media(max-width:520px){
+ .book-style-classic .book-dark-footer{font-size:8px!important;line-height:1.5!important;padding-top:7px!important}
+ .book-style-classic .book-footer-row{margin-bottom:3px!important}
+ .book-style-classic .book-page-number{margin-top:6px!important}
+}
