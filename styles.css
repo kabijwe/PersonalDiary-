@@ -4193,3 +4193,68 @@ body .book-page.page-turn-prev{animation:pageTurnPrev .28s cubic-bezier(.35,.7,.
 .book-style-dark .book-page-number{left:clamp(32px,8vw,68px)!important;right:clamp(24px,7vw,58px)!important;bottom:12px!important;display:flex!important;justify-content:space-between!important;border-top:1px dashed #555!important;padding-top:6px!important;color:#e53935!important;opacity:1!important;font-weight:800!important}
 .book-style-dark .book-page-number span{color:#e53935!important}
 @media(max-width:520px){.book-style-dark .book-top-meta{font-size:8px!important;line-height:1.45!important}.book-style-dark .book-dark-footer{font-size:7.5px!important;line-height:1.48!important}}
+
+
+/* Final dark Letterpad layout: explicit black metadata bands and clean red separators. */
+.book-style-dark .book-top-meta{
+  display:block!important;
+  margin:0 0 8px!important;
+  padding:7px 9px!important;
+  background:#050505!important;
+  color:#f2f2f2!important;
+  border:0!important;
+  border-radius:0!important;
+  font:400 8.5px/1.48 "Noto Sans Devanagari",system-ui,sans-serif!important;
+}
+.book-style-dark .book-top-meta>div{
+  display:block!important;
+  margin:1px 0!important;
+  padding:0!important;
+  color:#f2f2f2!important;
+  overflow-wrap:anywhere!important;
+}
+.book-style-dark .book-rule{
+  display:block!important;
+  height:2px!important;
+  margin:7px 0 15px!important;
+  padding:0!important;
+  background:#a00018!important;
+  border:0!important;
+}
+.book-style-dark .book-sign{
+  margin:18px 0 7px!important;
+  padding:0!important;
+  color:#f04444!important;
+  text-align:right!important;
+}
+.book-style-dark .book-footer-rule{
+  display:block!important;
+  height:2px!important;
+  margin:7px 0 8px!important;
+  padding:0!important;
+  background:#a00018!important;
+}
+.book-style-dark .book-dark-footer{
+  display:block!important;
+  margin:0!important;
+  padding:6px 9px 7px!important;
+  background:#050505!important;
+  color:#ededed!important;
+  font:400 8px/1.55 "Noto Sans Devanagari",system-ui,sans-serif!important;
+  overflow-wrap:anywhere!important;
+}
+.book-style-dark .book-footer-row{margin:2px 0!important}
+.book-style-dark .book-footer-row b{color:#f04444!important;font-weight:800!important}
+.book-style-dark .book-red-dot{
+  display:block!important;
+  height:auto!important;
+  margin:2px 0!important;
+  color:#ed3038!important;
+  text-align:center!important;
+  font-size:15px!important;
+  line-height:1!important;
+}
+@media(max-width:520px){
+  .book-style-dark .book-top-meta{padding:6px 7px!important;font-size:7.7px!important}
+  .book-style-dark .book-dark-footer{padding:5px 7px 6px!important;font-size:7.4px!important}
+}
