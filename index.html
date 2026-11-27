@@ -292,33 +292,52 @@
   <dialog id="postViewDialog" class="modal post-view-modal"><div class="post-view-shell"><div class="modal-head"><span class="eyebrow">डायरीका पानाहरू</span><button class="icon-btn" id="bookClose" aria-label="Close">×</button></div><div id="postViewContent"></div></div></dialog>
 
   <dialog id="editorDialog" class="modal letterhead-editor-modal">
-    <form method="dialog" id="entryForm">
+    <form method="dialog" id="entryForm" class="diary-compact-form">
       <div class="modal-head"><div><p class="eyebrow" id="editorEyebrow">नयाँ पाना</p><h2 id="editorHeading">डायरी लेख्नुहोस्</h2></div><button class="icon-btn" value="cancel" aria-label="Close">×</button></div>
-      <p id="editorContextNote" class="entry-context" style="margin:0 0 10px;font-size:11px;">समयको अनुभूति · यस पानासँग सुरक्षित गरिएको मिति, पञ्चाङ्ग, स्थान र मौसम</p>
-      <div id="editorContextStamp" class="context-stamp editor-context-stamp" aria-label="यस पानाको समय, पञ्चाङ्ग, स्थान र मौसम"></div>
-      <details id="entryContextDetails" class="post-letter-context editor-context-panel"><summary>समयको अनुभूति · विस्तृत विवरण आवश्यक परे खोल्नुहोस्</summary><div id="entryContextDetailsContent"></div></details>
       <input type="hidden" id="entryId">
-      <label>शीर्षक<input id="entryTitle" placeholder="आजको दिन..." maxlength="120"></label>
-      <div class="two-fields"><label>मिति<input id="entryDate" type="date"></label><label>मूड<select id="entryMood"><option>शान्त</option><option>खुसी</option><option>उत्साहित</option><option>सोचमग्न</option><option>उदास</option><option>कृतज्ञ</option></select></label></div>
-      <label>आफ्ना शब्दहरू<textarea id="entryContent" rows="8" placeholder="आजको कथा यहाँ लेख्नुहोस्..."></textarea></label>
-      <div class="entry-media-pickers">
-        <label>▣ क्यामेराबाट फोटो<input id="entryPhotoCamera" type="file" accept="image/*" capture="environment"></label>
-        <label>▧ फोटो अपलोड<input id="entryPhoto" type="file" accept="image/*"></label>
-        <label>● भिडियो खिच्नुहोस्<input id="entryVideoCamera" type="file" accept="video/*" capture="environment"></label>
-        <label>▷ भिडियो अपलोड<input id="entryVideo" type="file" accept="video/*"></label>
-        <label>♫ अडियो अपलोड<input id="entryAudio" type="file" accept="audio/*"></label>
+      <label class="diary-title-field">शीर्षक<input id="entryTitle" placeholder="आजको दिन..." maxlength="120"></label>
+      <div class="two-fields diary-date-mood">
+        <label>मिति<input id="entryDate" type="date"></label>
+        <label>मूड<select id="entryMood"><option>शान्त</option><option>खुसी</option><option>उत्साहित</option><option>सोचमग्न</option><option>उदास</option><option>कृतज्ञ</option></select></label>
       </div>
-      <section class="voice-recorder"><div class="voice-recorder-head"><b>🎙 आवाज रेकर्डर</b><span id="voiceStatus">रेकर्ड गर्न तयार</span></div>
-        <div class="voice-equalizer" id="voiceEqualizer" aria-label="रेकर्ड भइरहेको आवाजको तरंग"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="voice-progress"><span id="voiceProgress"></span></div><div class="voice-timer" id="voiceTimer">00:00</div>
-        <div class="voice-controls"><button type="button" class="btn secondary" id="voiceStart">रेकर्ड सुरु</button><button type="button" class="btn secondary" id="voicePause" disabled>पज</button><button type="button" class="btn secondary" id="voiceStop" disabled>रोक्नुहोस्</button><button type="button" class="btn primary" id="voiceSave" disabled>रेकर्ड सुरक्षित</button></div>
-        <p class="tiny muted">अरू व्यक्तिको आवाज रेकर्ड गर्नुअघि उहाँको स्पष्ट अनुमति लिनुहोस्। अनुमति बिना गोप्य रूपमा रेकर्ड नगर्नुहोस्।</p></section>
-      <div id="entryMediaPreview" class="entry-media-preview"></div>
-      <p class="tiny muted">मिडिया पोस्ट स्थानीय उपकरणमै सुरक्षित हुन्छन्। प्रति फाइल २ MB सम्मको फाइल छान्नुहोस्।</p>
-      <div class="two-fields"><label>प्रकार<select id="entryType"><option value="diary">डायरी</option><option value="poem">कविता / लेख</option></select></label><label>गोपनीयता<select id="entryVisibility"><option value="private">🔒 निजी — म मात्र</option><option value="selected">◉ छानिएका साथीहरू</option><option value="friends">♧ साथीहरू</option><option value="public">◎ सार्वजनिक</option></select></label></div>
+      <label class="diary-writing-field">आफ्ना शब्दहरू<textarea id="entryContent" rows="5" placeholder="आजको कथा यहाँ लेख्नुहोस्..."></textarea></label>
+
+      <details class="entry-media-section">
+        <summary>▣ मिडिया थप्नुहोस् <span>फोटो · भिडियो · अडियो</span></summary>
+        <div class="entry-media-pickers">
+          <label class="media-pick">▣ क्यामेराबाट फोटो<input id="entryPhotoCamera" type="file" accept="image/*" capture="environment"></label>
+          <label class="media-pick">▧ फोटो अपलोड<input id="entryPhoto" type="file" accept="image/*"></label>
+          <label class="media-pick">● भिडियो खिच्नुहोस्<input id="entryVideoCamera" type="file" accept="video/*" capture="environment"></label>
+          <label class="media-pick">▷ भिडियो अपलोड<input id="entryVideo" type="file" accept="video/*"></label>
+        </div>
+        <section class="voice-recorder">
+          <div class="voice-recorder-head"><b>♫ अडियो थप्नुहोस्</b><span id="voiceStatus">रेकर्ड गर्न तयार</span></div>
+          <div class="audio-actions">
+            <label class="media-pick audio-upload">अडियो अपलोड<input id="entryAudio" type="file" accept="audio/*"></label>
+            <button type="button" class="btn secondary" id="voiceStart">● रेकर्ड</button>
+            <button type="button" class="btn secondary" id="voicePause" disabled>पज</button>
+            <button type="button" class="btn secondary" id="voiceStop" disabled>रोक्नुहोस्</button>
+            <button type="button" class="btn primary" id="voiceSave" disabled>रेकर्ड जोड्नुहोस्</button>
+          </div>
+          <div class="voice-wave-row">
+            <div class="voice-equalizer" id="voiceEqualizer" aria-label="रेकर्ड भइरहेको आवाजको तरंग"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+            <span class="voice-timer" id="voiceTimer">00:00</span>
+          </div>
+          <div class="voice-progress"><span id="voiceProgress"></span></div>
+          <p class="tiny muted">रेकर्ड गर्न माइक्रोफोन अनुमति आवश्यक हुन्छ। अरू व्यक्तिको आवाज रेकर्ड गर्नुअघि स्पष्ट अनुमति लिनुहोस्।</p>
+        </section>
+        <div id="entryMediaPreview" class="entry-media-preview"></div>
+        <p class="tiny muted media-limit-note">मिडिया यस उपकरणमै सुरक्षित हुन्छ। प्रति फाइल २ MB सम्म; एउटा पोस्टमा जम्मा ३ MB सम्म।</p>
+      </details>
+
+      <div class="two-fields diary-type-privacy">
+        <label>प्रकार<select id="entryType"><option value="diary">डायरी</option><option value="poem">कविता / लेख</option></select></label>
+        <label>गोपनीयता<select id="entryVisibility"><option value="private">🔒 निजी — म मात्र</option><option value="selected">◉ छानिएका साथीहरू</option><option value="friends">♧ साथीहरू</option><option value="public">◎ सार्वजनिक</option></select></label>
+      </div>
       <p id="privacyHelp" class="tiny muted privacy-help">निजी पोस्ट तपाईंको यस उपकरणमै रहन्छ।</p>
-      <label>ट्याग<input id="entryTags" placeholder="यात्रा, सम्झना, जीवन..."></label>
+      <label class="diary-tags-field">ट्याग<input id="entryTags" placeholder="यात्रा, सम्झना, जीवन..."></label>
       <div class="modal-actions"><button type="button" class="btn secondary" id="deleteEntry">मेटाउनुहोस्</button><button type="submit" class="btn primary">सुरक्षित गर्नुहोस्</button></div>
-      <p class="tiny muted">निजी: तपाईं मात्र · छानिएका साथी: तपाईंले रोजेका व्यक्ति · साथीहरू: साथी सूची · सार्वजनिक: सबैले हेर्न मिल्ने। हालको संस्करण स्थानीय मात्र भएकाले यी तहहरू अहिले पोस्टमा सुरक्षित हुने गोपनीयता छनोट हुन्; साथी सूची, वास्तविक अनुमति जाँच र अनलाइन प्रकाशन अर्को चरणमा जोड्नुपर्छ।</p>
+      <details class="diary-privacy-note"><summary>गोपनीयता तहबारे</summary><p class="tiny muted">निजी: तपाईं मात्र · छानिएका साथी: तपाईंले रोजेका व्यक्ति · साथीहरू: साथी सूची · सार्वजनिक: सबैले हेर्न मिल्ने। हालको संस्करण स्थानीय मात्र भएकाले यी तहहरू पोस्टमा सुरक्षित हुने छनोट हुन्; साथी सूची, वास्तविक अनुमति जाँच र अनलाइन प्रकाशन अर्को चरणमा जोड्नुपर्छ।</p></details>
     </form>
   </dialog>
 
