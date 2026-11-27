@@ -302,33 +302,46 @@
       </div>
       <label class="diary-writing-field">आफ्ना शब्दहरू<textarea id="entryContent" rows="5" placeholder="आजको कथा यहाँ लेख्नुहोस्..."></textarea></label>
 
-      <details class="entry-media-section">
-        <summary>▣ मिडिया थप्नुहोस् <span>फोटो · भिडियो · अडियो</span></summary>
-        <div class="entry-media-pickers">
-          <label class="media-pick">▣ क्यामेराबाट फोटो<input id="entryPhotoCamera" type="file" accept="image/*" capture="environment"></label>
-          <label class="media-pick">▧ फोटो अपलोड<input id="entryPhoto" type="file" accept="image/*"></label>
-          <label class="media-pick">● भिडियो खिच्नुहोस्<input id="entryVideoCamera" type="file" accept="video/*" capture="environment"></label>
-          <label class="media-pick">▷ भिडियो अपलोड<input id="entryVideo" type="file" accept="video/*"></label>
+      <section class="entry-media-section" aria-label="मिडिया थप्नुहोस्">
+        <div class="entry-media-iconbar">
+          <details class="entry-media-menu">
+            <summary class="entry-media-iconbutton" aria-label="फोटो वा भिडियो थप्नुहोस्">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="8.5" cy="10" r="1.5"/><path d="m21 15-5-5L5 19"/></svg>
+              <span>फोटो / भिडियो</span>
+            </summary>
+            <div class="entry-media-popover">
+              <label class="media-pick"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 4h-5L8 6H5a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-3z"/><circle cx="12" cy="13" r="3"/></svg>क्यामेराबाट फोटो<input id="entryPhotoCamera" type="file" accept="image/*" capture="environment"></label>
+              <label class="media-pick"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9" r="1.5"/><path d="m21 15-5-5L5 20"/></svg>फोटो अपलोड<input id="entryPhoto" type="file" accept="image/*"></label>
+              <label class="media-pick"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="13" height="14" rx="2"/><path d="m16 10 5-3v10l-5-3z"/></svg>भिडियो खिच्नुहोस्<input id="entryVideoCamera" type="file" accept="video/*" capture="environment"></label>
+              <label class="media-pick"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m10 8 6 4-6 4z"/><rect x="3" y="4" width="18" height="16" rx="2"/></svg>भिडियो अपलोड<input id="entryVideo" type="file" accept="video/*"></label>
+            </div>
+          </details>
+          <details class="entry-media-menu audio-media-menu">
+            <summary class="entry-media-iconbutton" aria-label="अडियो थप्नुहोस्">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10v2a7 7 0 0 0 14 0v-2M12 19v3m-4 0h8"/></svg>
+              <span>अडियो</span>
+            </summary>
+            <div class="entry-media-popover audio-media-popover">
+              <div class="audio-actions">
+                <label class="media-pick audio-upload"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V3m-5 5 5-5 5 5M4 17v3h16v-3"/></svg>अडियो अपलोड<input id="entryAudio" type="file" accept="audio/*"></label>
+                <button type="button" class="btn secondary" id="voiceStart">● रेकर्ड</button>
+                <button type="button" class="btn secondary" id="voicePause" disabled>पज</button>
+                <button type="button" class="btn secondary" id="voiceStop" disabled>रोक्नुहोस्</button>
+                <button type="button" class="btn primary" id="voiceSave" disabled>जोड्नुहोस्</button>
+              </div>
+              <div class="voice-recorder-head"><span id="voiceStatus">रेकर्ड गर्न तयार</span></div>
+              <div class="voice-wave-row">
+                <div class="voice-equalizer" id="voiceEqualizer" aria-label="रेकर्ड भइरहेको आवाजको तरंग"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+                <span class="voice-timer" id="voiceTimer">00:00</span>
+              </div>
+              <div class="voice-progress"><span id="voiceProgress"></span></div>
+              <p class="tiny muted">माइक्रोफोन अनुमति आवश्यक हुन्छ। अरूको आवाज रेकर्ड गर्नुअघि स्पष्ट अनुमति लिनुहोस्।</p>
+            </div>
+          </details>
         </div>
-        <section class="voice-recorder">
-          <div class="voice-recorder-head"><b>♫ अडियो थप्नुहोस्</b><span id="voiceStatus">रेकर्ड गर्न तयार</span></div>
-          <div class="audio-actions">
-            <label class="media-pick audio-upload">अडियो अपलोड<input id="entryAudio" type="file" accept="audio/*"></label>
-            <button type="button" class="btn secondary" id="voiceStart">● रेकर्ड</button>
-            <button type="button" class="btn secondary" id="voicePause" disabled>पज</button>
-            <button type="button" class="btn secondary" id="voiceStop" disabled>रोक्नुहोस्</button>
-            <button type="button" class="btn primary" id="voiceSave" disabled>रेकर्ड जोड्नुहोस्</button>
-          </div>
-          <div class="voice-wave-row">
-            <div class="voice-equalizer" id="voiceEqualizer" aria-label="रेकर्ड भइरहेको आवाजको तरंग"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
-            <span class="voice-timer" id="voiceTimer">00:00</span>
-          </div>
-          <div class="voice-progress"><span id="voiceProgress"></span></div>
-          <p class="tiny muted">रेकर्ड गर्न माइक्रोफोन अनुमति आवश्यक हुन्छ। अरू व्यक्तिको आवाज रेकर्ड गर्नुअघि स्पष्ट अनुमति लिनुहोस्।</p>
-        </section>
         <div id="entryMediaPreview" class="entry-media-preview"></div>
         <p class="tiny muted media-limit-note">मिडिया यस उपकरणमै सुरक्षित हुन्छ। प्रति फाइल २ MB सम्म; एउटा पोस्टमा जम्मा ३ MB सम्म।</p>
-      </details>
+      </section>
 
       <div class="two-fields diary-type-privacy">
         <label>प्रकार<select id="entryType"><option value="diary">डायरी</option><option value="poem">कविता / लेख</option></select></label>
