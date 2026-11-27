@@ -4415,3 +4415,34 @@ body .book-page.page-turn-prev{animation:pageTurnPrev .28s cubic-bezier(.35,.7,.
  .audio-actions .btn{padding:6px 8px;font-size:10px}
  .voice-recorder{padding:8px}
 }
+
+/* X/Twitter-inspired minimal media actions: one photo/video icon and one audio icon. */
+.entry-media-section{border:0!important;background:transparent!important;padding:2px 0!important;margin:2px 0!important}
+.entry-media-iconbar{display:flex;align-items:center;gap:12px;padding:5px 0}
+.entry-media-menu{position:relative;flex:0 0 auto}
+.entry-media-iconbutton{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;min-width:68px;padding:8px 10px;border:0;border-radius:12px;background:transparent;color:var(--muted);cursor:pointer;list-style:none;font-size:10px;font-weight:600;transition:background .18s,color .18s}
+.entry-media-iconbutton::-webkit-details-marker{display:none}
+.entry-media-iconbutton svg,.entry-media-popover svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.entry-media-iconbutton:hover,.entry-media-menu[open]>.entry-media-iconbutton{background:var(--soft);color:var(--accent,#e53935)}
+.entry-media-popover{position:absolute;z-index:30;top:calc(100% + 7px);left:0;width:min(270px,calc(100vw - 54px));display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:9px;border:1px solid var(--line);border-radius:13px;background:var(--paper);box-shadow:0 12px 32px rgba(0,0,0,.2)}
+.entry-media-popover .media-pick{position:relative;display:flex;align-items:center;gap:7px;min-height:42px;padding:8px;border:1px solid var(--line);border-radius:9px;background:var(--soft);color:var(--ink);font-size:11px;cursor:pointer}
+.entry-media-popover .media-pick svg{width:18px;height:18px;flex:0 0 18px}
+.entry-media-popover .media-pick input[type=file]{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;font-size:0}
+.audio-media-popover{width:min(310px,calc(100vw - 54px));grid-template-columns:1fr}
+.audio-actions{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.audio-actions .btn{min-height:34px;padding:6px 9px;font-size:11px}
+.audio-actions .audio-upload{flex:1 1 110px}
+.audio-media-popover .voice-recorder-head{margin:2px 0 0;font-size:11px}
+.audio-media-popover .voice-wave-row{display:flex;align-items:center;gap:8px;margin-top:5px}
+.audio-media-popover .voice-wave-row .voice-equalizer{flex:1;height:38px}
+.audio-media-popover .voice-wave-row .voice-timer{min-width:40px;text-align:right;font-size:11px}
+.audio-media-popover .voice-progress{height:3px;margin-top:5px}
+.audio-media-popover .tiny{font-size:10px;line-height:1.45;margin:5px 0 0}
+.entry-media-preview{margin-top:7px}
+.media-limit-note{font-size:10px;margin:5px 0 0}
+@media(max-width:520px){
+ .entry-media-iconbar{gap:8px}
+ .entry-media-iconbutton{min-width:62px;padding:7px 8px}
+ .entry-media-popover{width:min(255px,calc(100vw - 42px))}
+ .audio-media-popover{width:min(290px,calc(100vw - 42px))}
+}
