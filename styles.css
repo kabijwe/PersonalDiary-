@@ -4366,3 +4366,52 @@ body .book-page.page-turn-prev{animation:pageTurnPrev .28s cubic-bezier(.35,.7,.
 .book-page.book-colors-custom{background:var(--diary-page-bg,#000000)!important;color:var(--diary-page-text,#ffffff)!important}
 .book-page.book-colors-custom .book-head,.book-page.book-colors-custom .book-top-meta,.book-page.book-colors-custom .book-top-meta>div,.book-page.book-colors-custom .book-content,.book-page.book-colors-custom .book-dark-footer,.book-page.book-colors-custom .book-footer-row,.book-page.book-colors-custom .book-page-number,.book-page.book-colors-custom .book-page-number span{color:var(--diary-page-text,#ffffff)!important}
 .book-page.book-colors-custom b,.book-page.book-colors-custom strong,.book-page.book-colors-custom .book-title,.book-page.book-colors-custom .book-head b,.book-page.book-colors-custom .book-head span:last-child,.book-page.book-colors-custom .book-top-meta b,.book-page.book-colors-custom .book-footer-row b,.book-page.book-colors-custom .book-sign{color:var(--diary-page-bold,#e53935)!important}
+
+
+/* Compact diary composer: context is saved with each entry but not shown while writing. */
+.letterhead-editor-modal{width:min(540px,calc(100% - 20px));max-height:min(88vh,820px)}
+.letterhead-editor-modal .diary-compact-form{gap:9px;padding:16px}
+.diary-compact-form .modal-head{margin-bottom:1px}
+.diary-compact-form .modal-head h2{font-size:19px}
+.diary-compact-form label{gap:4px;font-size:12px}
+.diary-compact-form input:not([type=file]),.diary-compact-form select,
+.diary-compact-form textarea{padding:9px 10px;font-size:13px;border-radius:8px}
+.diary-compact-form .diary-writing-field textarea{min-height:112px;resize:vertical;line-height:1.65}
+.diary-compact-form .two-fields{gap:8px}
+.entry-media-section,.diary-privacy-note{border:1px solid var(--line);border-radius:10px;padding:9px 10px;background:var(--soft)}
+.entry-media-section>summary,.diary-privacy-note>summary{cursor:pointer;list-style:none;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.entry-media-section>summary::-webkit-details-marker,.diary-privacy-note>summary::-webkit-details-marker{display:none}
+.entry-media-section>summary span{font-size:10px;font-weight:400;color:var(--muted)}
+.entry-media-section[open]>summary{padding-bottom:9px;border-bottom:1px solid var(--line);margin-bottom:9px}
+.entry-media-pickers{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+.entry-media-pickers .media-pick,.audio-actions .media-pick{position:relative;display:flex;align-items:center;justify-content:center;min-height:37px;padding:7px 8px;border:1px solid var(--line);border-radius:8px;background:var(--paper);color:var(--ink);font-size:11px;text-align:center;cursor:pointer}
+.media-pick input[type=file]{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;font-size:0}
+.voice-recorder{margin-top:9px;padding:10px;border:1px solid var(--line);border-radius:9px;background:var(--paper)}
+.voice-recorder-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px;font-size:12px}
+.voice-recorder-head span{font-size:10px;color:var(--muted)}
+.audio-actions{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.audio-actions .btn{min-height:34px;padding:6px 10px;font-size:11px}
+.audio-actions .audio-upload{min-height:34px;flex:1 1 105px}
+.voice-wave-row{display:flex;align-items:center;gap:8px;margin-top:8px}
+.voice-wave-row .voice-equalizer{flex:1;height:38px}
+.voice-wave-row .voice-timer{min-width:42px;font-size:12px;text-align:right}
+.voice-progress{height:3px;margin-top:6px}
+.voice-recorder .tiny{margin:7px 0 0;font-size:10px;line-height:1.45}
+.entry-media-preview{margin-top:9px}
+.media-limit-note{margin:7px 0 0;font-size:10px}
+.diary-compact-form .privacy-help{margin:-3px 0 0;font-size:10px;line-height:1.4}
+.diary-compact-form .modal-actions{margin-top:2px}
+.diary-privacy-note{padding:7px 10px}
+.diary-privacy-note>summary{font-size:10px;color:var(--muted)}
+.diary-privacy-note p{margin:7px 0 0;line-height:1.5}
+@media(max-width:520px){
+ .letterhead-editor-modal{width:calc(100% - 12px);max-height:90vh;border-radius:13px}
+ .letterhead-editor-modal .diary-compact-form{padding:12px;gap:8px}
+ .diary-compact-form .modal-head h2{font-size:17px}
+ .diary-compact-form .diary-writing-field textarea{min-height:100px}
+ .entry-media-pickers{grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+ .entry-media-pickers .media-pick{min-height:35px;font-size:10px}
+ .audio-actions{gap:5px}
+ .audio-actions .btn{padding:6px 8px;font-size:10px}
+ .voice-recorder{padding:8px}
+}
