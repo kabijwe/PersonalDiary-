@@ -645,6 +645,7 @@
         setServiceState("weatherServiceStatus","मौसम सेवा असफल · "+(e.message||"नेटवर्क समस्या"),"error");
       }
     }
+    renderLocation();
     updateCurrentContextFromUI();
     const active=state.locationHistory.find(x=>x.id===loc.historyId);
     if(active&&active.source==="gps"&&active.status==="updated"){
@@ -684,8 +685,11 @@
     const coords=Number.isFinite(loc.lat)&&Number.isFinite(loc.lon)?"निर्देशाङ्क "+nepaliNumber(loc.lat.toFixed(6))+", "+nepaliNumber(loc.lon.toFixed(6)):"निर्देशाङ्क: उपलब्ध छैन";
     const accuracy=Number.isFinite(loc.accuracy)?"सटीकता ±"+nepaliNumber(Math.round(loc.accuracy))+" मिटर":"";
     const speed=Number.isFinite(loc.speed)?"गति "+nepaliNumber((loc.speed*3.6).toFixed(1))+" km/h":"";
+    const wx=lsGet(LS_WX);
+    const wxMatches=wx&&Number.isFinite(wx.lat)&&Number.isFinite(wx.lon)&&Math.abs(wx.lat-loc.lat)<0.05&&Math.abs(wx.lon-loc.lon)<0.05;
+    const wind=wxMatches&&Number.isFinite(wx.wind)?"हावा "+nepaliNumber(Math.round(wx.wind))+" km/h"+(windDirectionName(wx.windDirection)?" · "+windDirectionName(wx.windDirection):""):"";
     setText("locationCoordinates",coords);
-    setText("locationAccuracy",[accuracy,speed,"समय क्षेत्र Asia/Kathmandu"].filter(Boolean).join(" · "));
+    setText("locationAccuracy",[accuracy,speed,wind,"समय क्षेत्र Asia/Kathmandu"].filter(Boolean).join(" · "));
     const badge=$("#locationMode");if(badge)badge.dataset.mode=loc.mode;
   }
   function recordLocationAttempt(){
